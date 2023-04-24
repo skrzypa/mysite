@@ -1,0 +1,81 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+
+
+{% block header %}
+{% endblock header %}
+
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="shadow-lg p-1 px-5 bg-body-tertiary rounded">
+
+            <div class="mt-5 mb-5">
+                <div class="mb-2">
+                    <h3>Obserowani
+                        <span class="badge bg-success">{{ number_of_friends }}</span>
+                    </h3>
+                </div>
+
+                <div>
+                    <ul class="list-unstyled">
+                    {% for user in followed_users %}
+                        <li class= 'px-5 py-2'>
+                            <form method='post' class="mb-0">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_to_delete_id" value="{{ user.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                                    <strong>{{ user }}</strong>
+                            </form>
+                        </li>
+                    {% empty %}
+                        <p>Tu nikogo nie ma</p>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+
+            <div class="mt-5 mb-5">
+                <div class="mb-2">
+                    <h3>Wszyscy użytkownicy
+                        <span class="badge bg-success">{{ number_of_users }}</span>
+                    </h3>
+                </div>
+    
+                <div>
+                    <ul class="list-unstyled">
+                        {% for user in users_list %}
+                            <li class="px-5 py-2">
+                                {% if user in followed_users %}
+                                    <button type="button" class="btn btn-outline-primary btn-sm" disabled>Obserwujesz</button>
+                                    <strong>{{ user }}</strong>
+                                    
+            
+                                {% else %}
+                                    <form method='post' class="mb-0">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="user_to_observe_id" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Obserwuj</button>
+                                        <strong>{{ user }}</strong>
+                                    </form>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <p>Tu nikogo nie ma</p>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+ 
+
+{% endblock content %}

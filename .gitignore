@@ -1,0 +1,14 @@
+*.pyc 
+*.pyo 
+*.pyd 
+*.tox 
+htmlcov 
+mysite/settings.py
+*.sqlite3 
+__pycache__ 
+0_do_usuniecia 
+0_inne_pliki
+0_venv 
+*.cpython-311.pyc 
+0_inne_pliki
+my_apps/templates/static

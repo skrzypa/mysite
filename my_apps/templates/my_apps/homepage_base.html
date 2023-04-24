@@ -1,0 +1,85 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset= "utf-8">
+        <meta name= "viewport" content= "width= device-width, initial-scale= 1, shrink-to-fit= no">
+        <title>Paciovvsky</title>
+    </head>
+
+    <body>
+        <div class="container-fluid bg-dark sticky-top">
+            {% comment %} tu możesz zmienić kolory {% endcomment %}
+            <nav class='navbar navbar-expand-sm navbar-dark'>
+                {% comment %} tu nic nie zmieniaj!!! {% endcomment %}
+                {% if user.is_authenticated %}
+                    <label class="navbar-brand py-2 px-2"><strong>Witaj, {{ user.username.title }}</strong></label>
+                {% else %}
+                    <label class="navbar-brand py-2 px-2"><strong>Witaj</strong></label>
+                {% endif %}
+
+                <button class="navbar-toggler" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" 
+                        aria-expanded="false" 
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                    
+                <div class="collapse navbar-collapse sticky-sm-bottom" id="navbarSupportedContent">
+                
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link py-2 px-2" href="{% url 'my_apps:index' %}">Strona główna</a>
+                        </li>
+                        {% if user.is_authenticated %}    
+                            <li class="nav-item">
+                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_friends' %}">Lista znajomych</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_log_out' %}">Wyloguj</a>
+                            </li>
+
+                        {% else %} 
+                            <li class="nav-item">
+                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_log_in' %}">Logowanie</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_register' %}">Rejestracja</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        {% block header %}{% endblock header %}
+        {% block content %}{% endblock content %}
+      
+        {% block footer %}
+            <div class="container-fluid bg-dark sticky-bottom">
+                <nav class='navbar navbar-expand-sm navbar-dark'>
+                    <div class="mt-3 mb-3">
+                        <ul class="nav navbar-nav navbar-dark me-auto mt-3 mb-3">
+                            <li>
+                                <a class="nav-link" href="{% url "my_apps:contact" %}">Kontakt</a>
+                            </li>
+                            {% if user.is_authenticated and user.is_superuser %} 
+                                <li><a class="nav-link" href= "{% url 'my_apps:admin' %}">Witryna administracyjna Django</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        {% endblock footer %}
+    </body>
+
+</html>

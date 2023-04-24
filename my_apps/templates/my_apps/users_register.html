@@ -1,0 +1,73 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="border col-md-8 shadow-lg p-5 mb-5 mt-5 bg-body-tertiary rounded">
+                <h1 class="mb-5 mt-0">Zarejestruj się</h1>
+                <form method= "post" action= "{% url 'my_apps:users_register' %}">
+                    {% csrf_token %}
+                    <table>
+                        <tr>
+                            <td style="width: 25%">
+                                <label for="id_username">Login:</label>
+                            </td>
+                            <td style="width: 75%">
+                                <input type='text' name='username' maxlenght="15" autocapitalize="none" autocomplete="username" autofocus required is="id_username"/>
+                            <td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <label>Wymagane: 15 lub mniej znaków, Tylko litery, cyfry i znaki @/./+/-/_.</label>
+                            <td>
+                        </tr>
+
+                        <tr>
+                            <td style="width: 25%">
+                                <label for="password1">Hasło:</label>
+                            </td>
+                            <td style="width: 75%">
+                                <input type='password' name='password1' autocomplete="new-password" required id="id_password1"/>
+                            <td>
+                        </tr>
+
+                        <tr>
+                            <td style="width: 25%">
+                                <label for="password2">Powtórz hasło:</label>
+                            </td>
+                            <td style="width: 75%">
+                                <input type='password' name='password2' autocomplete="new-password" required id="id_password2"/>
+                            <td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <label>Twoje hasło nie powinno: 
+                                    <ul>
+                                        <li>być zbyt podobne do innych Twoich haseł</li>
+                                        <li>zawierać mniej niż 8 znaków</li>
+                                        <li>być powszechnie używanym hasłem</li>
+                                        <li>być całkowicie numeryczne</li>
+                                    </ul>
+                            <td>
+                        </tr>
+                    </table>
+
+                    <div class="mb-2 mt-2">
+                        <label>Używaj menedżera haseł!</label>
+                    </div>
+                    
+                    <div class="mb-2 mt-2">
+                        <button name= "submit" class="btn btn-success">Utwórz konto!</button>
+                        <input type= "hidden" name= "text" value= "{% url 'my_apps:index' %}"/>
+                    </div>
+                </form>
+
+                <div class="mb-2 mt-2">
+                    <h6>Jeśli rejestracja przebiegnie pomyślnie, zostaniesz automatycznie zalogowany.</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %} 
