@@ -1,189 +1,182 @@
 {% extends 'my_apps/homepage_base.html' %}
 
-{% block header %}
-{% endblock header %}
-
-
 
 {% block content %}
 
 <div class="container-fluid mt-5 mb-5 px-5">
-    <div class="shadow-lg py-5">
-        <div class="row px-5">
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Zamień Brixy na Balingi</h2>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type='text' name='brix' value="{{ brix }}"/>
-            
-                        <div class="mt-2">
-                            <button class="btn btn-success btn-sm" type="submit">Oblicz</button>
-                        </div>
-                    </form>
-            
-                    {% if baling_wynik %}
-                        <div class="alert alert-success" role="alert">
-                            {{ baling_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-    
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Zamień Balingi na Brixy</h2>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type='text' name='baling' value="{{ baling }}"/>
-            
-                        <div class="mt-2">
-                            <button class="btn btn-success btn-sm" type="submit">Oblicz</button>
-                        </div>
-                    </form>
-            
-                    {% if brix_wynik %}
-                        <div class="alert alert-success" role="alert">
-                            {{ brix_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    
-        <div class="row px-5">
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Zamień Brixy na procenty</h2>
-            
-                    <form method="post">
-                        {% csrf_token %}
-                        <p><label>Wartość początkowa:</label>
-                        <input type='text' name='brix_start' value="{{ brix_start }}"/></p>
-                        
-                        <p><label>Wartość końcowa:</label>
-                        <input type='text' name='brix_end' value="{{ brix_end }}"/></p>
-            
-                        <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
-                    </form>
-            
-                    {% if proc_bx_wynik %}
-                        <div class="alert alert-success" role="alert">
-                            {{ proc_bx_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-    
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Zamień Balingi na procenty</h2>
-            
-                    <form method="post">
-                        {% csrf_token %}
-            
-                        <p><label>Wartość początkowa:</label>
-                        <input type='text' name='blg_start' value="{{ blg_start }}"/></p>
-            
-                        <p><label>Wartość końcowa:</label>
-                        <input type='text' name='blg_end' value="{{ blg_end }}"/></p>
-            
-                        <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
-                    </form> 
-            
-                    {% if proc_blg_wynik %}
-                        <div class="alert alert-success" role="alert">
-                            {{ proc_blg_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    
-        <div class="row px-5">
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Ilość glukozy do refermentacji</h2>
-                
-                    <form method="post">
-                        {% csrf_token %}
-    
-                        <p><label>Poziom nagazowania [g/l]:</label>
-                        <input type='text' name='co2' value="{{ co2 }}"/></p>
-    
-                        <p><label>Objętowść piwa [l]:</label>
-                        <input type='text' name='piwo' value="{{ piwo }}"/></p>
-    
-                        <p><label>Temperatura fermentacji [℃]:</label>
-                        <input type='text' name='temp' value="{{ temp }}"/></p>
-    
-                        <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
-                    </form>
-    
-                    {% if glukoza_wynik %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ glukoza_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="col mt-5 mb-5">
-                <div>
-                    <h2 class="border-bottom">Roztwór o podanej gęstości</h2>
-                
-                    <form method="post">
-                        <div>
-                            {% csrf_token %}
-                
-                            <p><label>Gęstość początkowa [BLG]:</label>
-                            <input type='text' name='blg_pocz' value="{{ blg_pocz }}"/></p>
-                
-                            <p><label>Glukoza [g]:</label>
-                            <input type='text' name='glukoza' value="{{ glukoza }}"/></p>
-                        </div>
+    <div class="row px-5">
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Zamień Brixy na Balingi</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type='text' name='brix' value="{{ brix }}"/>
         
-                        <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
-                    </form>
+                    <div class="mt-2">
+                        <button class="btn btn-success btn-sm" type="submit">Oblicz</button>
+                    </div>
+                </form>
         
-                    {% if roztwor_wynik %}
-                        <div class="alert alert-success" role="alert">
-                            {{ roztwor_wynik }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-            
-    
-        <div class="row px-5">
-            <div class="col mt-5 mb-5" colspan='2'>
-                <div>
-                    <table>
-                        <thead>
-                            <h2>Poziom nagazowania dla różnych styli</h2>
-                        </thead>
-                        
-                        <tbody>
-                            <tr>
-                                <td style="width=33%" class="border">Styl</td>
-                                <td style="width=33%" class="border">Nagazowanie mininalne</td>
-                                <td style="width=33%" class="border">Nagazowanie maksymalne</td>
-                            </tr>
-                            
-                            {% for piwo in style_piwne %}
-                                <tr>
-                                    {% for key, value in piwo.items %}
-                                        <td class="border">{{ value }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                {% if baling_wynik %}
+                    <div class="alert alert-success" role="alert">
+                        {{ baling_wynik }}
+                    </div>
+                {% endif %}
             </div>
         </div>
 
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Zamień Balingi na Brixy</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type='text' name='baling' value="{{ baling }}"/>
+        
+                    <div class="mt-2">
+                        <button class="btn btn-success btn-sm" type="submit">Oblicz</button>
+                    </div>
+                </form>
+        
+                {% if brix_wynik %}
+                    <div class="alert alert-success" role="alert">
+                        {{ brix_wynik }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row px-5">
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Zamień Brixy na procenty</h2>
+        
+                <form method="post">
+                    {% csrf_token %}
+                    <p><label>Wartość początkowa:</label>
+                    <input type='text' name='brix_start' value="{{ brix_start }}"/></p>
+                    
+                    <p><label>Wartość końcowa:</label>
+                    <input type='text' name='brix_end' value="{{ brix_end }}"/></p>
+        
+                    <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
+                </form>
+        
+                {% if proc_bx_wynik %}
+                    <div class="alert alert-success" role="alert">
+                        {{ proc_bx_wynik }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Zamień Balingi na procenty</h2>
+        
+                <form method="post">
+                    {% csrf_token %}
+        
+                    <p><label>Wartość początkowa:</label>
+                    <input type='text' name='blg_start' value="{{ blg_start }}"/></p>
+        
+                    <p><label>Wartość końcowa:</label>
+                    <input type='text' name='blg_end' value="{{ blg_end }}"/></p>
+        
+                    <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
+                </form> 
+        
+                {% if proc_blg_wynik %}
+                    <div class="alert alert-success" role="alert">
+                        {{ proc_blg_wynik }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row px-5">
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Ilość glukozy do refermentacji</h2>
+            
+                <form method="post">
+                    {% csrf_token %}
+
+                    <p><label>Poziom nagazowania [g/l]:</label>
+                    <input type='text' name='co2' value="{{ co2 }}"/></p>
+
+                    <p><label>Objętowść piwa [l]:</label>
+                    <input type='text' name='piwo' value="{{ piwo }}"/></p>
+
+                    <p><label>Temperatura fermentacji [℃]:</label>
+                    <input type='text' name='temp' value="{{ temp }}"/></p>
+
+                    <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
+                </form>
+
+                {% if glukoza_wynik %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ glukoza_wynik }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col mt-5 mb-5">
+            <div>
+                <h2 class="border-bottom">Roztwór o podanej gęstości</h2>
+            
+                <form method="post">
+                    <div>
+                        {% csrf_token %}
+            
+                        <p><label>Gęstość początkowa [BLG]:</label>
+                        <input type='text' name='blg_pocz' value="{{ blg_pocz }}"/></p>
+            
+                        <p><label>Glukoza [g]:</label>
+                        <input type='text' name='glukoza' value="{{ glukoza }}"/></p>
+                    </div>
+    
+                    <p><button class="btn btn-success btn-sm" type="submit">Oblicz</button></p>
+                </form>
+    
+                {% if roztwor_wynik %}
+                    <div class="alert alert-success" role="alert">
+                        {{ roztwor_wynik }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+        
+
+    <div class="row px-5">
+        <div class="col mt-5 mb-5" colspan='2'>
+            <div>
+                <table>
+                    <thead>
+                        <h2>Poziom nagazowania dla różnych styli</h2>
+                    </thead>
+                    
+                    <tbody>
+                        <tr>
+                            <td style="width=33%" class="border">Styl</td>
+                            <td style="width=33%" class="border">Nagazowanie mininalne</td>
+                            <td style="width=33%" class="border">Nagazowanie maksymalne</td>
+                        </tr>
+                        
+                        {% for piwo in style_piwne %}
+                            <tr>
+                                {% for key, value in piwo.items %}
+                                    <td class="border">{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

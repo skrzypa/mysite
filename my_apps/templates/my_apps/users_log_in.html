@@ -6,12 +6,12 @@
         <h1 class="px-2 py-2 mb-0">Mordo, już się zalogowałeś</h1>
 
     {% else %}
-        <div class="container mt-5 mb-5 px-5 py-5">
+        <div class="container text-dark col-md-8" style="margin-top: 4rem; margin-bottom: 4rem;">
             
             <div class="row justify-content-center">
-                <div class="col-md-4 shadow-lg p-3 mb-5 mt-5 bg-body-tertiary rounded">
+                <div class="bg-body-tertiary rounded bg-light">
                     <div>
-                        <h1 class="mb-4 mt-0">Zaloguj się</h1>
+                        <h1 style="margin-top: 2rem; margin-bottom: 2rem;">Zaloguj się</h1>
                     </div>
                     <form method="post" class="mb-0" action="{% url 'my_apps:users_log_in' %}">
                         {% csrf_token %}
@@ -29,7 +29,7 @@
                             <button name="submit" class="btn btn-success">Zaloguj</button>
                         </div>
                     </form>
-                    <div class="border-top bg-graymb-0 mt-5">
+                    <div style="margin-top: 2rem; margin-bottom: 2rem;">
                         <h6 class="mb-0 mt-1">Jeśli nie pamiętasz hasła skontaktuj się z twórcą strony</h6>
                     </div>
                 </div>

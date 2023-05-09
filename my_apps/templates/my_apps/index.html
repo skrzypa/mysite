@@ -14,7 +14,7 @@
         <div>
                 <button type="button" 
                     data-bs-toggle="modal" 
-                    class="btn btn-dark btn-sm"
+                    class="btn btn-light btn-sm"
                     data-bs-target="#exampleModal1"
                     id="random-dog-button"
                     name='dog'>
@@ -43,7 +43,7 @@
         </script>
 
         <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered text-dark">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Wylosowany piesek</h1>
@@ -62,9 +62,9 @@
     </div>
 </div>
 
-<div class="container-fluid mt-5 mb-5 text-center">
+<div class="container-fluidtext-center text-center" style="margin-top: 2rem;">
 
-    <div class="mb-0 mt-0">
+    <div class="">
         <h1>Załóż konto i uzyskaj dostęp do wszystkich następujących aplikacji.</h1>
     </div>
 
@@ -72,12 +72,12 @@
         <h2>Aplikacje dostępne po zalogowaniu się:</h2>
     </div>
 
-    <div class="container">
+    <div class="container text-dark">
         <div class="row">
 
             {% for app in log_in_app %}
                 {% if app == '0' %}
-                    <div class="col px-0 py-0 d-flex justify-content-center">
+                    <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
                         <div class="card shadow-lg px-0 mb-0" aria-hidden="true" style="width: 20rem;">
                             {% comment %} <img src="" class="card-img-top" alt="..."> {% endcomment %}
                             <div class="card-body">
@@ -154,12 +154,12 @@
         <h2>Aplikacje dostępne bez logowania:</h2>
     </div>
     
-    <div class="container">
+    <div class="container text-dark">
         <div class="row">
 
             {% for app in log_out_app %}
                 {% if app == '0' %}
-                    <div class="col px-0 py-0 d-flex justify-content-center">
+                    <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
                         <div class="card shadow-lg px-0 mb-0" aria-hidden="true" style="width: 20rem;">
                             {% comment %} <img src="{% static 'pineapple.jpg' %}" class="card-img-top" alt="..."> {% endcomment %}
                             <div class="card-body">

@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from .forms import *
 from .models import *
 
-import calendar, datetime, requests, webbrowser
+import calendar, datetime
 # Create your views here.
 
 # HOMEPAGE

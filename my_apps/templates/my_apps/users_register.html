@@ -1,13 +1,13 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
-    <div class="container mt-5 mb-5">
+    <div class="container text-dark col-md-8" style="margin-top: 4rem; margin-bottom: 4rem;">
         <div class="row justify-content-center">
-            <div class="border col-md-8 shadow-lg p-5 mb-5 mt-5 bg-body-tertiary rounded">
-                <h1 class="mb-5 mt-0">Zarejestruj się</h1>
+            <div class="border bg-body-tertiary rounded bg-light">
+                <h1 style="margin-top: 2rem; margin-bottom: 2rem;">Zarejestruj się</h1>
                 <form method= "post" action= "{% url 'my_apps:users_register' %}">
                     {% csrf_token %}
-                    <table>
+                    <table class="text-dark">
                         <tr>
                             <td style="width: 25%">
                                 <label for="id_username">Login:</label>
@@ -54,17 +54,17 @@
                         </tr>
                     </table>
 
-                    <div class="mb-2 mt-2">
+                    <div style="margin-top: 1rem; margin-bottom: 1rem;">
                         <label>Używaj menedżera haseł!</label>
                     </div>
                     
-                    <div class="mb-2 mt-2">
+                    <div style="margin-top: 1rem; margin-bottom: 1rem;">
                         <button name= "submit" class="btn btn-success">Utwórz konto!</button>
                         <input type= "hidden" name= "text" value= "{% url 'my_apps:index' %}"/>
                     </div>
                 </form>
 
-                <div class="mb-2 mt-2">
+                <div style="margin-top: 2rem; margin-bottom: 2rem;">
                     <h6>Jeśli rejestracja przebiegnie pomyślnie, zostaniesz automatycznie zalogowany.</h6>
                 </div>
             </div>
