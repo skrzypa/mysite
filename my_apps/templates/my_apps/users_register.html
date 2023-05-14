@@ -1,61 +1,65 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
-    <div class="container text-dark col-md-8" style="margin-top: 4rem; margin-bottom: 4rem;">
-        <div class="row justify-content-center">
+    <div class="container text-dark col-md-8" style="margin-top: 7rem; margin-bottom: 7rem;">
+        <div class="row justify-content-center" style="margin: 1rem;">
             <div class="border bg-body-tertiary rounded bg-light">
                 <h1 style="margin-top: 2rem; margin-bottom: 2rem;">Zarejestruj się</h1>
                 <form method= "post" action= "{% url 'my_apps:users_register' %}">
                     {% csrf_token %}
-                    <table class="text-dark">
-                        <tr>
-                            <td style="width: 25%">
-                                <label for="id_username">Login:</label>
-                            </td>
-                            <td style="width: 75%">
-                                <input type='text' name='username' maxlenght="15" autocapitalize="none" autocomplete="username" autofocus required is="id_username"/>
-                            <td>
-                        </tr>
+                    <div class="form-floating mb-2">
+                        <input type='text' 
+                                name='username' 
+                                maxlenght="15" 
+                                autocapitalize="none" 
+                                autocomplete="username" 
+                                autofocus required is="id_username"
+                                class="form-control" 
+                                id="floatingInput" 
+                                placeholder="Login"/>
+                        <label for="id_username">Login:</label>
+                    </div>
 
-                        <tr>
-                            <td colspan="2">
-                                <label>Wymagane: 15 lub mniej znaków, Tylko litery, cyfry i znaki @/./+/-/_.</label>
-                            <td>
-                        </tr>
+                    <label>Wymagane: 15 lub mniej znaków, Tylko litery, cyfry i znaki @/./+/-/_.</label>
+                        
+                    <div class="form-floating mb-2">
+                        <input type='password' 
+                                name='password1' 
+                                autocomplete="new-password" 
+                                required id="id_password1" 
+                                class="form-control" 
+                                id="floatingPassword" 
+                                placeholder="Hasło" />
+                        <label for="password1">Hasło:</label>
+                    </div>
+                        
+                    <div class="form-floating mb-2">
+                        <input type='password' 
+                                name='password2' 
+                                autocomplete="new-password" 
+                                required id="id_password2" 
+                                class="form-control" 
+                                id="floatingPassword" 
+                                placeholder="Hasło" 
+                                name='password'/>
+                        <label for="password2">Powtórz hasło:</label>
+                    </div>
 
-                        <tr>
-                            <td style="width: 25%">
-                                <label for="password1">Hasło:</label>
-                            </td>
-                            <td style="width: 75%">
-                                <input type='password' name='password1' autocomplete="new-password" required id="id_password1"/>
-                            <td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 25%">
-                                <label for="password2">Powtórz hasło:</label>
-                            </td>
-                            <td style="width: 75%">
-                                <input type='password' name='password2' autocomplete="new-password" required id="id_password2"/>
-                            <td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="2">
-                                <label>Twoje hasło nie powinno: 
-                                    <ul>
-                                        <li>być zbyt podobne do innych Twoich haseł</li>
-                                        <li>zawierać mniej niż 8 znaków</li>
-                                        <li>być powszechnie używanym hasłem</li>
-                                        <li>być całkowicie numeryczne</li>
-                                    </ul>
-                            <td>
-                        </tr>
-                    </table>
+                    <label>Twoje hasło nie powinno: 
+                        <ul>
+                            <li>być zbyt podobne do innych Twoich haseł</li>
+                            <li>zawierać mniej niż 8 znaków</li>
+                            <li>być powszechnie używanym hasłem</li>
+                            <li>być całkowicie numeryczne</li>
+                        </ul>
+                    </label>
 
                     <div style="margin-top: 1rem; margin-bottom: 1rem;">
                         <label>Używaj menedżera haseł!</label>
+                    </div>
+
+                    <div style="margin-top: 2rem; margin-bottom: 2rem;">
+                        <h6>Jeśli rejestracja przebiegnie pomyślnie, zostaniesz automatycznie zalogowany.</h6>
                     </div>
                     
                     <div style="margin-top: 1rem; margin-bottom: 1rem;">
@@ -63,10 +67,6 @@
                         <input type= "hidden" name= "text" value= "{% url 'my_apps:index' %}"/>
                     </div>
                 </form>
-
-                <div style="margin-top: 2rem; margin-bottom: 2rem;">
-                    <h6>Jeśli rejestracja przebiegnie pomyślnie, zostaniesz automatycznie zalogowany.</h6>
-                </div>
             </div>
         </div>
     </div>

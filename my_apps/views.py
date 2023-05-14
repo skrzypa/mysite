@@ -186,7 +186,6 @@ def calendar_generate(request):
     year_progress = int(datetime.datetime.now().strftime('%j')) * 100
     year_progress = year_progress / (365 + calendar.isleap(int(GenerateCalendar.year_today)))
     year_progress = round(year_progress, 1)
-    print(year_progress)
     
     year_choosen = request.POST.get('year_button', GenerateCalendar.year_today)  
 
@@ -223,7 +222,6 @@ def calendar_generate(request):
         elif 'decline' in request.POST:
             id = request.POST['decline']
             invited = InvitedToEventModel.objects.get(invited_friend_id= request.user.id, event_id= id)
-            print(invited)
             invited.accepted_invitation = False
             invited.decline_invitation = True
             invited.save()
@@ -238,25 +236,27 @@ def calendar_generate(request):
     all_events = []
     for event in NewEventModel.objects.all().filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
         
-        try:
-            dict_all_events = {}
-            dict_all_events['identifier'] = event.id
-            dict_all_events['owner'] = event.owner
-            dict_all_events['event_title'] = event.event_title
-            dict_all_events['event_location'] = event.event_location
-            dict_all_events['event_description'] = event.event_description
-            dict_all_events['event_date'] = f"{event.event_date_day}.{event.event_date_month}.{event.event_date_year}"
-            dict_all_events['event_date_year'] = event.event_date_year
-            dict_all_events['event_date_month'] = event.event_date_month
-            dict_all_events['event_date_day'] = event.event_date_day
+        # try:
+        dict_all_events = {}
+        dict_all_events['identifier'] = event.id
+        dict_all_events['owner'] = str(event.owner)
+        dict_all_events['event_title'] = event.event_title
+        dict_all_events['event_location'] = event.event_location
+        dict_all_events['event_description'] = event.event_description
+        dict_all_events['event_date'] = f"{event.event_date_day}.{event.event_date_month}.{event.event_date_year}"
+        dict_all_events['event_date_year'] = event.event_date_year
+        dict_all_events['event_date_month'] = event.event_date_month
+        dict_all_events['event_date_day'] = event.event_date_day
 
-            dict_all_events['invited_friend'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
-            dict_all_events['accepted_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
-            dict_all_events['decline_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
-        except UnboundLocalError:
-            pass
+        dict_all_events['invited_friend'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
+        dict_all_events['accepted_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
+        dict_all_events['decline_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
+        # except UnboundLocalError:
+        #     pass
 
-        all_events.append(dict_all_events)
+        # print(str(request.user) == str(dict_all_events['invited_friend'].get())) # TRUE!
+        if request.user == event.owner or str(request.user) == str(dict_all_events['invited_friend'].get()):
+            all_events.append(dict_all_events)
 
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
     all_my_own_events =     NewEventModel.objects.all().filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
@@ -288,7 +288,7 @@ def calendar_generate(request):
 
                 'event_all_my_dates':           event_all_my_dates,
                 'event_all_shared_dates':       event_all_shared_dates,
-                'current_user':                 request.user,
+                'current_user':                 str(request.user),
                 'all_events':                   all_events,
 
                 'year_progress':                year_progress,
@@ -383,10 +383,6 @@ def edit_event(request, id):
         for friend in your_friends_list:
             if friend not in invited_friends:
                 rest_friends.append(friend)
-
-        print(f"friends_list: {your_friends_list}")
-        print(f"invited_friends: {invited_friends}")
-        print(f"rest_friends: {rest_friends}")
 
     else:
         form_new_event = NewEventForm(instance= event, data= request.POST)

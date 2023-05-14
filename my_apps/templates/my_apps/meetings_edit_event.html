@@ -1,9 +1,9 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="border col-md-8 shadow-lg p-5 mb-0 mt-0 bg-body-tertiary rounded">
+<div class="container">
+    <div class="row justify-content-center text-dark">
+        <div class="border col-md-6 shadow-lg p-5 mb-0 mt-0 bg-body-tertiary rounded bg-light ">
             <div class="mb-0 mt-0">
                 <h1 class="mb-5 mt-0">Edytuj wydarzenie</h1>
                 <form method='post' class="mb-0" action="{% url 'my_apps:meetings_edit_event' id %}">
@@ -64,7 +64,7 @@
                                 <table>
                                     <tbody>
                                         <tr>
-                                            <td style="width: 50%" class="">
+                                            <td style="width: 50%" class="text-dark">
                                                 <h4>Zaproś znajomego:</h4>
                                             </td>
                                         </tr>
@@ -93,7 +93,7 @@
                                 <table>
                                     <tbody>
                                         <tr>
-                                            <td style="width: 50%" class="">
+                                            <td style="width: 50%" class="text-dark">
                                                 <h4>Na liście:</h4>
                                             </td>
                                         </tr>
@@ -105,7 +105,7 @@
                                                         {% csrf_token %}
                                                         <input type="hidden" name="delete_friend_id" value="{{ friend.id }}">
                                                         <button type="submit" class="btn btn-danger btn-sm">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
                                                                 <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z"/>
                                                             </svg> {{ friend }}
                                                         </button>
