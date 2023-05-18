@@ -1,6 +1,6 @@
 from django.db import models
 
-from django.contrib.auth.models import User # powiążemy wpis z danym użytkownikiem
+from django.contrib.auth.models import User, AbstractUser # powiążemy wpis z danym użytkownikiem
 
 
 import datetime
@@ -166,5 +166,7 @@ class Friendship(models.Model):
 #     pass
 
 
-
+# class ProfilePhoto(AbstractUser):
+#     # blank - opcjonalne pole, null - pole może mieć wartość null w bazie danych
+#     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)   
 
