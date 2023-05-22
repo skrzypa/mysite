@@ -18,7 +18,7 @@
             <nav class='navbar navbar-expand-sm navbar-dark'>
                 {% comment %} tu nic nie zmieniaj!!! {% endcomment %}
                 {% if user.is_authenticated %}
-                    <label class="navbar-brand py-2 px-2"><strong>Witaj, {{ user.username.capitalize }}</strong></label>
+                    <label class="navbar-brand py-2 px-2"><strong>Witaj, {{ user.username }}</strong></label>
                 {% else %}
                     <label class="navbar-brand py-2 px-2"><strong>Witaj</strong></label>
                 {% endif %}

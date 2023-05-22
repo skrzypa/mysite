@@ -1,0 +1,92 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+
+
+<div class="container border col-10" style="min-height: 45rem;">
+    <div class="row justify-content-center border border-primary">
+
+        <div style="padding: 0; margin-bottom: 5rem;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button class="btn btn-success">
+                Dodaj grupę
+            </button>
+        </div>
+
+        <div style="padding: 0;">
+            {% for group in expense_group_list %}
+                {% if group.owner == current_user %}
+                    <div class="alert alert-success" role="alert">
+                        <button class="btn btn-danger btn-sm">Usuń</button>
+                {% else %}       
+                    <div class="alert alert-primary" role="alert">
+                {% endif %} 
+                <a href="{% url 'my_apps:split_group' group.id %}">
+                    <button class="btn btn-primary btn-sm">Otwórz</button>
+                </a>
+                        <div>
+                            <label class="h6">Tytuł:</label>
+                            <label class="h5">{{ group.expense_title }}</label>
+                        </div>
+
+                        <div>
+                            <label class="h6">Status:</label>
+                            <label class="h5">{{ group.status }}</label>
+                        </div>
+
+                        <div>
+                            <label>Stworzył:</label>
+                            <label>{{ group.owner }}</label>
+                        </div>
+
+                        <div>
+                            <label>Utworzono:</label>
+                            <label>{{ group.date_added }}</label>
+                        </div>
+                    </div>
+
+            {% empty %}
+                <h1 class="text-center display-1">Brak grup do wyświetlenia</h1>
+            {% endfor %}
+        </div>
+
+        <div class="modal fade text-dark" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Utwórz grupę</h5>
+                        <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <form method="post" class="mb-0" action="{% url 'my_apps:split_homepage' %}">
+                        <div class="modal-body">
+                                {% csrf_token %}
+
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="text" name="expense_title">
+                                    <label for="floatingInput">Nazwa grupy</label>
+                                </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success btn-sm" name="create_expense_group">Utwórz</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

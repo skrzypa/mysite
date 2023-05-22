@@ -78,7 +78,7 @@
             {% for app in log_in_app %}
                 {% if app == '0' %}
                     <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
-                        <div class="card shadow-lg px-0 mb-0" aria-hidden="true" style="width: 20rem;">
+                        <div class="card shadow-lg" aria-hidden="true" style="width: 20rem;">
                             {% comment %} <img src="" class="card-img-top" alt="..."> {% endcomment %}
                             <div class="card-body">
                                 <h5 class="card-title placeholder-glow">
@@ -94,9 +94,9 @@
 
 
                 {% else %}
-                    <div class="col px-0 py-0 d-flex justify-content-center" style="float:none;margin:auto;">
+                    <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
                             {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
-                        <div class="card shadow-lg px-0 mb-0" style="width: 20rem;">
+                        <div class="card shadow-lg" style="width: 20rem;">
                             <div id="carouselExample" class="carousel slide">
                                 <div class="carousel-inner">
                                     {% for img in app.images %}
@@ -159,7 +159,7 @@
             {% for app in log_out_app %}
                 {% if app == '0' %}
                     <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
-                        <div class="card shadow-lg px-0 mb-0" aria-hidden="true" style="width: 20rem;">
+                        <div class="card shadow-lg" aria-hidden="true" style="width: 20rem;">
                             {% comment %} <img src="{% static 'pineapple.jpg' %}" class="card-img-top" alt="..."> {% endcomment %}
                             <div class="card-body">
                                 <h5 class="card-title placeholder-glow">
@@ -175,9 +175,9 @@
 
 
                 {% else %}
-                    <div class="col px-0 py-0 d-flex justify-content-center" style="float:none;margin:auto;">
+                    <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
                             {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
-                        <div class="card shadow-lg px-0 mb-0" style="width: 20rem;">
+                        <div class="card shadow-lg" style="width: 20rem;">
                             <div id="carouselExample" class="carousel slide">
                                 <div class="carousel-inner">
                                     {% for img in app.images %}

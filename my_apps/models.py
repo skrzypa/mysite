@@ -159,14 +159,59 @@ class Friendship(models.Model):
     def __str__(self):
         return f"{self.from_friend} add {self.to_friend} to friend"
     
-# class LoginModel():
-#     pass
-
-# class RegisterModel():
-#     pass
 
 
-# class ProfilePhoto(AbstractUser):
-#     # blank - opcjonalne pole, null - pole może mieć wartość null w bazie danych
-#     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)   
+# SPLIT THE EXPENSE
+#   blank - opcjonalne pole, null - pole może mieć wartość null w bazie danych
+
+
+class AddExpenseGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    owner = models.ForeignKey(User, on_delete= models.CASCADE)
+    expense_title = models.CharField(max_length= 25, default= "")
+    status = models.CharField(max_length=15, default="brak wydatków")
+
+    date_added = models.DateTimeField(auto_now_add= True)
+
+
+    def __str__(self):
+        return f"{self.owner} create new group: '{self.expense_title}'."
+
+
+
+class AddFriendToExpenseGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    expense = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
+    invited_to_group_friend = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return f"{AddExpenseGroup.owner} add {self.invited_to_group_friend} to '{AddExpenseGroup.expense_title}' group."
+
+
+
+class AddExpense(models.Model):
+    id = models.AutoField(primary_key=True)
+    creator = models.ForeignKey(User, on_delete= models.CASCADE)
+    expense = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
+
+    decription = models.CharField(max_length=15, default="wydatek")
+    price = models.FloatField(default= 0.0)
+
+    def __str__(self):
+        return f"{self.creator} add new expense: '{self.decription}'."
+
+
+
+class AddFriendToExpense(models.Model):
+    id = models.AutoField(primary_key=True)
+    expense = models.ForeignKey(AddExpense, on_delete= models.CASCADE)
+    invited_to_expense_friend = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # proportion or amount
+    amount = models.FloatField(default= 0)  
+
+
+    def __str__(self):
+        return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount} PLN"
 

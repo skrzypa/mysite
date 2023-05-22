@@ -3,9 +3,9 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center text-dark">
-        <div class="border col-md-6 shadow-lg p-5 mb-0 mt-0 bg-body-tertiary rounded bg-light ">
-            <div class="mb-0 mt-0">
-                <h1 class="mb-5 mt-0">Edytuj wydarzenie</h1>
+        <div class="border col-10 shadow-lg bg-body-tertiary rounded bg-light">
+            <div style="margin: 0rem;">
+                <h1 style="margin-top: 2rem; margin-bottom: 5rem;">Edytuj wydarzenie</h1>
                 <form method='post' class="mb-0" action="{% url 'my_apps:meetings_edit_event' id %}">
 
                     {% csrf_token %}
@@ -60,7 +60,7 @@
                     {% comment %} LISTA ZNAJOMYCH {% endcomment %}
                     <div class="container-fluid mt-5 mb-5">
                         <div class="row justify-content-center text-center">
-                            <div class="col">
+                            <div class="col" style="padding: 0;">
                                 <table>
                                     <tbody>
                                         <tr>
@@ -89,7 +89,7 @@
                                 </table>
                             </div>
 
-                            <div class="col">
+                            <div class="col" style="padding: 0;">
                                 <table>
                                     <tbody>
                                         <tr>

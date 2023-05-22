@@ -16,4 +16,6 @@ urlpatterns = [
     path('users_log_in/', views.log_in, name='users_log_in'),
     path('users_log_out/', views.log_out, name='users_log_out'),
     path('users_register/', views.register, name='users_register'),
+    path('split_homepage/', views.add_expense_group, name='split_homepage'),
+    path('split_group/<int:group_id>/', views.split_group, name='split_group'), 
 ]

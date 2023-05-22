@@ -24,14 +24,21 @@ def index(request):
                         'more_img': True,
                         }
     
+    split_bills = {'name': "Split the bills",
+                        'description': 'Aplikacja, dzięki której ułatwisz proces dzielenia się wydatkami z dowolną grupą ludzi.',
+                        'url': 'my_apps:split_homepage',
+                        'images': ['money.png',],
+                        'more_img': False,
+                        }
+    
     beer_calculators = {'name': "Beer Calculators",
-                        'description': 'Oblicz podstawowe parametry oraz sprawdź poziom nagazowania dla różnych styli piwnych',
+                        'description': 'Oblicz podstawowe parametry oraz sprawdź poziom nagazowania dla różnych styli piwnych.',
                         'url': 'my_apps:beer_calc',
                         'images': ['beer_1.png',],
                         'more_img': False,
                         }
     
-    log_in_app = [meetings_planner, '0', '0']
+    log_in_app = [meetings_planner, split_bills, '0']
     log_out_app = [beer_calculators, '0', '0',]
 
     context = {'log_in_app': log_in_app,
@@ -255,7 +262,8 @@ def calendar_generate(request):
         #     pass
 
         # print(str(request.user) == str(dict_all_events['invited_friend'].get())) # TRUE!
-        if request.user == event.owner or str(request.user) == str(dict_all_events['invited_friend'].get()):
+        # print(list(dict_all_events['invited_friend']))
+        if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
             all_events.append(dict_all_events)
 
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
@@ -455,10 +463,10 @@ def log_in(request):
 
     if request.method == 'POST':
         user = authenticate(
-            request,
-            username= request.POST['username'],
-            password= request.POST['password']
-        )
+                        request,
+                        username= request.POST['username'],
+                        password= request.POST['password']
+                    )
 
         if user is not None:
             login(request, user)
@@ -523,13 +531,13 @@ def friends(request):
 
     return render(request, "my_apps/users_friends.html", context= context)
 
-@login_required
+
 def add_to_observed(request, current_user):
     added_user = request.POST['user_to_observe_id']
     friendship = Friendship(from_friend= current_user, to_friend_id= added_user)
     friendship.save()
 
-@login_required
+
 def delete_observed_user(request, current_user):
     deleted_user = request.POST['user_to_delete_id']
     friendship = Friendship.objects.get(from_friend= current_user, to_friend_id= deleted_user)
@@ -537,9 +545,97 @@ def delete_observed_user(request, current_user):
 
 
 
+# SPLIT THE BILLS
+@login_required
+def add_expense_group(request):
+    current_user = request.user     # print(current_user, type(request)) # skrzypa <class 'django.core.handlers.wsgi.WSGIRequest'>
+
+    # friend_list = [friend.to_friend for friend in Friendship.objects.all().filter(from_friend= current_user)]
+    # for i in friend_list:
+    #     print(i)
+
+    expense_group_list = AddExpenseGroup.objects.all().order_by("-date_added")
+
+    invited_to_group = AddFriendToExpenseGroup.objects.all()
+
+    my_expense_group_list = []
+    for group in expense_group_list:
+        invited_to_group = invited_to_group.filter(expense_id = group.id)
+        invited_to_group = invited_to_group.values_list("invited_to_group_friend__username", flat= True)
+        
+        if current_user == group.owner or str(current_user) in invited_to_group:
+            # print(group.owner, group.expense_title, group.status, group.date_added.date)
+            my_expense_group_list.append(group)
+
+ 
+    if request.method != "POST":
+        form_add_expense_group = NewExpenseGroupForm()
+    else:
+        if "create_expense_group" in request.POST:
+            form_add_expense_group = NewExpenseGroupForm(data=request.POST)
+            if form_add_expense_group.is_valid():
+                expense_group = form_add_expense_group.save(commit=False)
+                expense_group.expense_title = request.POST["expense_title"]
+                expense_group.owner = current_user
+                expense_group.save()
+
+                # invited_to_group = request.POST.getlist("friends")
+                # print(invited_to_group)
+                # for friend_id in invited_to_group:
+                #     invited_friend = User.objects.get(id= friend_id)
+                #     invited_model = AddFriendToExpenseGroup(expense= expense_group, 
+                #                                             invited_to_group_friend= invited_friend)
+                #     invited_model.save()
+        
+            return redirect(to= 'my_apps:split_group', group_id= expense_group.id)
 
 
+    context = {"form_add_expense_group": form_add_expense_group,
+               # "friend_list": friend_list,
+               "expense_group_list": my_expense_group_list,
+               "current_user": current_user,
+            }
+
+    return render(request, template_name='my_apps/split_homepage.html', context= context)
 
 
+def split_group(request, group_id):
+    current_user = request.user
 
+    group = AddExpenseGroup.objects.get(id= group_id)
+    expenses = AddExpense.objects.all().filter(expense_id= group_id)
+    invited_friend_to_group = AddFriendToExpenseGroup.objects.all().filter(expense_id= group_id).values_list("invited_to_group_friend__username", flat= True)
+
+    friend_list = [friend.to_friend for friend in Friendship.objects.all().filter(from_friend= current_user)]
+
+    if request.method != "POST":
+        pass
+
+    else:
+        if "invite_to_group" in request.POST: 
+            invited_to_group = request.POST.getlist('friends')
+            for friend_id in invited_to_group:
+                # print(friend_id, User.objects.get(id= friend_id))
+                # print(invited_friend_to_group)
+                
+                if str(User.objects.get(id= friend_id)) in invited_friend_to_group:
+                    pass
+
+                else:
+                    invited_friend = User.objects.get(id= friend_id)
+                    invited_model = AddFriendToExpenseGroup(expense= group, 
+                                                        invited_to_group_friend= invited_friend,
+                                                    )
+                    invited_model.save()
+            return redirect(to= 'my_apps:split_group', group_id= group_id)
+
+
+    context = {"group": group,
+               "expenses": expenses,
+               "friend_list": friend_list,
+               "invited_friend_to_group": invited_friend_to_group,
+               "current_user": current_user,
+            }
+
+    return render(request, template_name='my_apps/split_group.html', context= context)
 

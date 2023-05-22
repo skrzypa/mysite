@@ -155,7 +155,7 @@
                 </div>
     
                 {% comment %} Lista wydarzeń {% endcomment %}
-                <div class="row text-break">
+                <div class="row">
                     {% for event in all_events %}
                         {% if current_user == event.owner %}
                             <div class="alert alert-danger" role="alert">
@@ -164,53 +164,53 @@
                         {% endif %}
                             <table class="text-dark">
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 50%;" class="text-break">
                                         <h6 style="margin: 0rem;">Tytuł:</h6>
                                     </td>
 
-                                    <td style="width: 50%;">
+                                    <td style="width: 50%;" class="text-break">
                                         <h6 style="margin: 0rem;">Data:</h6>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td>
+                                    <td class="text-break">
                                         <label>{{ event.event_title }}</label>
                                     </td>
 
-                                    <td>
+                                    <td class="text-break">
                                         <label>{{ event.event_date }}</label>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 50%;" class="text-break">
                                         <h6 style="margin: 0rem;">Lokalizacja:</h6>
                                     </td>
 
-                                    <td style="width: 50%;">
+                                    <td style="width: 50%;" class="text-break">
                                         <h6 style="margin: 0rem;">Autor:</h6>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 50%;" class="text-break">
                                         <label>{{ event.event_location }}</label>
                                     </td>
 
-                                    <td style="width: 50%;">
-                                        <label>{{ event.owner.capitalize }}</label>
+                                    <td style="width: 50%;" class="text-break">
+                                        <label>{{ event.owner }}</label>
                                     </td>
                                 </tr>
     
                                 <tr>
-                                    <td style="width: 100%;" colspan="2">
+                                    <td style="width: 100%;" colspan="2" class="text-break">
                                         <h6 style="margin: 0rem;">Opis:</h6>
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td style="width: 100%;" colspan="2">
+                                    <td style="width: 100%;" colspan="2" class="text-break">
                                         <label>{{ event.event_description }}</label>
                                     </td>
                                 </tr>
@@ -223,7 +223,7 @@
                                             </button>
                                             <ul class="dropdown-menu text-center">
                                                 {% for friend in event.invited_friend %}
-                                                    <li>{{ friend.capitalize }}</li>
+                                                    <li style="margin: 0.25rem;">{{ friend }}</li>
                                                 {% endfor %}
                                             </ul>
                                         </div>
@@ -234,7 +234,7 @@
                                             </button>
                                             <ul class="dropdown-menu text-center">
                                                 {% for friend in event.accepted_invitation %}
-                                                    <li>{{ friend.capitalize }}</li>
+                                                    <li style="margin: 0.25rem;">{{ friend }}</li>
                                                 {% empty %}
                                                 {% endfor %}
                                             </ul>
@@ -246,7 +246,7 @@
                                             </button>
                                             <ul class="dropdown-menu text-center">
                                                 {% for friend in event.decline_invitation %}
-                                                    <li>{{ friend.capitalize }}</li>
+                                                    <li style="margin: 0.25rem;">{{ friend }}</li>
                                                 {% empty %}
                                                 {% endfor %}
                                             </ul>

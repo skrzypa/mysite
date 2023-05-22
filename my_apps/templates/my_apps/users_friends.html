@@ -3,15 +3,15 @@
 
 {% block content %}
 
-<div class="container-fluid col-10" style="margin-top: 10rem;">
+<div class="container-fluid col-10" style="margin-top: 10rem; margin-bottom: 10rem; padding: 0;">
 
-        <div class="">
+        <div style="margin-bottom: 2rem">
             <h3>Obserowani
                 <span class="badge bg-success">{{ number_of_friends }}</span>
             </h3>
         </div>
 
-    <div class="row border-bottom" style="margin-bottom: 2rem;">
+    <div class="row" style="">
         {% for user in followed_users %}
             <div class="col d-inline-flex" style="margin-bottom: 0.5rem;">
                 <form method='post' class="mb-0">
@@ -39,9 +39,9 @@
     </div>
 </div>
 
-<div class="container-fluid col-10" style=" margin-bottom: 10rem;">
+<div class="container-fluid col-10" style="margin-bottom: 10rem; padding: 0;">
 
-    <div class="">
+    <div style="margin-bottom: 2rem;">
         <h3>Wszyscy użytkownicy
             <span class="badge bg-success">{{ number_of_users }}</span>
         </h3>
@@ -64,7 +64,7 @@
 
                     </div>
                 {% else %}
-                    <div>
+                    <div class="btn-group d-inline-flex" role="group">
                         <form method='post' class="mb-0">
                             {% csrf_token %}
                             <div class="btn-group d-inline-flex" role="group">
