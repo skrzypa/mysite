@@ -606,6 +606,10 @@ def split_group(request, group_id):
     expenses = AddExpense.objects.all().filter(expense_id= group_id)
     invited_friend_to_group = AddFriendToExpenseGroup.objects.all().filter(expense_id= group_id).values_list("invited_to_group_friend__username", flat= True)
 
+    # sprawdzamy czy użytkownik jest właścicielem grupy lub na liście zaproszonym do niej
+    if str(current_user) not in invited_friend_to_group and current_user != group.owner:
+        raise Http404
+
     friend_list = [friend.to_friend for friend in Friendship.objects.all().filter(from_friend= current_user)]
 
     if request.method != "POST":
