@@ -10,7 +10,7 @@
             <label class="display-6">{{ group.expense_title }}</label>
         </div>
 
-        <div>
+        <div class="btn">
             {% if current_user == group.owner %}
                 <button class="btn btn-success btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;"data-bs-toggle="modal" data-bs-target="#add_friend">Zaproś znajomych</button>
             {% endif %}
@@ -21,25 +21,28 @@
             </button>
             
                     <ul class="dropdown-menu">
-                        {% for friend in invited_friend_to_group %}
-                            {% if current_user == group.owner %}
-                                <li class="dropdown-item">
-                                    <div class="row">
-                                        <div class="col d-flex justify-content-start">
-                                            {{ friend }}
+                        <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
+                            {% csrf_token %}
+                            {% for name, id in invited_friend_to_group_dict.items %}
+                                {% if current_user == group.owner %}
+                                    <li class="dropdown-item">
+                                        <div class="row">
+                                            <div class="col d-flex justify-content-start">
+                                                {{ name }}
+                                            </div>
+    
+                                            <div class="col d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-danger btn-sm" name="del_friend" value="{{ id }}">Usuń</button>
+                                            </div>
                                         </div>
-
-                                        <div class="col d-flex justify-content-end">
-                                            <button class="btn btn-danger btn-sm">Usuń</button>
-                                        </div>
-                                    </div>
-                                </li>
-                            {% else %}
-                                <li class="dropdown-item">{{ friend }}</li>
-                            {% endif %}
-                        {% empty %}
-                            <li class="dropdown-item">pusto</li>
-                        {% endfor %}
+                                    </li>
+                                {% else %}
+                                    <li class="dropdown-item">{{ friend }}</li>
+                                {% endif %}
+                            {% empty %}
+                                <li class="dropdown-item">pusto</li>
+                            {% endfor %}
+                        </form>
                     </ul>
 
             <button class="btn btn-danger btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">Dodaj wydatek</button>
@@ -66,7 +69,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form method="post"  action="{% url 'my_apps:split_group' group.id %}">
+            <form method="post" action="{% url 'my_apps:split_group' group.id %}">
                 <div class="modal-body">
                         {% csrf_token %}
                         {% for friend in friend_list %}

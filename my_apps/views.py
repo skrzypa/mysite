@@ -605,6 +605,7 @@ def split_group(request, group_id):
     group = AddExpenseGroup.objects.get(id= group_id)
     expenses = AddExpense.objects.all().filter(expense_id= group_id)
     invited_friend_to_group = AddFriendToExpenseGroup.objects.all().filter(expense_id= group_id).values_list("invited_to_group_friend__username", flat= True)
+    invited_friend_to_group_dict = {str(name): User.objects.get(username= name).id for name in invited_friend_to_group}
 
     # sprawdzamy czy użytkownik jest właścicielem grupy lub na liście zaproszonym do niej
     if str(current_user) not in invited_friend_to_group and current_user != group.owner:
@@ -632,12 +633,27 @@ def split_group(request, group_id):
                                                     )
                     invited_model.save()
             return redirect(to= 'my_apps:split_group', group_id= group_id)
+        
+        if "del_friend" in request.POST:
+
+            if request.user != current_user:
+                # print(request.user == current_user, str(request.user) == current_user) # True, False
+                raise Http404
+            
+            friend_to_del_id = int(request.POST["del_friend"])
+            friend_to_del = AddFriendToExpenseGroup.objects.get(expense_id = group_id, invited_to_group_friend= friend_to_del_id)
+            print(friend_to_del)
+
+            friend_to_del.delete()
+
+            return redirect(to= 'my_apps:split_group', group_id= group_id)
+
 
 
     context = {"group": group,
                "expenses": expenses,
                "friend_list": friend_list,
-               "invited_friend_to_group": invited_friend_to_group,
+               "invited_friend_to_group_dict": invited_friend_to_group_dict,
                "current_user": current_user,
             }
 
