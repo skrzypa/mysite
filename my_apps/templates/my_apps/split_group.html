@@ -11,8 +11,9 @@
         </div>
 
         <div class="btn">
-            {% if current_user == group.owner %}
-                <button class="btn btn-success btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;"data-bs-toggle="modal" data-bs-target="#add_friend">Zaproś znajomych</button>
+            {% if current_user == group_owner %}
+                <button class="btn btn-success btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;" 
+                    data-bs-toggle="modal" data-bs-target="#add_friend">Zaproś znajomych</button>
             {% endif %}
 
             <button class="btn btn-primary btn-sm dropdown-toggle" style="margin-top: 0.5rem; margin-bottom: 0.5rem;" 
@@ -21,34 +22,42 @@
             </button>
             
                     <ul class="dropdown-menu">
-                        <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
-                            {% csrf_token %}
-                            {% for name, id in invited_friend_to_group_dict.items %}
-                                {% if current_user == group.owner %}
+                        {% for id, name in invited_friend_to_group_dict.items %}
+                            {% if current_user == group_owner %}
+                                <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
+                                    {% csrf_token %}
                                     <li class="dropdown-item">
                                         <div class="row">
                                             <div class="col d-flex justify-content-start">
                                                 {{ name }}
                                             </div>
-    
-                                            <div class="col d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-danger btn-sm" name="del_friend" value="{{ id }}">Usuń</button>
-                                            </div>
+                                            {% if name == group_owner %}
+                                            {% else %}
+                                                <div class="col d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-danger btn-sm" name="del_friend" value="{{ id }}">Usuń</button>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </li>
-                                {% else %}
-                                    <li class="dropdown-item">{{ friend }}</li>
-                                {% endif %}
-                            {% empty %}
-                                <li class="dropdown-item">pusto</li>
-                            {% endfor %}
-                        </form>
+                                </form>
+                            {% else %}
+                                <li class="dropdown-item">{{ name }}</li>
+                            {% endif %}
+                        {% empty %}
+                            <li class="dropdown-item">pusto</li>
+                        {% endfor %}
                     </ul>
 
-            <button class="btn btn-danger btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">Dodaj wydatek</button>
+            <button class="btn btn-danger btn-sm" style="margin-top: 0.5rem; margin-bottom: 0.5rem;"
+                data-bs-toggle="modal" data-bs-target="#add_expense">Dodaj wydatek</button>
         </div>
 
         <div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
         </div>
 
 
@@ -62,34 +71,110 @@
 
 {#} Modal dla przycisku Zaproś znajomych {#}
 <div class="modal fade" id="add_friend" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content text-dark">
+
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Lista znajomych</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form method="post" action="{% url 'my_apps:split_group' group.id %}">
-                <div class="modal-body">
-                        {% csrf_token %}
-                        {% for friend in friend_list %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="friends" value="{{ friend.id }}" id="friend{{ friend.id }}">
-                                    <label class="form-check-label" for="friend{{ friend.id }}">{{ friend }}</label>
-                                </div>
-                        {% endfor %}
-                </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
+                    {% csrf_token %}
+                    {% for friend in friend_list %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="friends" value="{{ friend.id }}" id="friend{{ friend.id }}">
+                            <label class="form-check-label" for="friend{{ friend.id }}">{{ friend }}</label>
+                        </div>
+                    {% endfor %}
 
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-sm" name="invite_to_group">Zaproś</button>
-                </div>
-            </form>
+                    <div class="d-flex justify-content-end" style="margin-top: 1rem;">
+                        <button type="submit" class="btn btn-success btn-sm" name="invite_to_group">Zaproś</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>
 
 
+{#} Modal dla przycisku Nowego Wydatku {#}
+<div class="modal fade" id="add_expense" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content text-dark">
 
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj wydatek</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="input-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem; ">
+                        <span class="input-group-text" id="basic-addon1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
+                                <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"/>
+                                <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </span>
+
+                        <input type="text" class="form-control" id="expense_price" name="expense_title"
+                                style="padding: 0;">
+                    </div>
+
+                    <div class="input-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem; ">
+                        <span class="input-group-text" id="basic-addon1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cash" viewBox="0 0 16 16">
+                                <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                <path d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2H3z"/>
+                            </svg>
+                        </span>
+
+                        <input type="text" pattern="\d*" class="form-control" id="expense_price" name="expense_price"
+                                    style="padding: 0;">
+                    </div>
+
+                    <div>
+                        {% for id, name in invited_friend_to_group_dict.items %}
+                            <div class="form-check">
+                                {% if name == current_user %}
+                                    <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}" checked>
+                                
+                                {% else %}
+                                    <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}">
+                                {% endif %}
+
+                                <label class="form-check-label" for="add_friend_to_expense{{ id }}">{{ name }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-end" style="margin-top: 1rem;">
+                        <button class="btn btn-sm btn-primary" style="margin-left: 0.5rem;"
+                            name="equal" id="equal">
+                            Równo
+                        </button>
+
+                        <button class="btn btn-sm btn-success" style="margin-left: 0.5rem;"
+                            name="unequal" id="unequal">
+                            Nierówno
+                        </button>
+
+                        <button class="btn btn-sm btn-warning" style="margin-left: 0.5rem;"
+                            name="percentage" id="percentage">
+                            Procentowo
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 
 
 {% endblock content %}
