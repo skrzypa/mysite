@@ -612,14 +612,15 @@ def split_group(request, group_id):
     users = User.objects
     add_friend_to_expense_group = AddFriendToExpenseGroup.objects
     add_expense_group = AddExpenseGroup.objects
+    friendship = Friendship.objects
+    add_expense = AddExpense.objects
     
-    group_owner = add_expense_group.get(id= group_id)
-    group_owner_name = str(group_owner.owner)
+    group = add_expense_group.get(id= group_id)
+    group_owner_name = str(group.owner)
     group_owner_id = users.get(username= group_owner_name).id
     # print(group_owner_name, group_owner_id)
 
-    group = add_expense_group.get(id= group_id)
-    expenses = AddExpense.objects.all().filter(expense_id= group_id)
+    expenses = add_expense.all().filter(expense_id= group_id)
     invited_friend_to_group = add_friend_to_expense_group.all().filter(expense_id= group_id).values_list("invited_to_group_friend__username", flat= True)
     
     invited_friend_to_group_dict = {users.get(username= name).id: str(name) for name in invited_friend_to_group}
@@ -630,7 +631,7 @@ def split_group(request, group_id):
     if str(current_user) not in invited_friend_to_group and current_user != group.owner:
         raise Http404
 
-    friend_list = [friend.to_friend for friend in Friendship.objects.all().filter(from_friend= current_user)]
+    friend_list = [friend.to_friend for friend in friendship.all().filter(from_friend= current_user)]
 
     if request.method != "POST":
         pass
@@ -643,7 +644,7 @@ def split_group(request, group_id):
                 # print(friend_id, User.objects.get(id= friend_id))
                 # print(invited_friend_to_group)
                 
-                if str(User.objects.get(id= friend_id)) in invited_friend_to_group:
+                if str(users.get(id= friend_id)) in invited_friend_to_group:
                     pass
 
                 else:
@@ -688,6 +689,17 @@ def split_group(request, group_id):
             else:   # zapisać aby model?
                 expense_price = round(float(expense_price), 2)
                 # print(expense_title, expense_price, round(expense_price / len(equal_dict), 2))
+            return redirect(to= 'my_apps:split_group', group_id= group_id)
+
+        elif "edit_title" in request.POST:
+            if request.user != current_user:
+                raise Http404
+            
+            new_title = request.POST["edit_title"]
+            print(new_title)
+            save_title = add_expense_group.get(id= group_id)
+            save_title.expense_title = new_title
+            save_title.save()
             return redirect(to= 'my_apps:split_group', group_id= group_id)
 
 
