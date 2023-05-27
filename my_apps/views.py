@@ -729,7 +729,12 @@ def split_group(request, group_id):
         elif "equal"  in request.POST:
             get_equal_list = request.POST.getlist('add_friend_to_expense')  # pobieramy id zaznaczonych użytkowników
             expense_title = str(request.POST.get('expense_title'))
-            expense_price = str(request.POST.get('expense_price'))
+
+            try:
+                expense_price = float(request.POST.get('expense_price'))
+            except ValueError:
+                messages.warning(request, "Zła wartość")
+                return redirect(to= request.get_full_path(), group_id= group_id)
             # print(get_equal_list, len(get_equal_list))
 
             equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_list}

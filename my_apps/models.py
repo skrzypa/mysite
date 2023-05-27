@@ -168,7 +168,7 @@ class Friendship(models.Model):
 class AddExpenseGroup(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete= models.CASCADE)
-    expense_title = models.CharField(max_length= 25, default= "")
+    expense_title = models.CharField(max_length= 100, default= "")
     status = models.CharField(max_length=15, default="Brak wydatków")
 
     date_added = models.DateTimeField(auto_now_add= True)

@@ -1,5 +1,5 @@
 # mysite
-## Several web applications in Django, including a meeting planner with friends
+## Several web applications in Django, including a meeting planner with friends and a split bills aplication
 
 Django 4.1.7  
 django-bootstrap-v5 1.0.11  
