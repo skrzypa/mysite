@@ -607,29 +607,83 @@ def add_expense_group(request):
 
 
 def split_group(request, group_id):
+    
+    # tworzymy zmiennie wykorzystywane potem w funkcji
     current_user = request.user
+    current_user_id = request.user.id
     # print(current_user, current_user.id) # skrzypa 1
     users = User.objects
     add_friend_to_expense_group = AddFriendToExpenseGroup.objects
     add_expense_group = AddExpenseGroup.objects
     friendship = Friendship.objects
     add_expense = AddExpense.objects
+    add_friend_to_expense = AddFriendToExpense.objects
     
     group = add_expense_group.get(id= group_id)
     group_owner_name = str(group.owner)
     group_owner_id = users.get(username= group_owner_name).id
     # print(group_owner_name, group_owner_id)
 
-    expenses = add_expense.all().filter(expense_id= group_id)
-    invited_friend_to_group = add_friend_to_expense_group.all().filter(expense_id= group_id).values_list("invited_to_group_friend__username", flat= True)
-    
+    # wyszukujemy wydatki dla określonej grupy
+    expenses = add_expense.all().filter(expense_group_id= group_id).order_by("-date_added")
+
+    # tworzymy słownik osób zaproszonych do grupy
+    invited_friend_to_group = add_friend_to_expense_group.all().filter(expense_group_id= group_id).values_list("invited_to_group_friend__username", flat= True)
     invited_friend_to_group_dict = {users.get(username= name).id: str(name) for name in invited_friend_to_group}
     invited_friend_to_group_dict[group_owner_id] = group_owner_name
 
-
+    
     # sprawdzamy czy użytkownik jest właścicielem grupy lub na liście zaproszonym do niej
     if str(current_user) not in invited_friend_to_group and current_user != group.owner:
         raise Http404
+
+    # łączymy listę wydatków oraz osób do niech zaprosznych w jeden słownik
+    full_expenses = []
+    for exp in expenses:
+        full = {}
+        full['creator'] = exp.creator
+        full['expense_group_id'] = exp.expense_group_id.id
+        full['id'] = exp.id
+        full['decription'] = exp.decription
+        full['repaid'] = exp.repaid
+        full['price'] = exp.price
+        full['add_friend_to_expense'] = []
+        for friend in add_friend_to_expense.filter(expense_id= exp.id):
+            fr = {}
+            fr['username'] = friend.invited_to_expense_friend.username
+            fr['user_id'] = users.get(username= friend.invited_to_expense_friend.username).id
+            fr['amount'] = friend.amount
+            fr['to_repayment'] = friend.to_repayment
+            full['add_friend_to_expense'].append(fr)
+
+        full_expenses.append(full)
+
+
+        # print(exp.creator)
+        # print(exp.expense_group_id)
+        # print(exp.decription)
+        # print(exp.price)
+        # for friend in add_friend_to_expense.filter(expense_id= exp.id):
+        #     print("\t", friend.invited_to_expense_friend.username, users.get(username= friend.invited_to_expense_friend.username).id, friend.amount, friend.to_repayment)
+        # for i in full_expenses:
+        #     print("\n", i)
+
+            
+
+    # sprawdzamy sumę wszystkich wydatków
+    sum_expenses = list(add_friend_to_expense.all().filter(expense_group_id= group_id).values_list("to_repayment", flat= True))
+    sum_expenses = round(sum(sum_expenses), 2)
+
+    sum_amount = list(add_friend_to_expense.all().filter(expense_group_id= group_id).values_list("amount", flat= True))
+    sum_amount = round(sum(sum_amount), 2)
+
+    # status = add_expense_group.get(id= group_id)
+    # print(status.status)
+    if sum_expenses == 0.0:
+        status = add_expense_group.get(id= group_id)
+        status.status = "Spłacona"
+        status.save()
+
 
     friend_list = [friend.to_friend for friend in friendship.all().filter(from_friend= current_user)]
 
@@ -649,11 +703,11 @@ def split_group(request, group_id):
 
                 else:
                     invited_friend = users.get(id= friend_id)
-                    invited_model = AddFriendToExpenseGroup(expense= group, 
+                    invited_model = AddFriendToExpenseGroup(expense_group_id= group, 
                                                         invited_to_group_friend= invited_friend,
                                                     )
                     invited_model.save()
-            return redirect(to= 'my_apps:split_group', group_id= group_id)
+            return redirect(to= request.get_full_path(), group_id= group_id)
         
         if "del_friend" in request.POST:
             
@@ -661,14 +715,16 @@ def split_group(request, group_id):
                 # print(request.user == current_user, str(request.user) == current_user) # True, False
                 raise Http404
             
-            else:
-                friend_to_del_id = int(request.POST["del_friend"])
-                friend_to_del = add_friend_to_expense_group.get(expense_id = group_id, invited_to_group_friend= friend_to_del_id)
-                # print(friend_to_del)
+            
+            friend_to_del_id = int(request.POST["del_friend"])
+            friend_to_del = add_friend_to_expense_group.get(expense_group_id = group_id, invited_to_group_friend= friend_to_del_id)
+            # print(friend_to_del)
 
-                friend_to_del.delete()
+            friend_to_del.delete()
 
-                return redirect(to= 'my_apps:split_group', group_id= group_id)
+            # GDY USUNIEMY ZNAJOMEGO Z LISTY NALEŻY USUNĄĆ GO RÓWNIEŻ Z ADD_FRIEND_TO_EXPENSE I ZMIENIĆ POZOSTAŁYM KWOTY
+
+            return redirect(to= request.get_full_path(), group_id= group_id)
 
         elif "equal"  in request.POST:
             get_equal_list = request.POST.getlist('add_friend_to_expense')  # pobieramy id zaznaczonych użytkowników
@@ -676,7 +732,9 @@ def split_group(request, group_id):
             expense_price = str(request.POST.get('expense_price'))
             # print(get_equal_list, len(get_equal_list))
 
-            equal_dict = {users.get(id= user).username: users.get(id= user).id  for user in get_equal_list}
+            equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_list}
+            avg = round(float(expense_price) / len(equal_dict), 2)
+            rest = round(float(expense_price) - avg * len(equal_dict), 2)
             # print(equal_dict, len(equal_dict))
 
             if expense_title == "" and expense_price == "":
@@ -686,32 +744,95 @@ def split_group(request, group_id):
             elif expense_price == "": 
                 messages.warning(request, "Podaj cenę")
             
-            else:   # zapisać aby model?
-                expense_price = round(float(expense_price), 2)
+            else: 
+
+                # print(f"\nTytuł wydatku: {expense_title}\nKwota: {expense_price}\nID grupy: {group_id}\nTytuł grupy: {add_expense_group.get(id= group_id).expense_title}\nCreator: {current_user_id}\n")
                 # print(expense_title, expense_price, round(expense_price / len(equal_dict), 2))
-            return redirect(to= 'my_apps:split_group', group_id= group_id)
+
+                expense_group = add_expense_group.get(id= group_id)
+                new_expense = AddExpense(creator = current_user,
+                                        expense_group_id = expense_group,
+                                        decription = expense_title,
+                                        price = expense_price,
+                                        repaid= expense_price,
+                                        )
+                new_expense.save()
+
+                # dodajemy wydatek, należy więc zmienić status grupy
+                expense_group.status = "Nie spłacona"
+                expense_group.save()
+
+
+                for user in equal_dict.items():
+                    user_id = user[0]
+                    user = users.get(id= user_id)
+                    # print(user_id, user_name, avg)
+                    if current_user == user:
+                        avg += rest
+                    add_friend = AddFriendToExpense(expense_id= new_expense,
+                                                    expense_group_id = expense_group,
+                                                    invited_to_expense_friend= user,
+                                                    amount= avg,
+                                                    to_repayment= avg,)
+                    add_friend.save()
+            return redirect(to= request.get_full_path(), group_id= group_id)
 
         elif "edit_title" in request.POST:
             if request.user != current_user:
                 raise Http404
             
             new_title = request.POST["edit_title"]
-            print(new_title)
+            # print(new_title)
             save_title = add_expense_group.get(id= group_id)
             save_title.expense_title = new_title
             save_title.save()
-            return redirect(to= 'my_apps:split_group', group_id= group_id)
+            return redirect(to= request.get_full_path(), group_id= group_id)
 
+        elif "to_repayment" in request.POST:
+            to_repayment: str = request.POST["to_repayment"]
+            to_repayment = to_repayment.split(sep=",")
+
+            expense_to_repayment_id = to_repayment[0]
+            user_to_repayment_id = to_repayment[1]
+            user_to_repayment = to_repayment[2]
+
+            # pobieramy wpisy z bazy danych
+            expense_friend = add_friend_to_expense.get(expense_id_id= expense_to_repayment_id, invited_to_expense_friend= user_to_repayment_id)
+            expense = add_expense.get(id= expense_to_repayment_id)
+
+            # edytujemy wpisy w bazie danych
+            expense_friend.to_repayment = 0.0
+            expense_friend.save()
+
+            expense.repaid = float(expense.repaid) - float(user_to_repayment)
+            expense.save()
+
+            # print("1.", expense_to_repayment_id, user_to_repayment_id)
+            # print("2.", expense_friend.to_repayment, expense_friend.amount)
+            # print("3.", users.get(id= user_to_repayment_id))
+            # print("4.", float(expense.repaid) - float(user_to_repayment))
+            # print("5.", expense.repaid)
+            # print("6.", sum_expenses)
+            
+            return redirect(to= request.get_full_path(), group_id= group_id)
 
 
 
     context = {"group": group,
-               "expenses": expenses,
+               "expenses": full_expenses,
                "friend_list": friend_list,
                "invited_friend_to_group_dict": invited_friend_to_group_dict,
                "current_user": str(current_user),
-               "group_owner": group_owner_name
+               "current_user_id": current_user_id,
+               "group_owner": group_owner_name,
+               "sum_expenses": sum_expenses, 
+               "sum_amount": sum_amount,
             }
 
     return render(request, template_name='my_apps/split_group.html', context= context)
 
+
+
+# DO ZROBIENIA
+#         if "del_friend" in request.POST:
+#                 GDY USUNIEMY ZNAJOMEGO Z LISTY NALEŻY USUNĄĆ GO RÓWNIEŻ Z ADD_FRIEND_TO_EXPENSE I ZMIENIĆ POZOSTAŁYM KWOTY

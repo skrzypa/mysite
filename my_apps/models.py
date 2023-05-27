@@ -169,7 +169,7 @@ class AddExpenseGroup(models.Model):
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete= models.CASCADE)
     expense_title = models.CharField(max_length= 25, default= "")
-    status = models.CharField(max_length=15, default="brak wydatków")
+    status = models.CharField(max_length=15, default="Brak wydatków")
 
     date_added = models.DateTimeField(auto_now_add= True)
 
@@ -181,7 +181,7 @@ class AddExpenseGroup(models.Model):
 
 class AddFriendToExpenseGroup(models.Model):
     id = models.AutoField(primary_key=True)
-    expense = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
+    expense_group_id = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
     invited_to_group_friend = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
@@ -193,10 +193,14 @@ class AddFriendToExpenseGroup(models.Model):
 class AddExpense(models.Model):
     id = models.AutoField(primary_key=True)
     creator = models.ForeignKey(User, on_delete= models.CASCADE)
-    expense = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
+    expense_group_id = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
 
     decription = models.CharField(max_length=15, default="wydatek")
     price = models.FloatField(default= 0.0)
+    repaid = models.FloatField(default= 0.0)
+
+    
+    date_added = models.DateTimeField(auto_now_add= True)
 
     def __str__(self):
         return f"{self.creator} add new expense: '{self.decription}'."
@@ -205,13 +209,15 @@ class AddExpense(models.Model):
 
 class AddFriendToExpense(models.Model):
     id = models.AutoField(primary_key=True)
-    expense = models.ForeignKey(AddExpense, on_delete= models.CASCADE)
+    expense_id = models.ForeignKey(AddExpense, on_delete= models.CASCADE)
+    expense_group_id = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
     invited_to_expense_friend = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # proportion or amount
     amount = models.FloatField(default= 0)  
+    to_repayment = models.FloatField(default= 0)  
 
 
     def __str__(self):
-        return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount} PLN"
+        return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount}/{self.to_repayment} PLN. --- {self.expense_id}" 
 

@@ -13,19 +13,22 @@
         </div>
 
         <div style="padding: 0;" class="text-break">
-            {% for group in expense_group_list%}
-                {% if group.owner == current_user or current_user.is_superuser %}
-                    {% if group.owner == current_user%}
+
+            {% for group in expense_group_list %}
+                {% if group.status == "Brak wydatków" %}
+                    <div class="alert alert-warning" role="alert">
+                {% elif group.status == "Nie spłacona" %}
+                    <div class="alert alert-danger" role="alert">
+                {% else %}
                     <div class="alert alert-success" role="alert">
-                    {% else %}
-                    <div class="alert alert-primary" role="alert">
-                    {% endif %}
+                {% endif %}
+
+                {% if group.owner == current_user or current_user.is_superuser %}
                         <button class="btn btn-danger btn-sm"
                             data-bs-toggle="modal" data-bs-target="#del_group{{ group.id }}">Usuń
                         </button>
-                {% else %}       
-                    <div class="alert alert-primary" role="alert">
                 {% endif %} 
+                
                         <a href="{% url 'my_apps:split_group' group.id %}">
                             <button class="btn btn-primary btn-sm">Otwórz</button>
                         </a>

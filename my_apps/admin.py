@@ -13,3 +13,26 @@ admin.site.register(InvitedToEventModel, InvitedToEventModelAdmin)
 
 
 admin.site.register(Friendship)
+
+
+
+class AddExpenseGroupAdmin(admin.ModelAdmin):
+    list_display = ['id', 'owner', 'expense_title', 'status', 'date_added']
+admin.site.register(AddExpenseGroup, AddExpenseGroupAdmin)
+
+
+
+class AddFriendToExpenseGroupAdmin(admin.ModelAdmin):
+    list_display = ['id', 'expense_group_id', 'invited_to_group_friend']
+admin.site.register(AddFriendToExpenseGroup, AddFriendToExpenseGroupAdmin)
+
+
+
+class AddExpenseAdmin(admin.ModelAdmin):
+    list_display = ['id', 'creator', 'expense_group_id', 'decription', 'price', 'repaid', 'date_added']
+admin.site.register(AddExpense, AddExpenseAdmin)
+
+
+class AddFriendToExpenseAdmin(admin.ModelAdmin):
+    list_display = ['id', 'expense_id', 'expense_group_id', 'invited_to_expense_friend', 'amount', 'to_repayment']
+admin.site.register(AddFriendToExpense, AddFriendToExpenseAdmin)
