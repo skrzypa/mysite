@@ -684,8 +684,20 @@ def split_group(request, group_id):
         status.status = "Spłacona"
         status.save()
 
+    # tworzymy listę osób, które są w już dodane do jakiegoś wydatku
+    people_in_expense = add_friend_to_expense.filter(expense_group_id= group_id)
+    people_in_expense = people_in_expense.values_list("invited_to_expense_friend__username", flat= True)
+    people_in_expense = list(set(people_in_expense))
+    people_in_expense = [str(users.get(username= f).username) for f in people_in_expense]
+
+    people_in_group = add_friend_to_expense_group.filter(expense_group_id= group_id)
+    people_in_group = people_in_group.values_list("invited_to_group_friend__username", flat= True)
+    people_in_group = [users.get(username= f) for f in people_in_group]
+
 
     friend_list = [friend.to_friend for friend in friendship.all().filter(from_friend= current_user)]
+
+    # print(people_in_expense, friend_list, people_in_group)
 
     if request.method != "POST":
         pass
@@ -832,6 +844,8 @@ def split_group(request, group_id):
                "group_owner": group_owner_name,
                "sum_expenses": sum_expenses, 
                "sum_amount": sum_amount,
+               "people_in_expense": people_in_expense,
+               "people_in_group": people_in_group,
             }
 
     return render(request, template_name='my_apps/split_group.html', context= context)

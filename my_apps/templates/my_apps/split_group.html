@@ -54,10 +54,14 @@
                                             {{ name }}
                                         </div>
                                         {% if name == group_owner %}
+                                            {#} Żeby właściciel grupy się nie usunął {#}
                                         {% else %}
-                                            <div class="col d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-danger btn-sm" name="del_friend" value="{{ id }}">Usuń</button>
-                                            </div>
+                                            {% if name in people_in_expense %}
+                                            {% else %}
+                                                <div class="col d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-danger btn-sm" name="del_friend" value="{{ id }}">Usuń</button>
+                                                </div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </li>
@@ -189,10 +193,17 @@
                 <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">
                     {% csrf_token %}
                     {% for friend in friend_list %}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="friends" value="{{ friend.id }}" id="friend{{ friend.id }}">
-                            <label class="form-check-label" for="friend{{ friend.id }}">{{ friend }}</label>
-                        </div>
+                        {% if friend in people_in_group %}
+                            <div class="form-check">
+                                <input class="form-check-input" disabled>
+                                <label class="form-check-label">{{ friend }}</label>
+                            </div>
+                        {% else %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="friends" value="{{ friend.id }}" id="friend{{ friend.id }}">
+                                <label class="form-check-label" for="friend{{ friend.id }}">{{ friend }}</label>
+                            </div>
+                        {% endif %}
                     {% endfor %}
 
                     <div class="d-flex justify-content-end" style="margin-top: 1rem;">
