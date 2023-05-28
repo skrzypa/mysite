@@ -641,7 +641,7 @@ def split_group(request, group_id):
     full_expenses = []
     for exp in expenses:
         full = {}
-        full['creator'] = exp.creator
+        full['creator'] = str(exp.creator)
         full['expense_group_id'] = exp.expense_group_id.id
         full['id'] = exp.id
         full['decription'] = exp.decription
@@ -679,9 +679,13 @@ def split_group(request, group_id):
 
     # status = add_expense_group.get(id= group_id)
     # print(status.status)
-    if sum_expenses == 0.0:
+    if sum_expenses == 0.0 and len(expenses) != 0:
         status = add_expense_group.get(id= group_id)
         status.status = "Spłacona"
+        status.save()
+    elif len(expenses) == 0:
+        status = add_expense_group.get(id= group_id)
+        status.status = "Brak wydatków"
         status.save()
 
     # tworzymy listę osób, które są w już dodane do jakiegoś wydatku
@@ -833,7 +837,13 @@ def split_group(request, group_id):
             
             return redirect(to= request.get_full_path(), group_id= group_id)
 
-
+        elif "del_exp" in request.POST:
+            exp_id = request.POST["del_exp"]
+            # print(exp_id)
+            del_exp = add_expense.get(id= exp_id)
+            # print(del_exp)
+            del_exp.delete()
+            return redirect(to= request.get_full_path(), group_id= group_id)
 
     context = {"group": group,
                "expenses": full_expenses,
