@@ -195,7 +195,7 @@ class AddExpense(models.Model):
     creator = models.ForeignKey(User, on_delete= models.CASCADE)
     expense_group_id = models.ForeignKey(AddExpenseGroup, on_delete= models.CASCADE)
 
-    decription = models.CharField(max_length=15, default="wydatek")
+    description = models.CharField(max_length=15, default="wydatek")
     price = models.FloatField(default= 0.0)
     repaid = models.FloatField(default= 0.0)
 

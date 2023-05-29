@@ -41,7 +41,7 @@ class NewExpenseGroupForm(forms.ModelForm):
 class NewExpenseForm(forms.ModelForm):
     class Meta:
         model = AddExpense
-        fields = ['decription']
-        labels = {'decription': 'Opis'}
-        widgets = {'decription': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+        fields = ['description']
+        labels = {'description': 'Opis'}
+        widgets = {'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
                    'price': forms.FloatField(),}

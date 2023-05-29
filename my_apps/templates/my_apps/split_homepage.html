@@ -3,16 +3,20 @@
 {% block content %}
 
 
-<div class="container border col-10" style="min-height: 45rem;">
-    <div class="row justify-content-center border border-primary">
+<div class="container col-10" style="min-height: 45rem;">
+    <div class="row justify-content-center">
 
-        <div style="padding: 0; margin-bottom: 5rem;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <div style="padding: 0;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <button class="btn btn-success">
                 Dodaj grupę
             </button>
         </div>
 
-        <div style="padding: 0;" class="text-break">
+        <div class="text-center" style="padding: 0; margin-bottom: 2rem; margin-top: 2rem;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <label class="h5 display-6" style="margin: 0rem;">Twoje grupy</label>
+        </div>
+
+        <div style="padding: 0;">
 
             {% for group in expense_group_list %}
                 {% if group.status == "Brak wydatków" %}
@@ -34,7 +38,7 @@
                         </a>
                         <div>
                             <label class="h6">Tytuł:</label>
-                            <label class="h5">{{ group.expense_title }}</label>
+                            <label class="h5 text-break">{{ group.expense_title }}</label>
                         </div>
 
                         <div>

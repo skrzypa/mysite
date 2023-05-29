@@ -29,7 +29,7 @@ admin.site.register(AddFriendToExpenseGroup, AddFriendToExpenseGroupAdmin)
 
 
 class AddExpenseAdmin(admin.ModelAdmin):
-    list_display = ['id', 'creator', 'expense_group_id', 'decription', 'price', 'repaid', 'date_added']
+    list_display = ['id', 'creator', 'expense_group_id', 'description', 'price', 'repaid', 'date_added']
 admin.site.register(AddExpense, AddExpenseAdmin)
 
 

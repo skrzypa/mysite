@@ -18,9 +18,9 @@
             <nav class='navbar navbar-expand-sm navbar-dark'>
                 {% comment %} tu nic nie zmieniaj!!! {% endcomment %}
                 {% if user.is_authenticated %}
-                    <label class="navbar-brand py-2 px-2"><strong>Witaj, {{ user.username }}</strong></label>
+                    <label class="navbar-brand px-2"><strong>Witaj, {{ user.username }}</strong></label>
                 {% else %}
-                    <label class="navbar-brand py-2 px-2"><strong>Witaj</strong></label>
+                    <label class="navbar-brand px-2"><strong>Witaj</strong></label>
                 {% endif %}
 
                 <button class="navbar-toggler" 
@@ -37,24 +37,24 @@
                 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link py-2 px-2" href="{% url 'my_apps:index' %}">Strona główna</a>
+                            <a class="nav-link px-2 border-start" style="padding: 0rem;" href="{% url 'my_apps:index' %}">Strona główna</a>
                         </li>
                         {% if user.is_authenticated %}    
                             <li class="nav-item">
-                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_friends' %}">Lista znajomych</a>
+                                <a class="nav-link px-2 border-start" style="padding: 0rem;" href="{% url 'my_apps:users_friends' %}">Lista znajomych</a>
                             </li>
                             
                             <li class="nav-item">
-                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_log_out' %}">Wyloguj</a>
+                                <a class="nav-link px-2 border-start" style="padding: 0rem;" href="{% url 'my_apps:users_log_out' %}">Wyloguj</a>
                             </li>
 
                         {% else %} 
                             <li class="nav-item">
-                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_log_in' %}">Logowanie</a>
+                                <a class="nav-link px-2 border-start" style="padding: 0rem;" href="{% url 'my_apps:users_log_in' %}">Logowanie</a>
                             </li>
                             
                             <li class="nav-item">
-                                <a class="nav-link py-2 px-2" href="{% url 'my_apps:users_register' %}">Rejestracja</a>
+                                <a class="nav-link px-2 border-start" style="padding: 0rem;" href="{% url 'my_apps:users_register' %}">Rejestracja</a>
                             </li>
                         {% endif %}
                     </ul>

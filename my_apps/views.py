@@ -644,7 +644,7 @@ def split_group(request, group_id):
         full['creator'] = str(exp.creator)
         full['expense_group_id'] = exp.expense_group_id.id
         full['id'] = exp.id
-        full['decription'] = exp.decription
+        full['description'] = exp.description
         full['repaid'] = exp.repaid
         full['price'] = exp.price
         full['add_friend_to_expense'] = []
@@ -661,7 +661,7 @@ def split_group(request, group_id):
 
         # print(exp.creator)
         # print(exp.expense_group_id)
-        # print(exp.decription)
+        # print(exp.description)
         # print(exp.price)
         # for friend in add_friend_to_expense.filter(expense_id= exp.id):
         #     print("\t", friend.invited_to_expense_friend.username, users.get(username= friend.invited_to_expense_friend.username).id, friend.amount, friend.to_repayment)
@@ -775,7 +775,7 @@ def split_group(request, group_id):
                 expense_group = add_expense_group.get(id= group_id)
                 new_expense = AddExpense(creator = current_user,
                                         expense_group_id = expense_group,
-                                        decription = expense_title,
+                                        description = expense_title,
                                         price = expense_price,
                                         repaid= expense_price,
                                         )
@@ -841,7 +841,7 @@ def split_group(request, group_id):
                 expense_group = add_expense_group.get(id= group_id)
                 new_expense = AddExpense(creator = current_user,
                                         expense_group_id = expense_group,
-                                        decription = expense_title,
+                                        description = expense_title,
                                         price = expense_price,
                                         repaid= expense_price,
                                         )
