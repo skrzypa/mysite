@@ -127,7 +127,7 @@
                             <div class="collapse multi-collapse" id="multiCollapseExample{{ exp.id }}">
                                 <div class="card card-body" style="overflow-x: auto;">
 
-                                    <table class="table">
+                                    <table class="table table-striped">
 
                                         <thead>
                                             <tr>
@@ -155,13 +155,13 @@
                                                         <th style="padding: 0rem;">
                                                             <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">    
                                                                 {% csrf_token %}
-                                                                <button class="btn btn-primary btn-sm" style="margin: 0.3rem" name="to_repayment" value="{{ exp.id }},{{ user.user_id }},{{ user.to_repayment }}">Spłać</button>
+                                                                <button class="btn btn-primary btn-sm" style="margin: 0.3rem; width: 100%;" name="to_repayment" value="{{ exp.id }},{{ user.user_id }},{{ user.to_repayment }}">Spłać</button>
                                                             </form>
                                                         </th>
                                                     {% endif %}
                                                     {% if current_user == user.username and user.to_repayment == 0.0 %}
                                                         <th style="padding: 0rem;">
-                                                            <button class="btn btn-success btn-sm" style="margin: 0.3rem" disabled>Spłacone</button>
+                                                            <button class="btn btn-success btn-sm" style="margin: 0.3rem; width: 100%;" disabled>Spłacone</button>
                                                         </th>
                                                     {% endif %}
                                                 </tr>
@@ -245,7 +245,7 @@
 
 {#} Modal dla przycisku Nowego Wydatku {#}
 <div class="modal fade" id="add_expense" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content text-dark">
 
             <div class="modal-header">
@@ -265,7 +265,7 @@
                             </svg>
                         </span>
 
-                        <input type="text" class="form-control" id="expense_price" name="expense_title" style="padding: 0;">
+                        <input type="text" class="form-control" id="expense_title" name="expense_title" style="padding: 0;">
                     </div>
 
                     <div class="input-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem; ">
@@ -279,33 +279,54 @@
                         <input type="text" step="0.01" min="0" class="form-control" id="expense_price" name="expense_price" style="padding: 0;">
                     </div>
 
-                    <div>
-                        {% for id, name in invited_friend_to_group_dict.items %}
-                            <div class="form-check">
-                                {% if name == current_user %}
-                                    <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}" checked>
-                                
-                                {% else %}
-                                    <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}">
-                                {% endif %}
+                    <div style="overflow: scroll; max-height: 15rem; margin-top: 2rem; margin-bottom: 2rem;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <td colspan="2">Zaproś</td>
+                                    <td>Nierówny podział</td>
+                                </tr>
+                            </thead>
 
-                                <label class="form-check-label" for="add_friend_to_expense{{ id }}">{{ name }}</label>
-                            </div>
-                        {% endfor %}
+                            <tbody>
+                                {% for id, name in invited_friend_to_group_dict.items %}
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="form-check" style="margin-bottom: 0rem;">
+                                            {% if name == current_user %}
+                                                <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}" data-target="unequal_amount{{ id }}" checked>
+                                            
+                                            {% else %}
+                                                <input class="form-check-input" type="checkbox" name="add_friend_to_expense" value="{{ id }}" id="add_friend_to_expense{{ id }}" data-target="unequal_amount{{ id }}">
+                                            {% endif %}
+            
+                                            <label class="form-check-label" for="add_friend_to_expense{{ id }}">{{ name }}</label>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        {% if name == current_user %}
+                                        <input name="unequal_amount" id="unequal_amount{{ id }}">
+                                        {% else %}
+                                            <input name="unequal_amount" id="unequal_amount{{ id }}" disabled>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="d-flex justify-content-end" style="margin-top: 1rem;">
-                        <button class="btn btn-sm btn-primary" style="margin-left: 0.5rem;"
-                            name="equal" id="equal">
+                        <button class="btn btn-sm btn-primary" style="margin-left: 0.5rem;" name="equal" id="equal">
                             Równo
                         </button>
 
-                        <button class="btn btn-sm btn-success" style="margin-left: 0.5rem;"
-                            name="unequal" id="unequal">
+                        <button class="btn btn-sm btn-success" style="margin-left: 0.5rem;" name="unequal" id="unequal">
                             Nierówno
                         </button>
-
                     </div>
+
                 </div>
             </form>
 
@@ -316,7 +337,7 @@
 
 {#} Modal dla przycisku Edytuj tytuł {#}
 <div class="modal fade" id="edit_title" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content text-dark">
 
             <div class="modal-header">
@@ -345,4 +366,18 @@
 </div>
 
 
+<script>
+    const formChecks = document.querySelectorAll('.form-check-input');
+    formChecks.forEach(function(formCheck) {
+        formCheck.addEventListener('change', function() {
+            const inputField = formCheck.closest('tr').querySelector('input[name="unequal_amount"]');
+            if (formCheck.checked) {
+                inputField.removeAttribute('disabled');
+            } 
+            else {
+                inputField.setAttribute('disabled', 'disabled');
+            }
+        });
+    });
+  </script>
 {% endblock content %}

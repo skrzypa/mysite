@@ -743,17 +743,19 @@ def split_group(request, group_id):
             return redirect(to= request.get_full_path(), group_id= group_id)
 
         elif "equal"  in request.POST:
-            get_equal_list = request.POST.getlist('add_friend_to_expense')  # pobieramy id zaznaczonych użytkowników
+            get_equal_friend = request.POST.getlist('add_friend_to_expense')  # pobieramy id zaznaczonych użytkowników
             expense_title = str(request.POST.get('expense_title'))
+            expense_price = request.POST.get('expense_price')
 
             try:
-                expense_price = float(request.POST.get('expense_price'))
+                expense_price: str = expense_price.replace(",", ".")
+                expense_price = float(expense_price)
             except ValueError:
                 messages.warning(request, "Zła wartość")
                 return redirect(to= request.get_full_path(), group_id= group_id)
-            # print(get_equal_list, len(get_equal_list))
+            # print(get_equal_friend, len(get_equal_friend))
 
-            equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_list}
+            equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_friend}
             avg = round(float(expense_price) / len(equal_dict), 2)
             rest = round(float(expense_price) - avg * len(equal_dict), 2)
             # print(equal_dict, len(equal_dict))
@@ -763,7 +765,7 @@ def split_group(request, group_id):
             elif expense_title == "":
                 messages.warning(request, "Podaj tytuł")
             elif expense_price == "": 
-                messages.warning(request, "Podaj cenę")
+                messages.warning(request, "Podaj kwotę")
             
             else: 
 
@@ -790,12 +792,78 @@ def split_group(request, group_id):
                     # print(user_id, user_name, avg)
                     if current_user == user:
                         avg += rest
+                        avg = round(avg, 2)
                     add_friend = AddFriendToExpense(expense_id= new_expense,
                                                     expense_group_id = expense_group,
                                                     invited_to_expense_friend= user,
                                                     amount= avg,
                                                     to_repayment= avg,)
                     add_friend.save()
+            return redirect(to= request.get_full_path(), group_id= group_id)
+
+        elif "unequal" in request.POST:
+            expense_title = str(request.POST.get('expense_title'))
+            expense_price = request.POST.get('expense_price')
+            get_unequal_friend: list = request.POST.getlist("add_friend_to_expense")  # pobieramy id zaznaczonych użytkowników
+            get_unequal_amount: list = request.POST.getlist("unequal_amount")
+
+            try:
+                expense_price: str = expense_price.replace(",", ".")
+                expense_price = float(expense_price)
+            except ValueError:
+                messages.warning(request, "Zła wartość podanej kwoty")
+                return redirect(to= request.get_full_path(), group_id= group_id)
+            
+            try:
+                get_unequal_amount = [float(amount.replace(",", ".")) for amount in get_unequal_amount]
+            except ValueError:
+                messages.warning(request, "Zła wartość kwoty do podziału lub nie została ona podana")
+                return redirect(to= request.get_full_path(), group_id= group_id)
+            
+            sum_unequal = round(sum(get_unequal_amount), 2)
+            
+
+            
+            # print([(users.get(id= i), j) for i, j in zip(get_unequal_friend, get_unequal_amount)])
+            # print(sum_unequal, expense_price, sum_unequal == expense_price)
+
+
+            if expense_title == "" and expense_price == "":
+                messages.warning(request, "Podaj tytuł i kwotę")
+            elif expense_title == "":
+                messages.warning(request, "Podaj tytuł")
+            elif expense_price == "": 
+                messages.warning(request, "Podaj kwotę")
+            elif sum_unequal != expense_price: 
+                messages.warning(request, "Podana kwota nie równa się sumie rozdzielonych należności")
+
+            else:
+                expense_group = add_expense_group.get(id= group_id)
+                new_expense = AddExpense(creator = current_user,
+                                        expense_group_id = expense_group,
+                                        decription = expense_title,
+                                        price = expense_price,
+                                        repaid= expense_price,
+                                        )
+                new_expense.save()
+
+                #dodajemy wydatek, należy więc zmienić status grupy
+                expense_group.status = "Nie spłacona"
+                expense_group.save()
+
+                for user_id, amount in zip(get_unequal_friend, get_unequal_amount):
+                    user = users.get(id= user_id)
+                    print(user, amount)
+
+                    add_friend = AddFriendToExpense(expense_id= new_expense,
+                                                    expense_group_id = expense_group,
+                                                    invited_to_expense_friend= user,
+                                                    amount= amount,
+                                                    to_repayment= amount,)
+                    add_friend.save()
+
+            
+
             return redirect(to= request.get_full_path(), group_id= group_id)
 
         elif "edit_title" in request.POST:
@@ -861,7 +929,3 @@ def split_group(request, group_id):
     return render(request, template_name='my_apps/split_group.html', context= context)
 
 
-
-# DO ZROBIENIA
-#         if "del_friend" in request.POST:
-#                 GDY USUNIEMY ZNAJOMEGO Z LISTY NALEŻY USUNĄĆ GO RÓWNIEŻ Z ADD_FRIEND_TO_EXPENSE I ZMIENIĆ POZOSTAŁYM KWOTY
