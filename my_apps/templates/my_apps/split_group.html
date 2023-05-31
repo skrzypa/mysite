@@ -83,11 +83,56 @@
             {% endif %}
         </div>
 
+        <div style="margin-top: 2rem">
+            <div class="h4 text-center" style="margin-top: 1rem;">Podsumowanie</div>
+            <div style="overflow-x: auto;">
+                <table class="table table-light table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th colspan="3">
+                                <div class="h4">Do spłaty: {{ sum_expenses }} / {{ sum_amount }} PLN</div>
+                            </th>
+                        </tr>  
+    
+                        <tr colspan="">
+                            <th>
+                                <div>Użytkownik</div>
+                            </th>
+                            
+                            <th>
+                                <div>Kwota</div>
+                            </th>
+                            
+                            <th>
+                                <div>Komu</div>
+                            </th>
+                        </tr>                
+                    </thead>
+    
+                    <tbody>
+                        {% for creator, debtors in all_expenses_summary.items %}
+                            {% for debtor, amount in debtors.items %}
+                                {% if creator == current_user %}
+                                <tr class="table-success">
+                                {% endif %}
+    
+                                {% if debtor == current_user %}
+                                <tr class="table-danger">
+                                {% endif %}
+                                    <th>{{ debtor }}</th>
+                                    <th>{{ amount }}</th>
+                                    <th>{{ creator }}</th>
+                                </tr>
+                            {% endfor %}
+                            {% empty %}
+                        {% endfor %}
+                    </tdoby>
+                </table>
+            </div>
+        </div>
+        
         <div>
-            {% if expenses is not empty %}
-                <div class="h4" style="margin-top: 1.5rem; margin-bottom: 2rem;">Do spłaty: {{ sum_expenses }} / {{ sum_amount }} PLN</div>
-            {% endif %}
-            
+            <div class="h4 text-center" style="margin-top: 1rem;">Wydatki</div>
             {% for exp in expenses %}
                 {% if exp.repaid == 0.0 %}
                     <div class="alert alert-success" role="alert">
@@ -189,7 +234,7 @@
 
                     <div>
                         <label>Utworzono:</label>
-                        <label>{{ group.date_added }}</label>
+                        <label>{{ exp.date_added }}</label>
                     </div>
                 </div>
             {% empty %}

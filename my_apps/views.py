@@ -554,16 +554,22 @@ def add_expense_group(request):
     # for i in friend_list:
     #     print(i)
 
-    expense_group_list = AddExpenseGroup.objects.all()
-    invited_to_group = AddFriendToExpenseGroup.objects.all()
+    expense_group_list = AddExpenseGroup.objects.all().order_by("-date_added")
+    invited_to_group_all = AddFriendToExpenseGroup.objects.all()
 
     my_expense_group_list = []
-    for group in expense_group_list.order_by("-date_added"):
-        invited_to_group = invited_to_group.values_list("invited_to_group_friend__username", flat=True)
-        # print(invited_to_group, group.expense_title, group.id)
+    for group in expense_group_list:
+        invited_to_group = invited_to_group_all
+        group_id = int(group.id)
+        # print(group_id, type(group_id), group.id, type(group.id), group_id == group.id)
+        invited_to_group = invited_to_group.filter(expense_group_id= group_id).values_list("invited_to_group_friend__username", flat= True)
+        # print(invited_to_group)
+        is_owner = (current_user == group.owner)
+        # print(is_owner)
         
-        if current_user == group.owner or str(current_user) in invited_to_group:
-            # print(group.owner, group.expense_title, group.status, group.date_added.date)
+        if is_owner or str(current_user) in invited_to_group:
+            # print(group.owner, group.expense_title, group.status, group.date_added.date())
+            # print(current_user, str(current_user) in invited_to_group, invited_to_group)
             my_expense_group_list.append(group)
 
  
@@ -576,6 +582,7 @@ def add_expense_group(request):
                 expense_group = form_add_expense_group.save(commit=False)
                 expense_group.expense_title = request.POST["expense_title"]
                 expense_group.owner = current_user
+                expense_group.date_added = datetime.datetime.now()
                 expense_group.save()
 
                 # invited_to_group = request.POST.getlist("friends")
@@ -609,6 +616,7 @@ def add_expense_group(request):
 def split_group(request, group_id):
     
     # tworzymy zmiennie wykorzystywane potem w funkcji
+    # print(type(group_id), group_id)
     current_user = request.user
     current_user_id = request.user.id
     # print(current_user, current_user.id) # skrzypa 1
@@ -647,6 +655,7 @@ def split_group(request, group_id):
         full['description'] = exp.description
         full['repaid'] = exp.repaid
         full['price'] = exp.price
+        full['date_added'] = exp.date_added
         full['add_friend_to_expense'] = []
         for friend in add_friend_to_expense.filter(expense_id= exp.id):
             fr = {}
@@ -703,6 +712,34 @@ def split_group(request, group_id):
 
     # print(people_in_expense, friend_list, people_in_group)
 
+
+    # tworzymy słowniki, które podsumują wszystkie wydatki w danej grupie
+    all_expenses_summary = {}
+    for expense in add_expense.all().filter(expense_group_id= group_id):
+        creator = str(expense.creator)
+        if creator not in all_expenses_summary:
+            all_expenses_summary[creator] = {}
+        # print(f"ID: {expense.id}, Creator: {creator}")
+
+        add_friends = add_friend_to_expense.all().filter(expense_id= expense.id)
+        for friend in add_friends:
+            invited_friend_name = str(friend.invited_to_expense_friend)
+            repayment = float(friend.to_repayment)
+
+            if creator == invited_friend_name:
+                pass
+            
+            elif invited_friend_name not in all_expenses_summary[creator] and repayment != 0.0:
+                    all_expenses_summary[creator][invited_friend_name] = repayment
+
+            elif invited_friend_name in all_expenses_summary[creator] and repayment != 0.0:
+                    all_expenses_summary[creator][invited_friend_name] += repayment
+                    all_expenses_summary[creator][invited_friend_name] = round(all_expenses_summary[creator][invited_friend_name], 2)
+
+    # for k, v in all_expenses_summary.items():
+    #     print(k, v)
+            
+
     if request.method != "POST":
         pass
 
@@ -756,8 +793,6 @@ def split_group(request, group_id):
             # print(get_equal_friend, len(get_equal_friend))
 
             equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_friend}
-            avg = round(float(expense_price) / len(equal_dict), 2)
-            rest = round(float(expense_price) - avg * len(equal_dict), 2)
             # print(equal_dict, len(equal_dict))
 
             if expense_title == "" and expense_price == "":
@@ -768,16 +803,15 @@ def split_group(request, group_id):
                 messages.warning(request, "Podaj kwotę")
             
             else: 
-
                 # print(f"\nTytuł wydatku: {expense_title}\nKwota: {expense_price}\nID grupy: {group_id}\nTytuł grupy: {add_expense_group.get(id= group_id).expense_title}\nCreator: {current_user_id}\n")
                 # print(expense_title, expense_price, round(expense_price / len(equal_dict), 2))
-
                 expense_group = add_expense_group.get(id= group_id)
                 new_expense = AddExpense(creator = current_user,
                                         expense_group_id = expense_group,
                                         description = expense_title,
                                         price = expense_price,
                                         repaid= expense_price,
+                                        date_added = datetime.datetime.now(),
                                         )
                 new_expense.save()
 
@@ -785,14 +819,18 @@ def split_group(request, group_id):
                 expense_group.status = "Nie spłacona"
                 expense_group.save()
 
-
                 for user in equal_dict.items():
-                    user_id = user[0]
-                    user = users.get(id= user_id)
-                    # print(user_id, user_name, avg)
+                    avg = round(expense_price / len(equal_dict), 2)
+                    rest = round(expense_price - avg * len(equal_dict), 2)
+                    # print(avg, rest)
+
+                    user = users.get(id= user[0])
+
                     if current_user == user:
                         avg += rest
-                        avg = round(avg, 2)
+
+                    avg = round(avg, 2)
+                    # print(user, avg, rest)
                     add_friend = AddFriendToExpense(expense_id= new_expense,
                                                     expense_group_id = expense_group,
                                                     invited_to_expense_friend= user,
@@ -844,6 +882,7 @@ def split_group(request, group_id):
                                         description = expense_title,
                                         price = expense_price,
                                         repaid= expense_price,
+                                        date_added = datetime.datetime.now(),
                                         )
                 new_expense.save()
 
@@ -853,7 +892,7 @@ def split_group(request, group_id):
 
                 for user_id, amount in zip(get_unequal_friend, get_unequal_amount):
                     user = users.get(id= user_id)
-                    print(user, amount)
+                    # print(user, amount)
 
                     add_friend = AddFriendToExpense(expense_id= new_expense,
                                                     expense_group_id = expense_group,
@@ -924,6 +963,7 @@ def split_group(request, group_id):
                "sum_amount": sum_amount,
                "people_in_expense": people_in_expense,
                "people_in_group": people_in_group,
+               "all_expenses_summary": all_expenses_summary,
             }
 
     return render(request, template_name='my_apps/split_group.html', context= context)

@@ -27,7 +27,7 @@
                     <div class="alert alert-success" role="alert">
                 {% endif %}
 
-                {% if group.owner == current_user or current_user.is_superuser %}
+                {% if group.owner == current_user %}
                         <button class="btn btn-danger btn-sm"
                             data-bs-toggle="modal" data-bs-target="#del_group{{ group.id }}">Usuń
                         </button>
