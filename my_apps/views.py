@@ -192,7 +192,7 @@ def calendar_generate(request):
     # oblicz % postępy roku
     year_progress = int(datetime.datetime.now().strftime('%j')) * 100
     year_progress = year_progress / (365 + calendar.isleap(int(GenerateCalendar.year_today)))
-    year_progress = round(year_progress, 1)
+    year_progress = f"{round(year_progress, 1)}"
     
     year_choosen = request.POST.get('year_button', GenerateCalendar.year_today)  
 
@@ -235,15 +235,9 @@ def calendar_generate(request):
             del request.session
             return HttpResponseRedirect(reverse('my_apps:meetings_calendar'))
  
-
-    # all_invited_people =    InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen)
-    # all_accepted_people =   InvitedToEventModel.objects.all().filter(accepted_invitation= True).values_list('invited_friend__username', flat=True)
-    # all_declined_peole =    InvitedToEventModel.objects.all().filter(decline_invitation= True).values_list('invited_friend__username', flat=True)
-
     all_events = []
     for event in NewEventModel.objects.all().filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
         
-        # try:
         dict_all_events = {}
         dict_all_events['identifier'] = event.id
         dict_all_events['owner'] = str(event.owner)
@@ -258,11 +252,7 @@ def calendar_generate(request):
         dict_all_events['invited_friend'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
         dict_all_events['accepted_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
         dict_all_events['decline_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
-        # except UnboundLocalError:
-        #     pass
 
-        # print(str(request.user) == str(dict_all_events['invited_friend'].get())) # TRUE!
-        # print(list(dict_all_events['invited_friend']))
         if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
             all_events.append(dict_all_events)
 
@@ -300,14 +290,6 @@ def calendar_generate(request):
                 'all_events':                   all_events,
 
                 'year_progress':                year_progress,
-
-                # 'all_my_own_events':            all_my_own_events,
-                # 'all_my_own_events_number':     len(all_my_own_events),
-                # 'all_shared_event':             all_shared_event,
-                # 'all_shared_event_number':      len(all_shared_event),
-                # 'all_invited_people':           all_invited_people,
-                # 'all_accepted_people':          all_accepted_people,
-                # 'all_declined_peole':           all_declined_peole,
             }
 
     return render(request= request, template_name= 'my_apps/meetings_calendar.html', context= context)
@@ -321,9 +303,6 @@ def new_event(request):
     your_friends_list = [f.to_friend for f in observed_users_list if f.to_friend != current_user]
 
     if request.method != 'POST':
-        # form_title = EventTitleForm()
-        # form_localization = EventLocationForm()
-        # form_details = EventDescriptionForm()
         day = request.GET.get('day')        # GET, bo chcemy odczytać to, nie wysłać
         month = request.GET.get('month')
         year = request.GET.get('year')
@@ -357,10 +336,6 @@ def new_event(request):
 
     context = {     'form_new_event': form_new_event,
                     'your_friends_list': your_friends_list,
-                # 'form_title': form_title,
-                # 'form_localization': form_localization,
-                # 'form_details': form_details,
-                # 'form_date': form_date,
             }
     return render(request=request, template_name='my_apps/meetings_new_event.html', context=context)
 
@@ -413,22 +388,6 @@ def edit_event(request, id):
             friend = InvitedToEventModel.objects.get(event_id= event.id, invited_friend = request.POST['delete_friend_id'])
             friend.delete()
             return HttpResponseRedirect(reverse(f'my_apps:meetings_edit_event', args=[event.id] ))
-        
-
-            # invited_to_event = request.POST.getlist('friends')
-            # # invited_to_event to lista zaznaczonych identyfikatorów zaproszonych przyjaciół
-            # # możesz teraz dodać ich do modelu InvitedToEventModel
-            # for friend_id in invited_to_event:
-            #     invited_friend = User.objects.get(id=friend_id)
-            #     print(invited_friend)
-            #     if invited_friend in invited_friends:
-            #         invited_model = InvitedToEventModel(event= event)
-            #     else:
-            #         invited_model = InvitedToEventModel(event= event, 
-            #                                             invited_friend= invited_friend,
-            #                                             accepted_invitation= False,
-            #                                             decline_invitation= False,)
-            #     invited_model.save()
 
 
 
@@ -507,8 +466,6 @@ def friends(request):
     observed_users_list = Friendship.objects.all().filter(from_friend= current_user)
 
     followed_users = [f.to_friend for f in observed_users_list if f.to_friend != current_user]   # lista zaobserwowanych użytkowników
-    # for i in followed_users:
-    #     print(i)
 
     if request.method == 'POST':
         if 'user_to_observe_id' in request.POST:
@@ -525,8 +482,7 @@ def friends(request):
     context = { 'users_list': users_list,
                 "number_of_users": len(users_list),             
                 'number_of_friends': len(followed_users),    
-                'followed_users': followed_users,             
-                # "":,                    
+                'followed_users': followed_users,  
     }
 
     return render(request, "my_apps/users_friends.html", context= context)
@@ -550,9 +506,6 @@ def delete_observed_user(request, current_user):
 def add_expense_group(request):
     current_user = request.user     # print(current_user, type(request)) # skrzypa <class 'django.core.handlers.wsgi.WSGIRequest'>
 
-    # friend_list = [friend.to_friend for friend in Friendship.objects.all().filter(from_friend= current_user)]
-    # for i in friend_list:
-    #     print(i)
 
     expense_group_list = AddExpenseGroup.objects.all().order_by("-date_added")
     invited_to_group_all = AddFriendToExpenseGroup.objects.all()
@@ -561,15 +514,12 @@ def add_expense_group(request):
     for group in expense_group_list:
         invited_to_group = invited_to_group_all
         group_id = int(group.id)
-        # print(group_id, type(group_id), group.id, type(group.id), group_id == group.id)
+        
         invited_to_group = invited_to_group.filter(expense_group_id= group_id).values_list("invited_to_group_friend__username", flat= True)
-        # print(invited_to_group)
+        
         is_owner = (current_user == group.owner)
-        # print(is_owner)
         
         if is_owner or str(current_user) in invited_to_group:
-            # print(group.owner, group.expense_title, group.status, group.date_added.date())
-            # print(current_user, str(current_user) in invited_to_group, invited_to_group)
             my_expense_group_list.append(group)
 
  
@@ -585,21 +535,14 @@ def add_expense_group(request):
                 expense_group.date_added = datetime.datetime.now()
                 expense_group.save()
 
-                # invited_to_group = request.POST.getlist("friends")
-                # print(invited_to_group)
-                # for friend_id in invited_to_group:
-                #     invited_friend = User.objects.get(id= friend_id)
-                #     invited_model = AddFriendToExpenseGroup(expense= expense_group, 
-                #                                             invited_to_group_friend= invited_friend)
-                #     invited_model.save()
                 return redirect(to= 'my_apps:split_group', group_id= expense_group.id)
         
         
         elif "del_group" in request.POST:
             del_group_id = request.POST["del_group"]
-            # print(del_group_id)
+            
             group_to_del = AddExpenseGroup.objects.get(id= del_group_id)
-            # print(group_to_del)
+            
             group_to_del.delete()
             return redirect(to= 'my_apps:split_homepage')
 
@@ -616,10 +559,9 @@ def add_expense_group(request):
 def split_group(request, group_id):
     
     # tworzymy zmiennie wykorzystywane potem w funkcji
-    # print(type(group_id), group_id)
     current_user = request.user
     current_user_id = request.user.id
-    # print(current_user, current_user.id) # skrzypa 1
+    
     users = User.objects
     add_friend_to_expense_group = AddFriendToExpenseGroup.objects
     add_expense_group = AddExpenseGroup.objects
@@ -630,7 +572,6 @@ def split_group(request, group_id):
     group = add_expense_group.get(id= group_id)
     group_owner_name = str(group.owner)
     group_owner_id = users.get(username= group_owner_name).id
-    # print(group_owner_name, group_owner_id)
 
     # wyszukujemy wydatki dla określonej grupy
     expenses = add_expense.all().filter(expense_group_id= group_id).order_by("-date_added")
@@ -667,16 +608,6 @@ def split_group(request, group_id):
 
         full_expenses.append(full)
 
-
-        # print(exp.creator)
-        # print(exp.expense_group_id)
-        # print(exp.description)
-        # print(exp.price)
-        # for friend in add_friend_to_expense.filter(expense_id= exp.id):
-        #     print("\t", friend.invited_to_expense_friend.username, users.get(username= friend.invited_to_expense_friend.username).id, friend.amount, friend.to_repayment)
-        # for i in full_expenses:
-        #     print("\n", i)
-
             
 
     # sprawdzamy sumę wszystkich wydatków
@@ -686,8 +617,6 @@ def split_group(request, group_id):
     sum_amount = list(add_friend_to_expense.all().filter(expense_group_id= group_id).values_list("amount", flat= True))
     sum_amount = round(sum(sum_amount), 2)
 
-    # status = add_expense_group.get(id= group_id)
-    # print(status.status)
     if sum_expenses == 0.0 and len(expenses) != 0:
         status = add_expense_group.get(id= group_id)
         status.status = "Spłacona"
@@ -710,16 +639,12 @@ def split_group(request, group_id):
 
     friend_list = [friend.to_friend for friend in friendship.all().filter(from_friend= current_user)]
 
-    # print(people_in_expense, friend_list, people_in_group)
-
-
     # tworzymy słowniki, które podsumują wszystkie wydatki w danej grupie
     all_expenses_summary = {}
     for expense in add_expense.all().filter(expense_group_id= group_id):
         creator = str(expense.creator)
         if creator not in all_expenses_summary:
             all_expenses_summary[creator] = {}
-        # print(f"ID: {expense.id}, Creator: {creator}")
 
         add_friends = add_friend_to_expense.all().filter(expense_id= expense.id)
         for friend in add_friends:
@@ -736,10 +661,6 @@ def split_group(request, group_id):
                     all_expenses_summary[creator][invited_friend_name] += repayment
                     all_expenses_summary[creator][invited_friend_name] = round(all_expenses_summary[creator][invited_friend_name], 2)
 
-    # for k, v in all_expenses_summary.items():
-    #     print(k, v)
-            
-
     if request.method != "POST":
         pass
 
@@ -748,9 +669,6 @@ def split_group(request, group_id):
             invited_to_group = request.POST.getlist('friends')
 
             for friend_id in invited_to_group:
-                # print(friend_id, User.objects.get(id= friend_id))
-                # print(invited_friend_to_group)
-                
                 if str(users.get(id= friend_id)) in invited_friend_to_group:
                     pass
 
@@ -765,17 +683,13 @@ def split_group(request, group_id):
         if "del_friend" in request.POST:
             
             if request.user != current_user:
-                # print(request.user == current_user, str(request.user) == current_user) # True, False
                 raise Http404
             
             
             friend_to_del_id = int(request.POST["del_friend"])
             friend_to_del = add_friend_to_expense_group.get(expense_group_id = group_id, invited_to_group_friend= friend_to_del_id)
-            # print(friend_to_del)
 
             friend_to_del.delete()
-
-            # GDY USUNIEMY ZNAJOMEGO Z LISTY NALEŻY USUNĄĆ GO RÓWNIEŻ Z ADD_FRIEND_TO_EXPENSE I ZMIENIĆ POZOSTAŁYM KWOTY
 
             return redirect(to= request.get_full_path(), group_id= group_id)
 
@@ -790,10 +704,8 @@ def split_group(request, group_id):
             except ValueError:
                 messages.warning(request, "Zła wartość")
                 return redirect(to= request.get_full_path(), group_id= group_id)
-            # print(get_equal_friend, len(get_equal_friend))
 
             equal_dict = {users.get(id= user).id: users.get(id= user).username for user in get_equal_friend}
-            # print(equal_dict, len(equal_dict))
 
             if expense_title == "" and expense_price == "":
                 messages.warning(request, "Podaj tytuł i cenę")
@@ -803,8 +715,6 @@ def split_group(request, group_id):
                 messages.warning(request, "Podaj kwotę")
             
             else: 
-                # print(f"\nTytuł wydatku: {expense_title}\nKwota: {expense_price}\nID grupy: {group_id}\nTytuł grupy: {add_expense_group.get(id= group_id).expense_title}\nCreator: {current_user_id}\n")
-                # print(expense_title, expense_price, round(expense_price / len(equal_dict), 2))
                 expense_group = add_expense_group.get(id= group_id)
                 new_expense = AddExpense(creator = current_user,
                                         expense_group_id = expense_group,
@@ -822,7 +732,6 @@ def split_group(request, group_id):
                 for user in equal_dict.items():
                     avg = round(expense_price / len(equal_dict), 2)
                     rest = round(expense_price - avg * len(equal_dict), 2)
-                    # print(avg, rest)
 
                     user = users.get(id= user[0])
 
@@ -830,7 +739,7 @@ def split_group(request, group_id):
                         avg += rest
 
                     avg = round(avg, 2)
-                    # print(user, avg, rest)
+                    
                     add_friend = AddFriendToExpense(expense_id= new_expense,
                                                     expense_group_id = expense_group,
                                                     invited_to_expense_friend= user,
@@ -859,12 +768,6 @@ def split_group(request, group_id):
                 return redirect(to= request.get_full_path(), group_id= group_id)
             
             sum_unequal = round(sum(get_unequal_amount), 2)
-            
-
-            
-            # print([(users.get(id= i), j) for i, j in zip(get_unequal_friend, get_unequal_amount)])
-            # print(sum_unequal, expense_price, sum_unequal == expense_price)
-
 
             if expense_title == "" and expense_price == "":
                 messages.warning(request, "Podaj tytuł i kwotę")
@@ -892,7 +795,6 @@ def split_group(request, group_id):
 
                 for user_id, amount in zip(get_unequal_friend, get_unequal_amount):
                     user = users.get(id= user_id)
-                    # print(user, amount)
 
                     add_friend = AddFriendToExpense(expense_id= new_expense,
                                                     expense_group_id = expense_group,
@@ -910,7 +812,7 @@ def split_group(request, group_id):
                 raise Http404
             
             new_title = request.POST["edit_title"]
-            # print(new_title)
+            
             save_title = add_expense_group.get(id= group_id)
             save_title.expense_title = new_title
             save_title.save()
@@ -934,21 +836,12 @@ def split_group(request, group_id):
 
             expense.repaid = float(expense.repaid) - float(user_to_repayment)
             expense.save()
-
-            # print("1.", expense_to_repayment_id, user_to_repayment_id)
-            # print("2.", expense_friend.to_repayment, expense_friend.amount)
-            # print("3.", users.get(id= user_to_repayment_id))
-            # print("4.", float(expense.repaid) - float(user_to_repayment))
-            # print("5.", expense.repaid)
-            # print("6.", sum_expenses)
             
             return redirect(to= request.get_full_path(), group_id= group_id)
 
         elif "del_exp" in request.POST:
             exp_id = request.POST["del_exp"]
-            # print(exp_id)
             del_exp = add_expense.get(id= exp_id)
-            # print(del_exp)
             del_exp.delete()
             return redirect(to= request.get_full_path(), group_id= group_id)
 
