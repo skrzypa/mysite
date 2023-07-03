@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 
 from .forms import *
 from .models import *
+from .my_classes import *
 
 import calendar, datetime
 # Create your views here.
@@ -65,30 +66,22 @@ def calc(request):
         if 'brix' in request.POST:
             brix = request.POST["brix"]
 
-            if not brix:
-                context['error'] = 'Wartość wymagana'
-
-            else:
-                try:
-                    brix = float(brix)
-                    baling_wynik = f"{brix} Bx = {Calculators.Bx_Blg(brix)} Blg"
-                except ValueError:
-                    context['error'] = 'Zła wartość'
+            try:
+                brix = float(brix)
+                baling_wynik = f"{brix} Bx = {Calculators.Bx_Blg(brix)} Blg"
+            except ValueError:
+                context['error'] = 'Zła wartość'
 
 
 
         if 'baling' in request.POST:
             baling = request.POST["baling"]
 
-            if not baling:
-                context['error'] = 'Wartość wymagana'
-
-            else:
-                try:
-                    baling = float(baling)
-                    brix_wynik = f"{baling} Blg = {Calculators.Blg_Bx(baling)} BX"
-                except ValueError:
-                    context['error'] = 'Zły typ wartości'
+            try:
+                baling = float(baling)
+                brix_wynik = f"{baling} Blg = {Calculators.Blg_Bx(baling)} BX"
+            except ValueError:
+                context['error'] = 'Zły typ wartości'
 
 
 
@@ -96,16 +89,12 @@ def calc(request):
             brix_s = request.POST["brix_start"]
             brix_e = request.POST["brix_end"]
 
-            if not brix_s or not brix_e:
-                context['error'] = 'Wartości wymagane'
-            
-            else:
-                try:
-                    brix_s = float(brix_s)
-                    brix_e = float(brix_e)
-                    proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {Calculators.Bx_proc(brix_s, brix_e)} % ± 0.5%"
-                except:
-                    context['error'] = 'Zły typ wartości'
+            try:
+                brix_s = float(brix_s)
+                brix_e = float(brix_e)
+                proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {Calculators.Bx_proc(brix_s, brix_e)} % ± 0.5%"
+            except:
+                context['error'] = 'Zły typ wartości'
 
 
 
@@ -113,16 +102,12 @@ def calc(request):
             blg_s = request.POST["blg_start"]
             blg_e = request.POST["blg_end"]
 
-            if not blg_s or not blg_e:
-                context['error'] = 'Wartości wymagane'
-            
-            else:
-                try:
-                    blg_s = float(blg_s)
-                    blg_e = float(blg_e)
-                    proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {Calculators.Blg_proc(blg_s, blg_e)} % ± 0.5%"
-                except:
-                    context['error'] = 'Zły typ wartości'
+            try:
+                blg_s = float(blg_s)
+                blg_e = float(blg_e)
+                proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {Calculators.Blg_proc(blg_s, blg_e)} % ± 0.5%"
+            except:
+                context['error'] = 'Zły typ wartości'
 
 
 
@@ -131,19 +116,14 @@ def calc(request):
             piwo = request.POST['piwo']
             temp = request.POST['temp']
 
-
-            if not co2 or not piwo or not temp:
-                context['error'] = 'Wartości wymagane'
-            
-            else:
-                try:
-                    co2 = float(co2)
-                    piwo = float(piwo)
-                    temp = float(temp)
-                    # glukoza_wynik = f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {Calculators.ile_glukozy(co2, piwo, temp)} gram glukozy"
-                    glukoza_wynik = f"Nie znalazłem jeszcze odpowiedniego wzoru :c"
-                except:
-                    context['error'] = 'Zły typ wartości'
+            try:
+                co2 = float(co2)
+                piwo = float(piwo)
+                temp = float(temp)
+                # glukoza_wynik = f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {Calculators.ile_glukozy(co2, piwo, temp)} gram glukozy"
+                glukoza_wynik = f"Nie znalazłem jeszcze odpowiedniego wzoru :c"
+            except:
+                context['error'] = 'Zły typ wartości'
 
 
 
@@ -151,16 +131,12 @@ def calc(request):
             roztwor = request.POST['blg_pocz']
             glukoza = request.POST['glukoza']
             
-            if not roztwor or not glukoza:
-                context['error'] = 'Wartości wymagane'
-            
-            else:
-                try:
-                    roztwor = float(roztwor)
-                    glukoza = float(glukoza)
-                    roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {Calculators.roztwor(roztwor, glukoza)} ml wody"
-                except:
-                    context['error'] = 'Zły typ wartości'
+            try:
+                roztwor = float(roztwor)
+                glukoza = float(glukoza)
+                roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {Calculators.roztwor(roztwor, glukoza)} ml wody"
+            except:
+                context['error'] = 'Zły typ wartości'
             
 
 
@@ -194,7 +170,10 @@ def calendar_generate(request):
     year_progress = year_progress / (365 + calendar.isleap(int(GenerateCalendar.year_today)))
     year_progress = f"{round(year_progress, 1)}"
     
-    year_choosen = request.POST.get('year_button', GenerateCalendar.year_today)  
+    year_choosen = request.POST.get('year_button', GenerateCalendar.year_today) 
+    
+    EventsModel = NewEventModel.objects.all()
+    InvitedModel = InvitedToEventModel.objects.all() 
 
     months_dict2 = {} # tworzymy słownik {'miesiąc': [[dni tygodnia], [dni tygodnia], ...]}
     for key, value in GenerateCalendar.months_dict.items():
@@ -236,34 +215,26 @@ def calendar_generate(request):
             return HttpResponseRedirect(reverse('my_apps:meetings_calendar'))
  
     all_events = []
-    for event in NewEventModel.objects.all().filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
+    for event in EventsModel.filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
         
         dict_all_events = {}
-        dict_all_events['identifier'] = event.id
-        dict_all_events['owner'] = str(event.owner)
-        dict_all_events['event_title'] = event.event_title
-        dict_all_events['event_location'] = event.event_location
-        dict_all_events['event_description'] = event.event_description
-        dict_all_events['event_date'] = f"{event.event_date_day}.{event.event_date_month}.{event.event_date_year}"
-        dict_all_events['event_date_year'] = event.event_date_year
-        dict_all_events['event_date_month'] = event.event_date_month
-        dict_all_events['event_date_day'] = event.event_date_day
+        dict_all_events['event'] = event
 
-        dict_all_events['invited_friend'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
-        dict_all_events['accepted_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
-        dict_all_events['decline_invitation'] = InvitedToEventModel.objects.all().filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
+        dict_all_events['invited_friend'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
+        dict_all_events['accepted_invitation'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
+        dict_all_events['decline_invitation'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
 
         if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
             all_events.append(dict_all_events)
 
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
-    all_my_own_events =     NewEventModel.objects.all().filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    all_my_own_events =     EventsModel.filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
     for event in all_my_own_events:
         date = f"{event.event_date_day}.{GenerateCalendar.month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_my_dates.append(date)
     
     event_all_shared_dates = [] # eventy, na które zalogowany użytkonwik został zaproszony
-    all_shared_event =      NewEventModel.objects.filter(invitedtoeventmodel__invited_friend= request.user, event_date_year=year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    all_shared_event =      EventsModel.filter(invitedtoeventmodel__invited_friend= request.user, event_date_year=year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
     for event in all_shared_event:
         date = f"{event.event_date_day}.{GenerateCalendar.month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_shared_dates.append(date)
@@ -286,7 +257,7 @@ def calendar_generate(request):
 
                 'event_all_my_dates':           event_all_my_dates,
                 'event_all_shared_dates':       event_all_shared_dates,
-                'current_user':                 str(request.user),
+                'current_user':                 request.user,
                 'all_events':                   all_events,
 
                 'year_progress':                year_progress,

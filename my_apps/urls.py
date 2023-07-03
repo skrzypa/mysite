@@ -7,7 +7,6 @@ app_name = 'my_apps'
 urlpatterns = [
     path('admin/', views.calc, name='admin'),
     path('beer_calc/', views.calc, name='beer_calc'),
-    path('contact/', views.contact, name='contact'),
     path('', views.index, name='index'),
     path('meetings_calendar/', views.calendar_generate, name='meetings_calendar'),
     path('meetings_edit_event/<int:id>/', views.edit_event, name='meetings_edit_event'),

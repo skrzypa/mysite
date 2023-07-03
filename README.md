@@ -13,7 +13,6 @@ Split the bills:
 1. ??? Sending an email with a link to the group, if you are invited, and any expenses that apply to you
 
 Beer calc
-1. Better look of brewing calculator
 1. Find formula for beer carbonation
 
 Meeting planner

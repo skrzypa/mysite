@@ -62,7 +62,7 @@
 
             <div class="row">
                 {% for month, weeks in months_dict2.items %}
-                    <table>
+                    <table style="margin: 0rem;">
                         <thead>
                             <div>
                                 <p class="fs-1 mb-0 mt-4"><strong>{{ month }}</strong></p>
@@ -73,17 +73,15 @@
                                 {% endfor %}
                             </tr>
                         </thead>
-
+    
                         <tbody>
                             {% for week in weeks %}
                                 <tr>
                                     {% for day in week %}
                                         {% if day == '00' %}
                                             <th class=""></th>
-
-                                        {% else %}  {% comment %} tworzenie różnych kolorów przycisków {% endcomment %}
+                                        {% else %}
                                             <th class="text-center">
-                                                {% comment %} {% if day == 'event.event_date_day' and month_today_2 == event.event_date_month and year_choosen == 'event.event_date_year' %} {% endcomment %}
                                                 {% with date_value=day|add:"."|add:month|add:"."|add:year_choosen %}
                                                     {% if date_value in event_all_my_dates %}
                                                         <a href="{% url 'my_apps:meetings_new_event' %}?day={{ day }}&month={{ month }}&year={{ year_choosen }}" 
@@ -92,7 +90,6 @@
                                                             value="{{ day }} {{ month }} {{ year_choosen }}">
                                                             {{ day }}
                                                         </a>
-
                                                     {% elif date_value in event_all_shared_dates %}
                                                         <a href="{% url 'my_apps:meetings_new_event' %}?day={{ day }}&month={{ month }}&year={{ year_choosen }}" 
                                                             class="btn btn-block btn-warning btn-sm d-grid gap-2" 
@@ -100,7 +97,6 @@
                                                             value="{{ day }} {{ month }} {{ year_choosen }}">
                                                             {{ day }}
                                                         </a>
-                                                    
                                                     {% elif day == day_today and month == month_today and year_choosen == year_today %}
                                                         <a href="{% url 'my_apps:meetings_new_event' %}?day={{ day }}&month={{ month }}&year={{ year_choosen }}" 
                                                             class="btn btn-block btn-success btn-sm d-grid gap-2" 
@@ -108,7 +104,6 @@
                                                             value="{{ day }} {{ month }} {{ year_choosen }}">
                                                             {{ day }}
                                                         </a>
-
                                                     {% else %}
                                                         <a href="{% url 'my_apps:meetings_new_event' %}?day={{ day }}&month={{ month }}&year={{ year_choosen }}" 
                                                             class="btn btn-block btn-primary btn-sm d-grid gap-2" 
@@ -130,7 +125,7 @@
         </div> {% comment %} Koniec kalendarza {% endcomment %}
 
         <div class="col" style="margin: 1rem;">
-            <div style=""> {% comment %} Początek listy wydarzeń {% endcomment %}
+            <div> {% comment %} Początek listy wydarzeń {% endcomment %}
                 <div class="row">
                     <h1 style="margin-top: 1rem; margin-bottom: 1rem;">
                         Zaplanowane wydarzenia
@@ -157,7 +152,7 @@
                 {% comment %} Lista wydarzeń {% endcomment %}
                 <div class="row">
                     {% for event in all_events %}
-                        {% if current_user == event.owner %}
+                        {% if current_user == event.event.owner %}
                             <div class="alert alert-danger" role="alert">
                         {% else %}
                             <div class="alert alert-warning" role="alert">
@@ -175,11 +170,11 @@
 
                                 <tr>
                                     <td class="text-break">
-                                        <label>{{ event.event_title }}</label>
+                                        <label>{{ event.event.event_title }}</label>
                                     </td>
 
                                     <td class="text-break">
-                                        <label>{{ event.event_date }}</label>
+                                        <label>{{ event.event.event_date_day }}.{{ event.event.event_date_month }}.{{ event.event.event_date_year }}</label>
                                     </td>
                                 </tr>
 
@@ -195,11 +190,11 @@
 
                                 <tr>
                                     <td style="width: 50%;" class="text-break">
-                                        <label>{{ event.event_location }}</label>
+                                        <label>{{ event.event.event_location }}</label>
                                     </td>
 
                                     <td style="width: 50%;" class="text-break">
-                                        <label>{{ event.owner }}</label>
+                                        <label>{{ event.event.owner }}</label>
                                     </td>
                                 </tr>
     
@@ -211,7 +206,7 @@
 
                                 <tr>
                                     <td style="width: 100%;" colspan="2" class="text-break">
-                                        <label>{{ event.event_description }}</label>
+                                        <label>{{ event.event.event_description }}</label>
                                     </td>
                                 </tr>
     
@@ -252,10 +247,10 @@
                                             </ul>
                                         </div>
     
-                                        {% if current_user == event.owner %}
+                                        {% if current_user == event.event.owner %}
                                             <div class="btn-group mt-1 mb-1 px-1 py-1" role="group">
                                                 <div>
-                                                    <a href="{% url 'my_apps:meetings_edit_event' event.identifier %}" method="post">
+                                                    <a href="{% url 'my_apps:meetings_edit_event' event.event.id %}" method="post">
                                                         <button type="button" class="btn btn-dark btn-sm">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
@@ -271,7 +266,7 @@
                                                     <button type="button" 
                                                         data-bs-toggle="modal" 
                                                         class="btn btn-dark btn-sm"
-                                                        data-bs-target="#exampleModal{{ event.identifier }}">
+                                                        data-bs-target="#exampleModal{{ event.event.id }}">
                                                                 
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                                             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
@@ -280,7 +275,7 @@
                                                     </button>
                                                 </div>
                         
-                                                <div class="modal fade text-dark" id="exampleModal{{ event.identifier }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal fade text-dark" id="exampleModal{{ event.event.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -288,14 +283,14 @@
                                                             </div>
                 
                                                             <div class="modal-body">
-                                                                Czy chcesz usunąć wydarzenie: "{{ event.event_title }}"?
+                                                                Czy chcesz usunąć wydarzenie: "{{ event.event.event_title }}"?
                                                             </div>
                                                             
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Nie</button>
                                                                 <form method='post'>
                                                                     {% csrf_token %}
-                                                                    <input type="hidden" name= "delete_event" value= "{{ event.identifier }}">
+                                                                    <input type="hidden" name= "delete_event" value= "{{ event.event.id }}">
                                                                     <button type="submit" class="btn btn-danger">Tak</button>
                                                                 </form>
                                                             </div>
@@ -308,7 +303,7 @@
                                             <div class="btn-group mt-1 mb-1 px-1 py-1" role="group">
                                                 <form method='post' class="mb-0 mt-0">
                                                     {% csrf_token %}
-                                                    <input type="hidden" name= "accept" value= "{{ event.identifier }}">
+                                                    <input type="hidden" name= "accept" value= {{ event.event.id }}>
                                                     <button type="submit" class="btn btn-success btn-sm">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                                                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
@@ -321,7 +316,7 @@
                                             <div class="btn-group mt-1 mb-1 px-1 py-1" role="group">
                                                 <form method='post' class="mb-0 mt-0">
                                                     {% csrf_token %}
-                                                    <input type="hidden" name= "decline" value= "{{ event.identifier }}">
+                                                    <input type="hidden" name= "decline" value= "{{ event.event.id }}">
                                                     <button type="submit" class="btn btn-danger btn-sm">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heartbreak-fill" viewBox="0 0 16 16">
                                                             <path d="M8.931.586 7 3l1.5 4-2 3L8 15C22.534 5.396 13.757-2.21 8.931.586ZM7.358.77 5.5 3 7 7l-1.5 3 1.815 4.537C-6.533 4.96 2.685-2.467 7.358.77Z"/>
