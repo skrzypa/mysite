@@ -27,4 +27,5 @@ urlpatterns = [
     # path('', include('users.urls')),        # dodajemy url naszej apki
     # path('', include('beer_calc.urls')),        # dodajemy url naszej apki
     path('', include('my_apps.urls')),        # dodajemy url naszej apki
+    path('', include('password_generator.urls')),        # dodajemy url naszej apki
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

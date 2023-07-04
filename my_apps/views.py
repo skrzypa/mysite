@@ -39,8 +39,15 @@ def index(request):
                         'more_img': False,
                         }
     
+    password_generator = {'name': "Password Generator",
+                        'description': 'Prosty generator haseł wraz z obliczeniem jego entropii. Wygenreowane hasło nie jest nigdzie zapisywane',
+                        'url': 'password_generator:password_generator',
+                        'images': ['pass_gen.png',],
+                        'more_img': False,
+                        }
+    
     log_in_app = [meetings_planner, split_bills, '0']
-    log_out_app = [beer_calculators, '0', '0',]
+    log_out_app = [beer_calculators, password_generator, '0',]
 
     context = {'log_in_app': log_in_app,
                'log_out_app': log_out_app,

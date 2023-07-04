@@ -5,7 +5,40 @@ Django 4.1.7
 django-bootstrap-v5 1.0.11  
 Python 3.11.1  
 
-### To do:  
+## In my_site.py add:
+```
+urlpatterns = [
+    ...
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+```
+
+## In settings.py add:
+```
+INSTALLED_APPS = [
+    # my applications
+    'my_apps',
+    'password_generator',
+
+    # external applications
+    'bootstrap5',
+
+    # default applications
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
+STATICFILES_DIRS = [
+    (os.path.join(BASE_DIR, 'static')),
+    ]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / '/static/'
+```
+
+## To do:  
 1. Refactoring the whole views.py
 
 Split the bills:
