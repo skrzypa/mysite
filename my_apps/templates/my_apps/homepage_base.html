@@ -37,7 +37,7 @@
                 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:index' %}">Strona główna</a>
+                            <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:homepage' %}">Strona główna</a>
                         </li>
                         {% if user.is_authenticated %}    
                             <li class="nav-item">
@@ -66,8 +66,8 @@
         {% block content %}{% endblock content %}
       
         {% block footer %}
-            <div class="container-fluid bg-primary sticky-bottom" style="margin-top: 2rem;">
-                <nav class='navbar navbar-expand-sm navbar-dark' style="padding-top: 2rem; padding-bottom: 2rem;">
+            <div class="container-fluid bg-primary sticky-bottom" style="padding-top: 0.5rem; padding-bottom: 0.5rem; margin-top: 2rem;">
+                <nav class='navbar navbar-expand-sm navbar-dark'>
                     <div class="container-fluid">
                         <ul class="nav navbar-nav navbar-dark me-auto">
                             <li class="nav-item">

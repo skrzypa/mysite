@@ -1,13 +1,13 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
-    <div class="container text-dark col-md-6" style="margin-top: 7rem; margin-bottom: 7rem;">
+    <div class="container text-dark col-sm-12 col-md-7 col-xl-5" style="margin-top: 7rem; margin-bottom: 7rem;">
         <div class="row justify-content-center" style="margin: 1rem;">
             <div class="border bg-body-tertiary rounded bg-light">
                 <h1 style="margin-top: 2rem; margin-bottom: 2rem;">Zarejestruj się</h1>
                 <form method= "post" action= "{% url 'my_apps:users_register' %}">
                     {% csrf_token %}
-                    <div class="form-floating mb-2">
+                    <div class="form-floating" style="margin-bottom: 1rem;">
                         <input type='text' 
                                 name='username' 
                                 maxlenght="15" 
@@ -19,10 +19,10 @@
                                 placeholder="Login"/>
                         <label for="id_username">Login:</label>
                     </div>
+                    
+                    <label style="margin-bottom: 2rem;">Wymagane: 15 lub mniej znaków, Tylko litery, cyfry i znaki @/./+/-/_.</label>
 
-                    <label>Wymagane: 15 lub mniej znaków, Tylko litery, cyfry i znaki @/./+/-/_.</label>
-                        
-                    <div class="form-floating mb-2">
+                    <div class="form-floating" style="margin-bottom: 1rem;">
                         <input type='password' 
                                 name='password1' 
                                 autocomplete="new-password" 
@@ -33,7 +33,7 @@
                         <label for="password1">Hasło:</label>
                     </div>
                         
-                    <div class="form-floating mb-2">
+                    <div class="form-floating" style="margin-bottom: 1rem;">
                         <input type='password' 
                                 name='password2' 
                                 autocomplete="new-password" 

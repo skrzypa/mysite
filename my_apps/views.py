@@ -46,14 +46,22 @@ def index(request):
                         'more_img': False,
                         }
     
+    currency_calc = {'name': "Currency Calculator",
+                        'description': 'Prosty kalkulator walutowny z wykorzystaniem API NBP.',
+                        'url': 'currency_calc:currency_calc',
+                        'images': ['money.png',],
+                        'more_img': False,
+                        }
+    
+    
     log_in_app = [meetings_planner, split_bills, '0']
-    log_out_app = [beer_calculators, password_generator, '0',]
+    log_out_app = [beer_calculators, password_generator, currency_calc,]
 
     context = {'log_in_app': log_in_app,
                'log_out_app': log_out_app,
                }
 
-    return render(request, 'my_apps/index.html', context= context)
+    return render(request, 'my_apps/homepage.html', context= context)
 
 def contact(request):
     return render(request, 'my_apps/contact.html')
@@ -407,7 +415,7 @@ def log_in(request):
 
         if user is not None:
             login(request, user)
-            return redirect('my_apps:index')
+            return redirect('my_apps:homepage')
 
     return render(request, "my_apps/users_log_in.html")
     
@@ -424,7 +432,7 @@ def register(request):
             new_user = form.save()
             # Zalogowanie użytkownika, a następnie przekierowanie do na stronę główną
             login(request, new_user)
-            return redirect('my_apps:index')
+            return redirect('my_apps:homepage')
     
     # Wyświetlenie pustego formularza
     context = {'form': form}
@@ -434,7 +442,7 @@ def register(request):
 def log_out(request):
     logout(request)
     messages.success(request, "Zostałeś wylogowany. Dziękuję za skorzystanie z serwisu!")
-    return redirect("my_apps:index")
+    return redirect("my_apps:homepage")
 
 @login_required
 def friends(request):

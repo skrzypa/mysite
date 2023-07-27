@@ -5,13 +5,7 @@ Django 4.1.7
 django-bootstrap-v5 1.0.11  
 Python 3.11.1  
 
-## In my_site.py add:
-```
-urlpatterns = [
-    ...
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-```
-
+#
 ## In settings.py add:
 ```
 INSTALLED_APPS = [
@@ -38,6 +32,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / '/static/'
 ```
 
+#
 ## To do:  
 1. Refactoring the whole views.py
 
