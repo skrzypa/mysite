@@ -153,9 +153,6 @@ def calc(request):
             except:
                 context['error'] = 'Zły typ wartości'
             
-
-
-
     context = {     "baling_wynik": baling_wynik, 
                     "brix_wynik": brix_wynik, 
                     "proc_bx_wynik": proc_bx_wynik,
@@ -196,10 +193,7 @@ def calendar_generate(request):
         for week in calendar.monthcalendar(int(year_choosen), int(value)): # 1 wersja
             days = []
             for day in week:
-                if day < 10:
-                    days.append(f"0{day}")
-                else:
-                    days.append(str(day))
+                days.append(str(day).zfill(2))
             weeks.append(days)
         months_dict2[key] = weeks # 1 wersja
 
@@ -208,8 +202,7 @@ def calendar_generate(request):
         if 'delete_event' in request.POST:
             id = request.POST['delete_event']
             delete_event(request, id)
-            del request.session
-            return HttpResponseRedirect(reverse('my_apps:meetings_calendar'))
+            return redirect('my_apps:meetings_calendar')
 
         elif 'accept' in request.POST:
             id = request.POST['accept']
@@ -217,8 +210,7 @@ def calendar_generate(request):
             invited.accepted_invitation = True
             invited.decline_invitation = False
             invited.save()
-            del request.session
-            return HttpResponseRedirect(reverse('my_apps:meetings_calendar'))
+            return redirect('my_apps:meetings_calendar')
 
         elif 'decline' in request.POST:
             id = request.POST['decline']
@@ -226,8 +218,7 @@ def calendar_generate(request):
             invited.accepted_invitation = False
             invited.decline_invitation = True
             invited.save()
-            del request.session
-            return HttpResponseRedirect(reverse('my_apps:meetings_calendar'))
+            return redirect('my_apps:meetings_calendar')
  
     all_events = []
     for event in EventsModel.filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
@@ -254,10 +245,6 @@ def calendar_generate(request):
         date = f"{event.event_date_day}.{GenerateCalendar.month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_shared_dates.append(date)
 
-
-    del request.session
-
-    
     # dane do przesłania na stronę
     context = { 'years_list':                   GenerateCalendar.years_list,     # wygenerujemy listę lat w postaci przycisków na podstawie tej listy
                 'months_dict':                  GenerateCalendar.months_dict,    
@@ -458,13 +445,9 @@ def friends(request):
             add_to_observed(request, current_user)
         elif 'user_to_delete_id' in request.POST:
             delete_observed_user(request, current_user)
-        del request.session     # bez tej linijki odświeżanie strony powoduje wysłanie kolejengo formularza - co powoduje błędy
-                                # dodatkowo dodani / usunięci znajomi pokazują się od razu, a nie po ponownym wejściu na stronę
-        return HttpResponseRedirect(reverse('my_apps:users_friends'))
         
-
-
-
+        return redirect('my_apps:users_friends')
+        
     context = { 'users_list': users_list,
                 "number_of_users": len(users_list),             
                 'number_of_friends': len(followed_users),    

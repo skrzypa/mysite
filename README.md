@@ -42,9 +42,11 @@ Split the bills:
 
 Beer calc
 1. Find formula for beer carbonation
+1. Add all beer styles to the database
 
 Meeting planner
 1. Past event on the calendar
+1. Remove the GenerateCalendar class
 
 Currency cal
 1. New application without login - currency calculator with NBP API
