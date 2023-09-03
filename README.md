@@ -47,6 +47,3 @@ Beer calc
 Meeting planner
 1. Past event on the calendar
 1. Remove the GenerateCalendar class
-
-Currency cal
-1. New application without login - currency calculator with NBP API
