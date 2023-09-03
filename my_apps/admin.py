@@ -36,3 +36,9 @@ admin.site.register(AddExpense, AddExpenseAdmin)
 class AddFriendToExpenseAdmin(admin.ModelAdmin):
     list_display = ['id', 'expense_id', 'expense_group_id', 'invited_to_expense_friend', 'amount', 'to_repayment']
 admin.site.register(AddFriendToExpense, AddFriendToExpenseAdmin)
+
+
+
+class OpenRegistrationAdmin(admin.ModelAdmin):
+    list_display = ["describe", "is_open"]
+admin.site.register(OpenRegistration, OpenRegistrationAdmin)

@@ -1,6 +1,13 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <div class="container text-dark col-sm-12 col-md-7 col-xl-5" style="margin-top: 7rem; margin-bottom: 7rem;">
         <div class="row justify-content-center" style="margin: 1rem;">
             <div class="border bg-body-tertiary rounded bg-light">
@@ -63,8 +70,12 @@
                     </div>
                     
                     <div style="margin-top: 1rem; margin-bottom: 1rem;" class="d-grid gap-2">
-                        <button name= "submit" class="btn btn-success shadow-lg">Utwórz konto!</button>
-                        <input type= "hidden" name= "text" value= "{% url 'my_apps:index' %}"/>
+                        {% if open_registration is True %}
+                            <button name= "submit" class="btn btn-success shadow-lg">Utwórz konto!</button>
+                        {% else %}
+                            <button name= "submit" class="btn btn-success shadow-lg" disabled>Utwórz konto!</button>
+                        {% endif %}
+                        <input type= "hidden" name= "text" value= "{% url 'my_apps:homepage' %}"/>
                     </div>
                 </form>
             </div>

@@ -408,21 +408,33 @@ def log_in(request):
     
 def register(request):
     """Rejestracja nowego użytkownika"""
+
+    open_registration = OpenRegistration.objects.last()
+    open_registration = open_registration.is_open
+    print(open_registration is True)
+
+    if open_registration is False:
+            messages.warning(request, "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować")
+
     if request.method != 'POST':
         # Wyświetlenie pustego formularza rejestracji użytkownika
         form = UserCreationForm()
 
     else:
-        # Przetworzenie wypełnionego formularza
-        form = UserCreationForm(data= request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            # Zalogowanie użytkownika, a następnie przekierowanie do na stronę główną
-            login(request, new_user)
-            return redirect('my_apps:homepage')
-    
+        if open_registration is True:
+            # Przetworzenie wypełnionego formularza
+            form = UserCreationForm(data= request.POST)
+            if form.is_valid():
+                new_user = form.save()
+                # Zalogowanie użytkownika, a następnie przekierowanie do na stronę główną
+                login(request, new_user)
+                messages.success(request, "Dziękuję za założenie konta!")
+                return redirect('my_apps:homepage')
+        
     # Wyświetlenie pustego formularza
-    context = {'form': form}
+    context = {'form': form, 
+               "open_registration": open_registration
+               }
     return render(request, 'my_apps/users_register.html', context)
 
 @login_required

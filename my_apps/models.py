@@ -109,3 +109,8 @@ class AddFriendToExpense(models.Model):
     def __str__(self):
         return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount}/{self.to_repayment} PLN. --- {self.expense_id}" 
 
+
+
+class OpenRegistration(models.Model):
+    describe = models.TextField(default="The registration is open? (Don't create new entry, edit this one)")
+    is_open = models.BooleanField(default= False)
