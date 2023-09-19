@@ -27,16 +27,36 @@
                         <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_day.label }}</label>
                         <div class="col-sm-2">
                             {{ form_new_event.event_date_day }}
+                        </div>
+                    
+                        <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_month.label }}</label>
+                        <div class="col-sm-2">
+                            {{ form_new_event.event_date_month }}
+                        </div>
+
+                        <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_year.label }}</label>
+                            <div class="col-sm-2">
+                                {{ form_new_event.event_date_year }}
+                            </div>
                     </div>
                     
-                    <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_month.label }}</label>
-                    <div class="col-sm-2">
-                        {{ form_new_event.event_date_month }}
-                    </div>
+                    <div class="form-group row" class="border-top: 0rem; border-bottom: 0rem;">
+                        <label class="col-sm-2 col-form-label">Godzina</label>
 
-                    <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_year.label }}</label>
-                        <div class="col-sm-2">
-                            {{ form_new_event.event_date_year }}
+                        <div class="col-sm-2 col-form-label">
+                            <select class="form-select" name="selected_hour">
+                                {% for h in hours %}
+                                    <option>{{ h }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-sm-2 col-form-label">
+                            <select class="form-select" name="selected_minute">
+                                {% for m in minutes %}
+                                    <option>{{ m }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     
