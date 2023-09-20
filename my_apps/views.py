@@ -221,14 +221,14 @@ def calendar_generate(request):
             return redirect('my_apps:meetings_calendar')
  
     all_events = []
-    for event in EventsModel.filter(event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day'):
+    for event in EventsModel.filter(event_date__year= year_choosen).order_by('event_date'):
         
         dict_all_events = {}
         dict_all_events['event'] = event
 
-        dict_all_events['invited_friend'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id).values_list('invited_friend__username', flat=True)
-        dict_all_events['accepted_invitation'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
-        dict_all_events['decline_invitation'] = InvitedModel.filter(event__event_date_year= year_choosen, event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
+        dict_all_events['invited_friend'] = InvitedModel.filter(event_id = event.id).values_list('invited_friend__username', flat=True)
+        dict_all_events['accepted_invitation'] = InvitedModel.filter(event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
+        dict_all_events['decline_invitation'] = InvitedModel.filter(event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
 
         if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
             all_events.append(dict_all_events)
@@ -269,6 +269,8 @@ def calendar_generate(request):
 
 @login_required
 def new_event(request):
+    hours = range(0, 24)
+    minutes = range(0, 61)
 
     current_user = request.user
 
@@ -290,7 +292,17 @@ def new_event(request):
         form_new_event = NewEventForm(data= request.POST)
         if form_new_event.is_valid():
             new_event = form_new_event.save(commit=False)
+
+            hour = request.POST['selected_hour']
+            minute = request.POST['selected_minute']
+            date = f"{new_event.event_date_year}-{new_event.event_date_month}-{new_event.event_date_day}"
+            time = f"{hour}:{minute}"
+            date_time = f"{date} {time}"
+            # print(date_time)
+
+            
             new_event.owner = request.user
+            new_event.event_date = date_time
             new_event.save()
 
             invited_to_event = request.POST.getlist('friends')
@@ -304,16 +316,21 @@ def new_event(request):
                                                     decline_invitation= False,
                                                 )
                 invited_model.save()
+            
 
             return redirect('my_apps:meetings_calendar')
 
     context = {     'form_new_event': form_new_event,
                     'your_friends_list': your_friends_list,
+                    'hours': hours,
+                    'minutes': minutes,
             }
     return render(request=request, template_name='my_apps/meetings_new_event.html', context=context)
 
 @login_required
 def edit_event(request, id):
+    hours = range(0, 24)
+    minutes = range(0, 61)
 
     event = NewEventModel.objects.get(id= id)
     event_owner = event.owner
@@ -327,7 +344,7 @@ def edit_event(request, id):
                         'event_description': event.event_description,
                         'event_date_year': event.event_date_year,
                         'event_date_month': event.event_date_month,
-                        'event_date_day': event.event_date_day
+                        'event_date_day': event.event_date_day,
                         }
         form_new_event = NewEventForm(instance= event, initial= initial_data)
 
@@ -344,7 +361,15 @@ def edit_event(request, id):
         form_new_event = NewEventForm(instance= event, data= request.POST)
         if 'save_event' in request.POST:
             if form_new_event.is_valid():
-                form_new_event.save()
+                edit_event = form_new_event.save(commit=False)
+
+                hour = request.POST['selected_hour']
+                minute = request.POST['selected_minute']
+                date = f"{event.event_date_year}-{event.event_date_month}-{event.event_date_day}"
+                time = f"{hour}:{minute}"
+
+                edit_event.event_date = f"{date} {time}"
+                edit_event.save()
                 return redirect('my_apps:meetings_calendar')
         
         elif 'invite_friend_id' in request.POST:
@@ -365,11 +390,15 @@ def edit_event(request, id):
 
 
     context = {'form_new_event':        form_new_event,
-               'id':                    id,
-               'your_friends_list':     your_friends_list,
-               'invited_friends':       invited_friends,
-               'rest_friends':          rest_friends,
-            }
+                'id':                    id,
+                'your_friends_list':     your_friends_list,
+                'invited_friends':       invited_friends,
+                'rest_friends':          rest_friends,
+                'hours': hours,
+                'minutes': minutes,
+                'event_date_hour': event.event_date.time().hour,
+                'event_date_minute': event.event_date.time().minute
+                }
 
 
 

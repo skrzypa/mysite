@@ -18,6 +18,8 @@ class NewEventModel(models.Model):
     event_date_month = models.CharField(max_length= 2, default= "")
     event_date_day = models.CharField(max_length= 2, default= "")
 
+    event_date = models.DateTimeField(default= datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
     date_added = models.DateTimeField(auto_now_add= True)
     
     class Meta:
