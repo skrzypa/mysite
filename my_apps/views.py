@@ -329,6 +329,8 @@ def new_event(request):
 
 @login_required
 def edit_event(request, id):
+    hours = range(0, 24)
+    minutes = range(0, 61)
 
     event = NewEventModel.objects.get(id= id)
     event_owner = event.owner
@@ -342,7 +344,7 @@ def edit_event(request, id):
                         'event_description': event.event_description,
                         'event_date_year': event.event_date_year,
                         'event_date_month': event.event_date_month,
-                        'event_date_day': event.event_date_day
+                        'event_date_day': event.event_date_day,
                         }
         form_new_event = NewEventForm(instance= event, initial= initial_data)
 
@@ -359,7 +361,15 @@ def edit_event(request, id):
         form_new_event = NewEventForm(instance= event, data= request.POST)
         if 'save_event' in request.POST:
             if form_new_event.is_valid():
-                form_new_event.save()
+                edit_event = form_new_event.save(commit=False)
+
+                hour = request.POST['selected_hour']
+                minute = request.POST['selected_minute']
+                date = f"{event.event_date_year}-{event.event_date_month}-{event.event_date_day}"
+                time = f"{hour}:{minute}"
+
+                edit_event.event_date = f"{date} {time}"
+                edit_event.save()
                 return redirect('my_apps:meetings_calendar')
         
         elif 'invite_friend_id' in request.POST:
@@ -380,11 +390,15 @@ def edit_event(request, id):
 
 
     context = {'form_new_event':        form_new_event,
-               'id':                    id,
-               'your_friends_list':     your_friends_list,
-               'invited_friends':       invited_friends,
-               'rest_friends':          rest_friends,
-            }
+                'id':                    id,
+                'your_friends_list':     your_friends_list,
+                'invited_friends':       invited_friends,
+                'rest_friends':          rest_friends,
+                'hours': hours,
+                'minutes': minutes,
+                'event_date_hour': event.event_date.time().hour,
+                'event_date_minute': event.event_date.time().minute
+                }
 
 
 
