@@ -109,7 +109,7 @@ def dowloand_currencies():
     format = "%Y_%m_%d"
     dowloand_date = datetime.date.today().strftime(format)
 
-    folder_with_currencies = pathlib.Path(mysite.settings.STATICFILES_DIRS[0], "currencies")
+    folder_with_currencies = pathlib.Path(mysite.settings.MY_FILES, "currencies")
     if not pathlib.Path.exists(folder_with_currencies):
         pathlib.Path.mkdir(folder_with_currencies)
 
@@ -126,7 +126,7 @@ def dowloand_currencies():
 
 def read_currencies() -> list:   
     """ Load the latest exchange rates from the NBP API """
-    folder_with_currencies = pathlib.Path(mysite.settings.STATICFILES_DIRS[0], "currencies")
+    folder_with_currencies = pathlib.Path(mysite.settings.MY_FILES, "currencies")
     files = list(pathlib.Path.iterdir(folder_with_currencies))[::-1]
 
 

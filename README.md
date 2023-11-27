@@ -4,6 +4,8 @@
 Django 4.1.7  
 django-bootstrap-v5 1.0.11  
 Python 3.11.1  
+requests 2.30.0
+gunicorn 21.2.0
 
 #
 ## In settings.py add:
@@ -46,4 +48,3 @@ Beer calc
 
 Meeting planner
 1. Past event on the calendar
-1. Remove the GenerateCalendar class
