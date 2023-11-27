@@ -10,17 +10,17 @@ class NewEventForm(forms.ModelForm):
         labels = {'event_title': 'Wydarzenie',  
                     'event_location': 'Lokalizacja', 
                     'event_description': 'Opis',
-                    'event_date_year': 'Rok',
-                    'event_date_month': 'Miesiąc',
-                    'event_date_day': 'Dzień',
+                    'event_date_year': 'Rok', #DELETE
+                    'event_date_month': 'Miesiąc', #DELETE
+                    'event_date_day': 'Dzień', #DELETE
                 }
 
         widgets = {'event_title':           forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
                    'event_location':       forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
                    'event_description':    forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-                   'event_date_year':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-                   'event_date_month':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-                   'event_date_day':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+                   'event_date_year':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
+                   'event_date_month':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
+                   'event_date_day':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
                 }
 
     def __init__(self, *args, **kwargs):

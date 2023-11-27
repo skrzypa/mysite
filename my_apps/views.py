@@ -177,18 +177,40 @@ def homepage(request):
 def calendar_generate(request):
     """Strona z kalendarzem"""
 
-    # oblicz % postępy roku
+    #months
+    months_dict = {'Styczeń': '01', 'Luty': '02', 'Marzec': '03', 'Kwiecień': '04', 
+               'Maj': '05', 'Czerwiec': '06', 'Lipiec': '07', 'Sierpień': '08', 
+               'Wrzesień': '09', 'Październik': '10', 'Listopad': '11', 'Grudzień': '12'} 
+
+    # today date
+    today = datetime.datetime.today()
+    today_date = today.strftime("%Y-%m-%d")
+    today_year = today.strftime("%Y")
+    today_month = today.strftime("%m")
+    today_day = today.strftime("%d")
+    now_hour = today.strftime("%H")
+    now_minute = today.strftime(":%M")
+
+    month_list_1 = list(months_dict.keys())     # ['Styczeń', 'Luty', ...]
+    month_list_2 = list(months_dict.values())   # ['01', '02', ...]
+
+    month_today = month_list_1[int(datetime.date.today().strftime('%m')) -1]      # np. Luty
+    month_today_2 = month_list_2[int(datetime.date.today().strftime('%m')) -1]     # np. '02'
+
+
+
+    # year progress
     year_progress = int(datetime.datetime.now().strftime('%j')) * 100
-    year_progress = year_progress / (365 + calendar.isleap(int(GenerateCalendar.year_today)))
+    year_progress = year_progress / (365 + calendar.isleap(int(today_year)))
     year_progress = f"{round(year_progress, 1)}"
     
-    year_choosen = request.POST.get('year_button', GenerateCalendar.year_today) 
+    year_choosen = request.POST.get('year_button', today_year) 
     
     EventsModel = NewEventModel.objects.all()
     InvitedModel = InvitedToEventModel.objects.all() 
 
     months_dict2 = {} # tworzymy słownik {'miesiąc': [[dni tygodnia], [dni tygodnia], ...]}
-    for key, value in GenerateCalendar.months_dict.items():
+    for key, value in months_dict.items():
         weeks = []
         for week in calendar.monthcalendar(int(year_choosen), int(value)): # 1 wersja
             days = []
@@ -236,25 +258,25 @@ def calendar_generate(request):
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
     all_my_own_events =     EventsModel.filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
     for event in all_my_own_events:
-        date = f"{event.event_date_day}.{GenerateCalendar.month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
+        date = f"{event.event_date_day}.{month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_my_dates.append(date)
     
     event_all_shared_dates = [] # eventy, na które zalogowany użytkonwik został zaproszony
     all_shared_event =      EventsModel.filter(invitedtoeventmodel__invited_friend= request.user, event_date_year=year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
     for event in all_shared_event:
-        date = f"{event.event_date_day}.{GenerateCalendar.month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
+        date = f"{event.event_date_day}.{month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_shared_dates.append(date)
 
     # dane do przesłania na stronę
-    context = { 'years_list':                   GenerateCalendar.years_list,     # wygenerujemy listę lat w postaci przycisków na podstawie tej listy
-                'months_dict':                  GenerateCalendar.months_dict,    
+    context = { 'years_list':                   [str(x) for x in range(2022, int(today_year)+2)][::-1],     # wygenerujemy listę lat w postaci przycisków na podstawie tej listy
+                'months_dict':                  months_dict,    
                 'months_dict2':                 months_dict2,    # słownik={'months_name': [[week], [week],...]}
                 'days_list':                    ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'],      # lista dni pon-nd
 
-                'day_today':                    GenerateCalendar.day_today,
-                'month_today':                  GenerateCalendar.month_today,
-                'month_today_2':                GenerateCalendar.month_today_2,
-                'year_today':                   GenerateCalendar.year_today,
+                'day_today':                    str(today_day),
+                'month_today':                  month_today,
+                'month_today_2':                month_today_2,
+                'year_today':                   str(today_year),
                 'year_choosen':                 year_choosen,   # rok wybrany dzięki liście przycisków na stronie
 
                 'event_all_my_dates':           event_all_my_dates,
@@ -277,13 +299,19 @@ def new_event(request):
     observed_users_list = Friendship.objects.all().filter(from_friend= current_user)
     your_friends_list = [f.to_friend for f in observed_users_list if f.to_friend != current_user]
 
+
+    months_dict = {'Styczeń': '01', 'Luty': '02', 'Marzec': '03', 'Kwiecień': '04', 
+               'Maj': '05', 'Czerwiec': '06', 'Lipiec': '07', 'Sierpień': '08', 
+               'Wrzesień': '09', 'Październik': '10', 'Listopad': '11', 'Grudzień': '12'} 
+    
+
     if request.method != 'POST':
         day = request.GET.get('day')        # GET, bo chcemy odczytać to, nie wysłać
         month = request.GET.get('month')
         year = request.GET.get('year')
 
         initial_data = {'event_date_year': year,
-                        'event_date_month': GenerateCalendar.months_dict[month],
+                        'event_date_month': months_dict[month],
                         'event_date_day': day,
                         }
         form_new_event = NewEventForm(initial= initial_data)

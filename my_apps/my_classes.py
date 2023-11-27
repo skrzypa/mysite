@@ -1,4 +1,4 @@
-import datetime
+
 
 
 class Calculators():
@@ -75,21 +75,3 @@ class Calculators():
         # for piwo in style_piwne:                            # iteracja przez listę
         #     for key, value in piwo.items():                 # iteracja przez k i v słownika 
         #         print(f"{key} \033[96m{value}\033[0m")      # wyświetlenie k i v słownika
-
-
-class GenerateCalendar():
-    months_dict = {'Styczeń': '01', 'Luty': '02', 'Marzec': '03', 'Kwiecień': '04', 
-               'Maj': '05', 'Czerwiec': '06', 'Lipiec': '07', 'Sierpień': '08', 
-               'Wrzesień': '09', 'Październik': '10', 'Listopad': '11', 'Grudzień': '12'} 
-
-    month_list_1 = list(months_dict.keys())     # ['Styczeń', 'Luty', ...]
-    month_list_2 = list(months_dict.values())   # ['01', '02', ...]
-
-    day_today = datetime.date.today().strftime('%d')
-    # month_today = datetime.date.today().strftime('%m')
-    month_today = month_list_1[int(datetime.date.today().strftime('%m')) -1]      # xD zadziałało np. Luty
-    month_today_2 = month_list_2[int(datetime.date.today().strftime('%m')) -1]     # np. '02'
-    year_today = datetime.date.today().strftime('%Y')
-    
-    years_list = [str(x) for x in range(2022, int(year_today)+2)]
-    years_list = years_list[::-1]

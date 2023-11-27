@@ -14,9 +14,9 @@ class NewEventModel(models.Model):
     event_title = models.CharField(max_length= 20, default= "")
     event_location = models.CharField(max_length= 20, default= "")
     event_description = models.CharField(max_length= 200, default= "")
-    event_date_year = models.CharField(max_length= 4, default= "")
-    event_date_month = models.CharField(max_length= 2, default= "")
-    event_date_day = models.CharField(max_length= 2, default= "")
+    event_date_year = models.CharField(max_length= 4, default= "") #DELETE
+    event_date_month = models.CharField(max_length= 2, default= "") #DELETE
+    event_date_day = models.CharField(max_length= 2, default= "") #DELETE
 
     event_date = models.DateTimeField(default= datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
