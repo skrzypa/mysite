@@ -6,6 +6,7 @@ django-bootstrap-v5 1.0.11
 Python 3.11.1  
 requests 2.30.0
 gunicorn 21.2.0
+django-environ 0.11.2
 
 #
 ## In settings.py add:
