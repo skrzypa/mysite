@@ -40,6 +40,12 @@ ALLOWED_HOSTS = ast.literal_eval(
 CSRF_TRUSTED_ORIGINS = ast.literal_eval(
     env(var= 'CSRF_TRUSTED_ORIGINS')
 )
+CSRF_COOKIE_SECURE = ast.literal_eval(
+    env(var= 'CSRF_COOKIE_SECURE')
+)
+SESSION_COOKIE_SECURE = ast.literal_eval(
+    env(var= 'SESSION_COOKIE_SECURE')
+)
 
 
 
