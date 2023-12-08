@@ -49,7 +49,6 @@ def password_generator(request):
                        "password_generated": password_generated,
                        "password_entropy": password_entropy,
                        "entropy_level": entropy_level,}
-            print(request.POST)
             
 
     return render(request= request, template_name= 'password_generator/password_generator.html', context= context)

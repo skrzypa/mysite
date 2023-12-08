@@ -326,7 +326,6 @@ def new_event(request):
             date = f"{new_event.event_date_year}-{new_event.event_date_month}-{new_event.event_date_day}"
             time = f"{hour}:{minute}"
             date_time = f"{date} {time}"
-            # print(date_time)
 
             
             new_event.owner = request.user
@@ -468,7 +467,6 @@ def register(request):
 
     open_registration = OpenRegistration.objects.last()
     open_registration = open_registration.is_open
-    print(open_registration is True)
 
     if open_registration is False:
             messages.warning(request, "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować")
@@ -542,7 +540,7 @@ def delete_observed_user(request, current_user):
 # SPLIT THE BILLS
 @login_required
 def add_expense_group(request):
-    current_user = request.user     # print(current_user, type(request)) # skrzypa <class 'django.core.handlers.wsgi.WSGIRequest'>
+    current_user = request.user 
 
 
     expense_group_list = AddExpenseGroup.objects.all().order_by("-date_added")
