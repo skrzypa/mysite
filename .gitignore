@@ -7,6 +7,6 @@ htmlcov
 __pycache__ 
 0_venv 
 *.cpython-311.pyc 
-0_inne_pliki
+django
 .env
 static
