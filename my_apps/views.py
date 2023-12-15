@@ -25,6 +25,9 @@ def index(request):
     apps = AvailableApp.objects.all()
     apps_photos = AppPhotos.objects.all()
 
+    if os.path.exists(mysite.settings.MEDIA_ROOT):
+        os.mkdir(mysite.settings.MEDIA_ROOT)
+
     # [print(i.id_app, i.app_name, i.app_describe, i.app_link, i.app_log_in) for i in apps]
     # [print(i.id_app, i.id_photo, i.photo) for i in apps_photos]
 
