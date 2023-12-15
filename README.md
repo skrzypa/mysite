@@ -7,36 +7,10 @@ Python 3.11.1
 requests 2.30.0
 gunicorn 21.2.0
 django-environ 0.11.2
+Pillow 9.5.0
 
 #
-## In settings.py add:
-```
-INSTALLED_APPS = [
-    # my applications
-    'my_apps',
-    'password_generator',
-
-    # external applications
-    'bootstrap5',
-
-    # default applications
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
-
-STATICFILES_DIRS = [
-    (os.path.join(BASE_DIR, 'static')),
-    ]
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / '/static/'
-```
-
-#
-## To do:  
+### To do:  
 1. Refactoring the whole views.py
 
 Split the bills:

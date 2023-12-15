@@ -3,6 +3,18 @@ from .models import *
 
 # Register your models here.
 
+class AvailableAppAdmin(admin.ModelAdmin):
+    list_display = ('id_app', 'app_name', 'app_describe', 'app_link', 'app_log_in')
+admin.site.register(AvailableApp, AvailableAppAdmin)
+
+
+
+class AppPhotosAdmin(admin.ModelAdmin):
+    list_display = ('id_photo', 'id_app', 'photo')
+admin.site.register(AppPhotos, AppPhotosAdmin)
+    
+
+
 class NewEventModelAdmin(admin.ModelAdmin):
     """EDIT"""
     list_display = ('id', 'event_title', 'event_location', 'owner', 'event_description', 'event_date_year', 'event_date_month', 'event_date_day')

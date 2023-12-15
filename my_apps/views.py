@@ -10,52 +10,83 @@ from django.contrib.auth.models import User
 from .forms import *
 from .models import *
 from .my_classes import *
+import mysite.settings
 
-import calendar, datetime
+import calendar
+import datetime
+import os
+import pathlib
 # Create your views here.
 
 # HOMEPAGE
 def index(request):
     """Strona główna"""
+
+    apps = AvailableApp.objects.all()
+    apps_photos = AppPhotos.objects.all()
+
+    # [print(i.id_app, i.app_name, i.app_describe, i.app_link, i.app_log_in) for i in apps]
+    # [print(i.id_app, i.id_photo, i.photo) for i in apps_photos]
+
+    log_in_app = []
+    log_out_app = []
+    for app in apps:
+        apps_dict = {
+            'name':  app.app_name,
+            'description': app.app_describe,
+            'url':app.app_link,
+            'images': [p.photo for p in apps_photos.filter(id_app= app.id_app)],
+            'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1
+        }
+        # print(len(apps_photos.filter(id_app= app.id_app)) >= 1)
+        # [print('/'.join(str(p.photo).split('/')[1:])) for p in apps_photos.filter(id_app= app.id_app)]
+        
+        if app.app_log_in is True:
+            log_in_app.append(apps_dict)
+
+        elif app.app_log_in is False:
+            log_out_app.append(apps_dict)
+
+
             
-    meetings_planner = {'name': "Meetings Planner",
-                        'description': 'Aplikacja umożliwiająca tworzenie wydarzeń i zapraszanie do nich znajomych.',
-                        'url': 'my_apps:meetings_calendar',
-                        'images': ['meetings_1.png', 'meetings_2.png','meetings_3.png','meetings_4.png',],
-                        'more_img': True,
-                        }
+    # meetings_planner = {'name': "Meetings Planner",
+    #                     'description': 'Aplikacja umożliwiająca tworzenie wydarzeń i zapraszanie do nich znajomych.',
+    #                     'url': 'my_apps:meetings_calendar',
+    #                     'images': ['meetings_1.png', 'meetings_2.png','meetings_3.png','meetings_4.png',],
+    #                     'more_img': True,
+    #                     }
     
-    split_bills = {'name': "Split the bills",
-                        'description': 'Aplikacja, dzięki której ułatwisz proces dzielenia się wydatkami z dowolną grupą ludzi.',
-                        'url': 'my_apps:split_homepage',
-                        'images': ['money.png',],
-                        'more_img': False,
-                        }
+    # split_bills = {'name': "Split the bills",
+    #                     'description': 'Aplikacja, dzięki której ułatwisz proces dzielenia się wydatkami z dowolną grupą ludzi.',
+    #                     'url': 'my_apps:split_homepage',
+    #                     'images': ['money.png',],
+    #                     'more_img': False,
+    #                     }
     
-    beer_calculators = {'name': "Beer Calculators",
-                        'description': 'Oblicz podstawowe parametry oraz sprawdź poziom nagazowania dla różnych styli piwnych.',
-                        'url': 'my_apps:beer_calc',
-                        'images': ['beer_1.png',],
-                        'more_img': False,
-                        }
+    # beer_calculators = {'name': "Beer Calculators",
+    #                     'description': 'Oblicz podstawowe parametry oraz sprawdź poziom nagazowania dla różnych styli piwnych.',
+    #                     'url': 'my_apps:beer_calc',
+    #                     'images': ['beer_1.png',],
+    #                     'more_img': False,
+    #                     }
     
-    password_generator = {'name': "Password Generator",
-                        'description': 'Prosty generator haseł wraz z obliczeniem jego entropii. Wygenreowane hasło nie jest nigdzie zapisywane',
-                        'url': 'password_generator:password_generator',
-                        'images': ['pass_gen.png',],
-                        'more_img': False,
-                        }
+    # password_generator = {'name': "Password Generator",
+    #                     'description': 'Prosty generator haseł wraz z obliczeniem jego entropii. Wygenreowane hasło nie jest nigdzie zapisywane.',
+    #                     'url': 'password_generator:password_generator',
+    #                     'images': ['pass_gen.png',],
+    #                     'more_img': False,
+    #                     }
     
-    currency_calc = {'name': "Currency Calculator",
-                        'description': 'Prosty kalkulator walutowny z wykorzystaniem API NBP.',
-                        'url': 'currency_calc:currency_calc',
-                        'images': ['money.png',],
-                        'more_img': False,
-                        }
+    # currency_calc = {'name': "Currency Calculator",
+    #                     'description': 'Prosty kalkulator walutowny z wykorzystaniem API NBP.',
+    #                     'url': 'currency_calc:currency_calc',
+    #                     'images': ['money.png',],
+    #                     'more_img': False,
+    #                     }
     
     
-    log_in_app = [meetings_planner, split_bills, '0']
-    log_out_app = [beer_calculators, password_generator, currency_calc,]
+    # log_in_app = [meetings_planner, split_bills, '0']
+    # log_out_app = [beer_calculators, password_generator, currency_calc,]
 
     context = {'log_in_app': log_in_app,
                'log_out_app': log_out_app,

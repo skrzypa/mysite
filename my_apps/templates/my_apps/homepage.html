@@ -9,63 +9,59 @@
     {% endfor %}
 {% endif %}
 
-<div>
-    <div class="btn-group mt-1 mb-1 px-1 py-1" role="group">
-        <div>
-                <button type="button" 
-                    data-bs-toggle="modal" 
-                    class="btn btn-light btn-sm"
-                    data-bs-target="#exampleModal1"
-                    id="random-dog-button"
-                    name='dog'>
-                    Wylosuj pieska!
-                </button>
-        </div>
+<div class="text-center">
+    <button type="button" 
+        data-bs-toggle="modal" 
+        class="btn btn-success btn-lg"
+        data-bs-target="#exampleModal1"
+        id="random-dog-button"
+        name='dog'>
+        Wylosuj pieska!
+    </button>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#random-dog-button').click(function() {
-                    $.ajax({
-                        url: 'https://dog.ceo/api/breeds/image/random',
-                        method: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            var imgSrc = data.message;
-                            $('#random-dog-image').attr('src', imgSrc);
-                        },
-                        error: function(xhr, status, error) {
-                            console.log('Error:', error);
-                        }
-                    });
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#random-dog-button').click(function() {
+                $.ajax({
+                    url: 'https://dog.ceo/api/breeds/image/random',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var imgSrc = data.message;
+                        $('#random-dog-image').attr('src', imgSrc);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Error:', error);
+                    }
                 });
             });
-        </script>
+        });
+    </script>
 
-        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered text-dark">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Wylosowany piesek</h1>
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-dark">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Wylosowany piesek</h1>
+                </div>
+    
+                <div class="modal-body text-center">
+                    <div style="margin-bottom: 1rem;">
+                        <img id="random-dog-image" class="img-fluid">
                     </div>
-
-                    <div class="modal-body text-center" style="padding: 0.5rem;">
-                        <div style="margin-bottom: 1rem;">
-                            <img style="max-width: 20rem; max-height: 20rem; margin: 0 auto;" id="random-dog-image">
-                        </div>
-
-                        <div>
-                            <label>Źródło: <a href="https://dog.ceo/">DOG CEO</a><label>
-                        </div> 
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fajny!</button>
-                    </div>
+    
+                    <div>
+                        <label>Źródło: <a href="https://dog.ceo/">DOG CEO</a></label>
+                    </div> 
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fajny!</button>
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </div>
 
 <div class="container-fluidtext-center text-center" style="margin-top: 2rem;">
@@ -103,7 +99,7 @@
                     <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
                             {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
                         <div class="card shadow-lg" style="width: 20rem;">
-                            <div id="carouselExample" class="carousel slide">
+                            <div id="carouselExample{{forloop.counter}}" class="carousel slide">
                                 <div class="carousel-inner">
                                     {% for img in app.images %}
 
@@ -112,18 +108,18 @@
                                         {% else %}
                                             <div class="carousel-item">
                                         {% endif %}
-                                                <img src= "{% static img %}" class="d-block w-100 img-fluid" alt="..." id="img">
+                                                <img src= "{{ img.url }}" class="d-block w-100 img-fluid" alt="..." id="img">
                                             </div>
 
                                     {% endfor %}
                                     
                                     {% if app.more_img %}
-                                        <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                        <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </button>
             
-                                        <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample" data-bs-slide="next">
+                                        <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="next">
                                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Next</span>
                                         </button>
@@ -193,7 +189,7 @@
                                         {% else %}
                                             <div class="carousel-item">
                                         {% endif %}
-                                                <img src= "{% static img %}"
+                                                <img src= "{{ img.url }}"
                                                 class="d-block w-100 img-fluid" alt="...">
                                             </div>
 

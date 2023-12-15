@@ -2,11 +2,34 @@ from django.db import models
 
 from django.contrib.auth.models import User # powiążemy wpis z danym użytkownikiem
 
+import mysite.settings
+
 
 import datetime
 
 
 # Create your models here.
+
+class AvailableApp(models.Model):
+    id_app = models.AutoField(primary_key= True)
+    app_name = models.TextField(default= '')
+    app_describe = models.TextField(default= '')
+    app_link = models.TextField(default= '')
+    app_log_in = models.BooleanField(default= True)
+
+    def __str__(self) -> str:
+        return f"{self.id_app}. {self.app_name}"
+
+
+
+class AppPhotos(models.Model):
+    """  500 x 500 px"""
+    id_photo = models.AutoField(primary_key= True)
+    id_app = models.ForeignKey(to= AvailableApp, on_delete= models.CASCADE)
+    photo = models.ImageField(upload_to= f'homepage/')
+
+
+
 class NewEventModel(models.Model):
     """ Wydarzenie tworzone przez użytkownika """
     owner = models.ForeignKey(User, on_delete= models.CASCADE) # powiążemy wpis z danym użytkownikiem

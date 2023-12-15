@@ -6,12 +6,26 @@ import datetime
 import pathlib
 import ast
 import re
+import os
 
 import mysite.settings 
 
 # Create your views here.
+folder_with_currencies = pathlib.Path(mysite.settings.MEDIA_ROOT, "currencies")
+
+
 def currency_calc(request, parametr_result= None, parametr_message= None):
-    date_and_currencies = read_currencies()
+
+    if not os.path.exists(folder_with_currencies):
+        os.mkdir(folder_with_currencies)
+
+    try:
+        date_and_currencies = read_currencies()
+    except IndexError:
+        dowloand_currencies()
+    finally:
+        date_and_currencies = read_currencies()
+        
     data_date = date_and_currencies[0]
     currencies = date_and_currencies[1:]
 
@@ -105,13 +119,13 @@ def currency_calc(request, parametr_result= None, parametr_message= None):
 
 
 def dowloand_currencies():
-    """ Download exchange rates from the NBP API """
+    """ Download exchange rates from the NBP API and delete oldest rates """
+    if os.path.exists(folder_with_currencies):
+        for file in pathlib.Path.iterdir(folder_with_currencies):
+            os.remove(str(file))
+
     format = "%Y_%m_%d"
     dowloand_date = datetime.date.today().strftime(format)
-
-    folder_with_currencies = pathlib.Path(mysite.settings.MY_FILES, "currencies")
-    if not pathlib.Path.exists(folder_with_currencies):
-        pathlib.Path.mkdir(folder_with_currencies)
 
     currencies_file = pathlib.Path(folder_with_currencies, f"{dowloand_date}_rates.txt")
     if not pathlib.Path.exists(currencies_file):
@@ -126,8 +140,7 @@ def dowloand_currencies():
 
 def read_currencies() -> list:   
     """ Load the latest exchange rates from the NBP API """
-    folder_with_currencies = pathlib.Path(mysite.settings.MY_FILES, "currencies")
-    files = list(pathlib.Path.iterdir(folder_with_currencies))[::-1]
+    files = list(pathlib.Path.iterdir(folder_with_currencies))
 
 
     last_file_date = str(files[0]).split("\\")[-1]
