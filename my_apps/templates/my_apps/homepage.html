@@ -132,6 +132,9 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ app.name }}</h5>
                                 <p class="card-text">{{ app.description }}</p>
+                            </div>
+
+                            <div class="card-footer">
                                 {% if user.is_authenticated %}
                                     <a href= {% url app.url %}>
                                         <button class="btn btn-sm btn-primary">Otwórz</button>
@@ -214,6 +217,9 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ app.name }}</h5>
                                 <p class="card-text">{{ app.description }}</p>
+                            </div>
+                            
+                            <div class="card-footer">
                                 <a href= {% url app.url %}>
                                     <button class="btn btn-sm btn-primary">Otwórz</button>
                                 </a>

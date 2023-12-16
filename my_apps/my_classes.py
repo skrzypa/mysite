@@ -68,9 +68,7 @@ class Calculators():
                     'Nagazowanie maksymalne': 2.8
                     }
 
-        style_piwne = [grodziskie, porter, ipa, stout, witbier, hefeweizen]
-        
-        return style_piwne
+        return [grodziskie, porter, ipa, stout, witbier, hefeweizen]
 
         # for piwo in style_piwne:                            # iteracja przez listę
         #     for key, value in piwo.items():                 # iteracja przez k i v słownika 

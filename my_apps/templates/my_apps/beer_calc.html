@@ -7,7 +7,7 @@
     <div class="">
 
         <div class="row justify-content-center">
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Zamień Brixy na Balingi</h2>
                     <form method="post">
@@ -30,7 +30,7 @@
                 </div>
             </div>
     
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Zamień Balingi na Brixy</h2>
                     <form method="post">
@@ -56,7 +56,7 @@
     
 
         <div class="row justify-content-center">
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Zamień Brixy na procenty</h2>
             
@@ -85,7 +85,7 @@
                 </div>
             </div>
     
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Zamień Balingi na procenty</h2>
             
@@ -117,7 +117,7 @@
     
 
         <div class="row justify-content-center">
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Ilość glukozy do refermentacji</h2>
                 
@@ -151,7 +151,7 @@
                 </div>
             </div>
             
-            <div class="col-sm-5 col-lg-5 col-xl-5" style="margin-bottom: 5rem;">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
                 <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
                     <h2 class="border-bottom">Roztwór o podanej gęstości</h2>
                 
@@ -199,7 +199,6 @@
                         </thead>
                         
                         <tbody>
-                            
                             {% for piwo in style_piwne %}
                                 <tr>
                                     {% for key, value in piwo.items %}
@@ -209,6 +208,10 @@
                             {% endfor %}
                         </tbody>
                     </table>
+
+                    <div>
+                        <label>Źródło: <a href="https://piwko.com.pl/kalkulator/ile-cukru-dodac-do-refermentacji">piwko.com.pl</a></label>
+                    </div>
                 </div>
             </div>
         </div>

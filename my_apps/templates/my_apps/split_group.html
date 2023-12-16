@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class="container col-10" style="min-height: 45rem;">
+<div class="container col-12" style="min-height: 45rem;">
     <div class="row justify-content-center">
 
 
@@ -197,16 +197,16 @@
                                                         {{ user.to_repayment }}
                                                     </th>
                                                     {% if current_user == user.username and user.to_repayment != 0.0 %}
-                                                        <th style="padding: 0rem;">
+                                                        <th>
                                                             <form method="post" action="{% url 'my_apps:split_group' group.id %}" style="margin-bottom: 0rem;">    
                                                                 {% csrf_token %}
-                                                                <button class="btn btn-primary btn-sm" style="margin: 0.3rem; width: 100%;" name="to_repayment" value="{{ exp.id }},{{ user.user_id }},{{ user.to_repayment }}">Spłać</button>
+                                                                <button class="btn btn-primary btn-sm" name="to_repayment" value="{{ exp.id }},{{ user.user_id }},{{ user.to_repayment }}">Spłać</button>
                                                             </form>
                                                         </th>
                                                     {% endif %}
                                                     {% if current_user == user.username and user.to_repayment == 0.0 %}
-                                                        <th style="padding: 0rem;">
-                                                            <button class="btn btn-success btn-sm" style="margin: 0.3rem; width: 100%;" disabled>Spłacone</button>
+                                                        <th>
+                                                            <button class="btn btn-success btn-sm" disabled>Spłacone</button>
                                                         </th>
                                                     {% endif %}
                                                 </tr>
