@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'my_apps',
     'password_generator',
     'currency_calc',
+    'rubikcube',
     
     # aplikacje zewnętrzne
     'bootstrap5',

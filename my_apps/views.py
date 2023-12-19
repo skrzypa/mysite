@@ -12,6 +12,8 @@ from .models import *
 from .my_classes import *
 import mysite.settings
 
+from rubikcube.models import DescribeApp as RubikApp
+
 import calendar
 import datetime
 import os
@@ -50,7 +52,7 @@ def index(request):
         elif app.app_log_in is False:
             log_out_app.append(apps_dict)
 
-
+    tutorials = [RubikApp.objects.last()]
             
     # meetings_planner = {'name': "Meetings Planner",
     #                     'description': 'Aplikacja umożliwiająca tworzenie wydarzeń i zapraszanie do nich znajomych.',
@@ -93,6 +95,7 @@ def index(request):
 
     context = {'log_in_app': log_in_app,
                'log_out_app': log_out_app,
+               'tutorials': tutorials,
                }
 
     return render(request, 'my_apps/homepage.html', context= context)

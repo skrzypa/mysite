@@ -1,0 +1,258 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+
+{% block content %}
+
+<div class="container-fluid justify-content-center" style='min-height: 100vh; display: flex'>
+    <div class="col-11">
+        
+        <div class="row" style="align-items: start;">
+
+            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4 {{ menu_class }}" style="{{ menu_style }} position: sticky; top: 56; padding: 0;">
+                
+                <button class="btn btn-primary text-start" style="width: 100%; border-radius: 0;"
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapseExample" 
+                    aria-expanded="false" 
+                    aria-controls="collapseExample">
+                    <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <label class="h6" style="margin: 0;">Etapy układania</label>
+                </button>
+
+                <div class="collapse" id="collapseExample" style="padding-left: 2rem; padding-right: 2rem;">
+                    <ul class="list-unstyled" style="margin: 0;">
+
+                        <li class="fs-6" style="padding: 0.25rem;">
+                            <a href="#chapter1" class="link-dark" style="text-decoration: none;">0. Oznaczenia ruchów</a>
+                        </li>
+    
+                        <li class="fs-6" style="padding: 0.25rem;">
+                            <a href="#chapter2" class="link-dark" style="text-decoration: none;">1. Cross</a>
+                        </li>
+    
+                        <li class="fs-6" style="padding: 0.25rem;">
+                            <a href="#chapter3" class="link-dark" style="text-decoration: none;">2. F2L</a>
+                        </li>
+    
+                        <li class="fs-6" style="padding: 0.25rem;">
+                            <a href="#chapter4" class="link-dark" style="text-decoration: none;">3. OLL</a>
+                        </li>
+    
+                        <li class="fs-6" style="padding: 0.25rem;">
+                            <a href="#chapter5" class="link-dark" style="text-decoration: none;">4. PLL</a>
+                        </li>
+    
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 col-xxl-8 text-center" style="padding: 0;">
+
+                <div class="chapter" id="chapter1" style="scroll-margin-top: 125px;">
+                    <div class="{{ chapter_class }}" style="{{ chapter_style }}">
+                        <label class="display-4">Oznaczenia ruchów na kostce</label>
+                    </div>
+
+                    <div class="{{ content_class }}" style="{{ content_style }}">
+
+                        <img src="/media/rubiccube/0.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            <br>Aby ułatwić sobie układanie polecam otworzyć to zdjęcie na 
+                            <a href="/media/rubiccube/0-ruchy.png" target="_blank" class="link-{{ link_color }}">nowej karcie</a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter2" style="scroll-margin-top: 125px;">
+                    <div class="{{ chapter_class }}" style="{{ chapter_style }}">
+                        <label class="display-4">Układnie białego krzyża</label>
+                    </div>
+        
+                    <div class="{{ content_class }}" style="{{ content_style }}">
+                        <img src="/media/rubiccube/1-1.png" class="img-fluid object-fit-none rounded">
+                        <label>
+                            Pierwszym etapem jest ułożenie czterech białych krawędzi wokół białego środkowego elementu.<br>
+                            Kolory tych krawędzi, oprócz białego centrum, powinny odpowiadać poszczególnym środkom na bocznych ścianach.<br>
+                            Aby ułożyć biały krzyż, obserwuj, w jaki sposób elementy kostki poruszają się wraz z każdym ruchem.<br> 
+                            Na etapie tym nie są potrzebne żadne algorytmy, jednak w przypadku, gdy krawędź znajduje się na właściwym miejscu, ale jest źle obrócona, może być przydatny poniższy algorytm:
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                D R D' F
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/1-2.png" class="img-fluid object-fit-none rounded">
+                    </div>
+                </div>
+        
+                <div class="chapter" id="chapter3" style="scroll-margin-top: 125px;">
+                    <div class="{{ chapter_class }}" style="{{ chapter_style }}">
+                        <label class="display-4">Dwie pierwsze warstwy</label>
+                    </div>
+        
+                    <div class="{{ content_class }}" style="{{ content_style }}">
+
+                        <img src="/media/rubiccube/2-0.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            Następny etap składa się z dwóch kroków:
+                            <ul>
+                                <li>Ułożenie białych rogów.</li>
+                                <li>Ułożenie środkowej warstwy.</li>
+                            </ul>
+                            Trzymaj kostkę w taki sposób, aby biały krzyż znajdował się na dole.<br>
+                            Na pierwszym etapie ułóż wszystkie cztery rogi posiadające białe elementy, używając do tego poniższego algorytmu:<br> 
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                U R U' R'
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/2-1.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            Algorytm ten służy do przemieszczenia narożnika z górnej ściany na dolną (lub odwrotnie, jeśli klocek znajduje się w niewłaściwym miejscu).<br>
+                            Algorytm ten orientuje także narożnik, co oznacza, że będziesz musiał go użyć od 1 do 5 razy, aby narożnik znalazł się w odpowiednim miejscu i był właściwie zorientowany.<br>
+                            <br>Kolejnym krokiem jest ułożenie środkowej warstwy.<br>
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                Lewo: U' L' U L U F U' F'<br>
+                                Prawo: U R U' R' U' F' U F
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/2-2.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            W przypadku, gdy klocek nie znajduje się na właściwym miejscu lub jest źle obrócony, zwróć uwagę, czy znajduje się po prawej czy lewej stronie.<br> 
+                            Następnie użyj odpowiedniego algorytmu, aby go przenieść.<br>
+                        </label>
+                    </div>
+                </div>
+        
+                <div class="chapter" id="chapter4" style="scroll-margin-top: 125px;">
+                    <div class="{{ chapter_class }}" style="{{ chapter_style }}">
+                        <label class="display-4">Orientacja żółtej ściany</label>
+                    </div>
+        
+                    <div class="{{ content_class }}" style="{{ content_style }}">
+
+                        <img src="/media/rubiccube/3-0.png" class="img-fluid object-fit-none rounded">
+
+
+                        <label class="">
+                            Kolejnym etapem jest ułożenie żółtej ściany, składający się z dwóch kroków.<br>
+                            <ul>
+                                <li>Ułożenie żółtego krzyża</li>
+                                <li>Zorientowanie żółtych narożników</li>
+                            </ul>
+                            Na pierwszym etapie występuje trzy przypadki.<br>
+                            Zalecam naukę rozwiązania wszystkich tych trzech algorytmów.<br>
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                Lewo: M U R U R' U' M' M' U R' U' M R'<br>
+                                Środek: M' R U R' U' M U R U' R'<br>
+                                Prawo: R U R' U' M' U R U' M R'<br>
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/3-1.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            <br>Na kolejnym etapie (orientacji żółtych narożników) do czynienia będziemy mieli z 7 przypadkami, jednak postaramy się je wszystkie rozwiązać za pomocą jednego krótkiego algorytmu, który będziemy powtarzać 6 lub 12 razy (liczba ta musi podzielna przez 6, będziemy wiedzieć wtedy czy jakiś narożnik nie obrócił nam się przypadkiem podczas układania).<br>
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                D R' D' R
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/4-1.png" class="img-fluid object-fit-none rounded">
+                        <img src="/media/rubiccube/4-2.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            Jak widać na powyższych zdjęciach zorientowanie narożnika wiąże się z pomieszaniem naszej kostki.<br> 
+                            Nie należy się przy przejmować tylko za pomocą ruchów U lub U' podstawiamy sobie następny narożnik do zorientowania.<br>
+                            Jeśli nigdzie nie pomyliliśmy, a algorytmu użyliśmy przynajmniej 6 razy, nasza kostka powinna zostać ponownie ułożona.<br>
+                        </label>
+                    </div>
+                </div>
+        
+                <div class="chapter" id="chapter5" style="scroll-margin-top: 125px;">
+                    <div class="{{ chapter_class }}" style="{{ chapter_style }}">
+                        <label class="display-4">Permutacja żółtej ściany</label>
+                    </div>
+        
+                    <div class="{{ content_class }}" style="{{ content_style }}">
+                        <img src="/media/rubiccube/5-0.png" class="img-fluid object-fit-none rounded">
+                        <label class="">
+                            Ostatnim etapem jest permutacja narożników i krawędzi na żółtej ścianie.<br>
+                            W przypadku permutacji krawędzi używaj ruchów U lub U', aby znaleźć sytuację, w której jeden z narożników znajduje się we właściwej pozycji.<br>
+                            W przeciwnym razie wykonaj jeden z dwóch dostępnych algorytmów, a następnie powtórz proces, aby zlokalizować, który algorytm należy teraz użyć.
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                Lewo: R' F R' B B R F' R' B B R R<br>
+                                Prawo: R R B B R F R' B B R F' R
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/5-1.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            Zwróć uwagę na powyższe oznaczenia, które pomogą ci zlokalizować prawidłowy algorytm.<br>
+                            <ul>
+                                <li>Kropka oznacza narożnik będący na swoim miejscu</li>
+                                <li>X oznacza elementy o tym samym kolorze</li>
+                            </ul>
+                        </label>
+
+                        <label class="">
+                            Po permutacji narożników pozostaje permutacja krawędzi.<br>
+                            Za pomocą dwóch dostępnych algorytmów doprowadź do sytuacji, w której tylko 3 krawędzie są źle ułożone.<br>
+                            Następnie zlokalizuj odpowiedni algorytm do ułożenia kostki.
+                        </label>
+
+                        <div class="{{ alg_div_class }}" style="{{ alg_div_style }}">
+                            <label class="{{ alg_class }}" style="{{ alg_style }}">
+                                Lewo: M' M' U M U U M' U M' M'<br>
+                                Prawo: M' M' U' M U' U' M' U' M' M'
+                            </label>
+                        </div>
+
+                        <img src="/media/rubiccube/5-2.png" class="img-fluid object-fit-none rounded">
+
+                        <label class="">
+                            <br>Brawo! Teraz potrafisz ułożyć kostkę.<br>
+                            Jeśli zainteresowała cię ta zabawa, polecam kontynuować treningi i zainteresować się metodami takimi jak: 
+                            <ul style="margin: 0;">
+                                <li>CFOP - najpopularniejsza metoda,</li>
+                                <li>Roux,</li>
+                                <li>Petrus,</li>
+                            </ul>
+                            co znacznie poprawi twój czas ułożenia kostki.
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
