@@ -34,4 +34,4 @@ def rubiccube(request):
                "link_color": f"{colors.content_text}"
                }
 
-    return render(request= request, template_name= 'rubiccube/rubiccube.html', context= context)
+    return render(request= request, template_name= 'rubikcube/rubikcube.html', context= context)
