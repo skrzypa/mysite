@@ -25,6 +25,7 @@ def rubiccube(request):
                
                "menu_class": f"text-{colors.menu_text} border border-dark",
                "menu_style": f"background-color: {colors.menu_color};",
+               "menu_link": f"{colors.menu_text}",
 
                "alg_div_class": f"container-fluid text-center",
                "alg_div_style": f"background-color: {colors.alg_color}; margin-top: 0.5rem; margin-bottom: 0.5rem;",
