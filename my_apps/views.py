@@ -329,7 +329,7 @@ def calendar_generate(request):
 @login_required
 def new_event(request):
     hours = range(0, 24)
-    minutes = range(0, 61)
+    minutes = range(0, 60)
 
     current_user = request.user
 
@@ -394,7 +394,7 @@ def new_event(request):
 @login_required
 def edit_event(request, id):
     hours = range(0, 24)
-    minutes = range(0, 61)
+    minutes = range(0, 60)
 
     event = NewEventModel.objects.get(id= id)
     event_owner = event.owner

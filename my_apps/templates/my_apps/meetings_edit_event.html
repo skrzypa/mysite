@@ -56,7 +56,7 @@
   
                           <div class="col-sm-2 col-form-label">
                                 <select class="form-select" name="selected_minute">
-                                    {% for m in hours %}
+                                    {% for m in minutes %}
                                         {% if m == event_date_minute %}
                                             <option selected>{{ m }}</option>
                                         {% endif %}
