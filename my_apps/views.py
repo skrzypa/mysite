@@ -13,6 +13,7 @@ from .my_classes import *
 import mysite.settings
 
 from rubikcube.models import DescribeApp as RubikApp
+from flac_mp3_tag.models import DescribeApp as FlacMp3
 
 import calendar
 import datetime
@@ -52,7 +53,7 @@ def index(request):
         elif app.app_log_in is False:
             log_out_app.append(apps_dict)
 
-    tutorials = [RubikApp.objects.last()]
+    tutorials = [RubikApp.objects.last(), FlacMp3.objects.last()]
             
     # meetings_planner = {'name': "Meetings Planner",
     #                     'description': 'Aplikacja umożliwiająca tworzenie wydarzeń i zapraszanie do nich znajomych.',

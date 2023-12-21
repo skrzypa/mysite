@@ -28,7 +28,7 @@
             }
         
             .underline-link:hover {
-              color: #000000; /* Kolor tekstu po najechaniu */
+              color: #0080ff; /* Kolor tekstu po najechaniu */
             }
         
             .underline-link::after {
@@ -38,7 +38,7 @@
               height: 2px; /* Wysokość podkreślenia */
               bottom: 0;
               left: 0;
-              background-color: #000000; /* Kolor podkreślenia */
+              background-color: #0080ff; /* Kolor podkreślenia */
               transform: scaleX(0); /* Początkowo podkreślenie jest niewidoczne */
               transform-origin: bottom right;
               transition: transform 0.3s;
@@ -54,7 +54,7 @@
     <body class="bg-dark text-light">
         {% block header %}
         <div class="container-fluid sticky-top" style="margin-bottom: 2rem; padding: 0rem;">
-            <nav class='navbar navbar-expand-md navbar-dark' style="background-color: rgba(0, 79, 255, 1); padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+            <nav class='navbar navbar-expand-md navbar-dark' style="background-color: rgba(1, 1, 1, 1); padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
                 {% if user.is_authenticated %}
                     <label class="navbar-brand fs-5"><strong>Witaj, {{ user.username }}</strong></label>
                 {% else %}
@@ -104,24 +104,26 @@
         {% block content %}{% endblock content %}
       
         {% block footer %}
-            <div class="container-fluid sticky-bottom" style="margin-top: 2rem; background-color: rgba(0, 79, 255, 1)">
+            <div class="container-fluid sticky-bottom" style="margin-top: 2rem; background-color: rgba(1, 1, 1, 1)">
                 <div class="text-center text-break container-fluid" style="margin: 0; padding: 0;">
-                    <div class="d-flex flex-row justify-content-center col-11" style="flex-wrap: wrap; margin: auto; padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                    <div class="d-flex flex-row justify-content-center col-11" style="flex-wrap: wrap; margin: auto; padding-top: 0rem;">
+                        
+                        {% with var_padding=1 %}
+                            <div class="" style="padding: {{ var_padding }}rem;">
+                                <a class="link-light underline-link" href="https://github.com/skrzypa" target="_blank">
+                                    <svg style="vertical-align: sub;" class="d-inline-block align-text-top" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                                    </svg>
+                                    <label class="fs-5 ">Patryk Skrzyński</label>
+                                </a>
+                            </div>
 
-                        <div class="" style="padding: 0.5rem;">
-                            <a class="link-light underline-link" href="https://github.com/skrzypa" target="_blank">
-                                <svg style="vertical-align: sub;" class="d-inline-block align-text-top" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-                                </svg>
-                                <label class="f-5 ">Patryk Skrzyński</label>
-                            </a>
-                        </div>
-
-                        <div class="" style="padding: 0.5rem;">
-                            <a class="link-light underline-link" href= "{% url 'my_apps:admin' %}">
-                                <label class="f-5 ">Witryna administracyjna Django</label>
-                            </a>
-                        </div>
+                            <div class="" style="padding: {{ var_padding }}rem;">
+                                <a class="link-light underline-link" href= "{% url 'my_apps:admin' %}">
+                                    <label class="fs-5 ">Witryna administracyjna Django</label>
+                                </a>
+                            </div>
+                        {% endwith %}
 
                     </div>
                 </div>

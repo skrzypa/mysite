@@ -84,7 +84,7 @@ class AddExpenseGroup(models.Model):
     expense_title = models.CharField(max_length= 100, default= "")
     status = models.CharField(max_length=15, default="Brak wydatków")
 
-    date_added = models.DateTimeField(default= datetime.datetime.now())
+    date_added = models.DateTimeField(auto_now_add= True)
 
 
     def __str__(self):
@@ -113,7 +113,7 @@ class AddExpense(models.Model):
     repaid = models.FloatField(default= 0.0)
 
     
-    date_added = models.DateTimeField(default= datetime.datetime.now())
+    date_added = models.DateTimeField(auto_now_add= True)
 
     def __str__(self):
         return f"{self.creator} add new expense: '{self.description}'."

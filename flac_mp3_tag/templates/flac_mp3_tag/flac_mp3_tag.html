@@ -1,0 +1,191 @@
+{% extends 'my_apps/homepage_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="" style="">
+    <div class="container-fluid justify-content-center" style='display: flex; padding: 1;'>
+        <div class="col-sm-12 col-md-11 col-lg-11 col-xl-10 col-xxl-10">
+
+            <div id="chapter0" class="text-center" style="padding: 1rem;">
+                <div>
+                    <label class="h1">
+                        Kod źródłowy programu:
+                        <a href="https://github.com/skrzypa/mp3_flac_tag" target="_blank">GitHub</a>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="h6">
+                        Jeśli potrzebujesz samego pliku .exe skontaktuj się z twórcą strony
+                    </label>
+                </div>
+            </div>
+
+            <div id="chapter1" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Użyta wersja Pythona oraz bibliotek
+            </div>
+
+            <div class="fs-5" style="padding-right: 1.5rem; padding-left: 1.5rem;">
+
+                <ol>
+                    <li>Python 3.11.1</li>
+                    <li>Mutagen 1.46.0</li>
+                    <li>Pyinstaller 6.1.0</li>
+                    <li>Flet 0.10.3</li>
+                </ol>
+
+                <div>
+                    <label>Zainstaluj je za pomocą:</label>
+                </div>
+                
+                <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                    <code class="user-select-all " style="color: #FFFFFF;">
+                        pip install mutagen==1.46.0 pyinstaller==6.1.0 flet==0.10.3
+                    </code>
+                </div>
+
+            </div>
+            
+            <div id="chapter2" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Wybierz swój język w pliku 'settings.json'
+            </div>
+
+            <div class="fs-5" style="padding-right: 1.5rem; padding-left: 1.5rem;">
+
+                <ol>
+                    <li>PL - Polski</li>
+                    <li>EN - angielski</li>
+                </ol>
+
+                <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                    <code class="user-select-all " style="color: #FFFFFF;">
+                        {<br>
+                            &emsp;"language": "PL"<br>
+                        }
+                    </code>
+                </div>
+
+            </div>
+            
+            <div id="chapter3" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Jak używać programu
+            </div>
+
+            <div class="fs-5" style="padding-right: 1.5rem; padding-left: 1.5rem;">
+
+                <ol>
+
+                    <li>Stwórz folder i umieść tam:
+                        <ol>
+                            <li>Plik .txt</li>
+                            <li>Okładkę albumu w formacie .jpg, .jpeg lub .png</li>
+                            <li>Pliki muzyczne .mp3 i / lub .flac</li>
+                        </ol>
+                    </li>
+
+                    <li>Plik .txt powinien wyglądać następująco:
+                        <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                            <code class="user-select-all " style="color: #FFFFFF;">
+                                Nazwa wykonawcy<br>
+                                Nazwa albumu<br>
+                                Rok wydania<br>
+                                Gatunek<br>
+                                Tytuł piosenki 1<br>
+                                Tytuł piosenki 2<br>
+                                Tytuł piosenki 3<br>
+                                Tytuł piosenki 4<br>
+                                ....<br>
+                            </code>
+                        </div>
+                    </li>
+
+                    <li>Włącz program, a następnie wybierz plik .txt</li>
+
+                </ol>
+            </div>
+            
+            <div id="chapter4" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Inne języki
+            </div>
+
+            <div class="fs-5" style="padding-right: 1.5rem; padding-left: 1.5rem;">
+                Aby dodać nowy język:
+                <ol>
+
+                    <li>
+                        Przetłumacz plik languages.csv w następujący sposób
+                        <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                            <code class="user-select-all " style="color: #FFFFFF;">
+                                "Wybierz plik z tracklistą","Select a tracklist file",">Przetłumaczony wiersz<"
+                            </code>
+                        </div>
+                    </li>
+
+                    <li>
+                        Następnie dodaj kod języka w paths_settings.py
+                        <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                            <code class="user-select-all " style="color: #FFFFFF;">
+                                langs = {<br>
+                                &emsp;&emsp;"PL": 0,<br>
+                                &emsp;&emsp;"EN": 1,<br>
+                                &emsp;&emsp;">kod<": 2<br>
+                                }
+                            </code>
+                        </div>
+                    </li>
+
+                    <li>
+                        Zmień język w pliku settings.json
+                        <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                            <code class="user-select-all " style="color: #FFFFFF;">
+                                {<br>
+                                &emsp;&emsp;"language": ">kod<"
+                                <br>}
+                            </code>
+                        </div>
+                    </li>
+
+                </ol>
+            </div>
+            
+            <div id="chapter5" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Tworzenie pliku .exe przy pomocy pyinstaller
+            </div>
+
+            <div class="fs-5" style="padding-right: 1.5rem; padding-left: 1.5rem;">
+
+                Użyj następującej komendy:
+                <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                    <code class="user-select-all " style="color: #FFFFFF;">
+                        pyinstaller -F "path/to/file.py"
+                    </code>
+                </div>
+                
+                Opcjonalnie z ikoną, nazwą aplikacji i bez konsoli:
+                <div class="d-flex flex-row" style="background-color: rgba(1, 1, 1, 1); padding: 1rem;">
+                    <code class="user-select-all " style="color: #FFFFFF;">
+                        pyinstaller -F "path/to/file.py" --icon="path/to/icon.png" --noconsole -n "AppName"
+                    </code>
+                </div>
+
+            </div>
+            
+            <div id="chapter6" class="h1 text-center" style="padding: 1rem; margin-top: 5rem;">
+                Przykładowe użycie programu
+            </div>
+
+            <div class="fs-5 text-center" style="">
+                <iframe class="col-sm-11 col-md-8 col-lg-7 col-xl-6 col-xxl-5" 
+                        width="100%"
+                        height="400rem;" 
+                        src="{{ video_link }}">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %} 
