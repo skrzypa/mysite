@@ -10,18 +10,55 @@
         <meta name= "viewport" content= "width= device-width, initial-scale= 1, shrink-to-fit= no">
         <title>PSkrzynski</title>
         <link rel="icon" type="image/x-icon" href="/media/favicon/favicon.png">
+        <style>
+            .box {
+                opacity: 0;
+                transform: translateY(100px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+                margin: 20px;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+
+            .underline-link {
+              position: relative;
+              text-decoration: none;
+              color: #FFFFFF; /* Kolor tekstu */
+              transition: color 0.3s;
+            }
+        
+            .underline-link:hover {
+              color: #000000; /* Kolor tekstu po najechaniu */
+            }
+        
+            .underline-link::after {
+              content: '';
+              position: absolute;
+              width: 100%;
+              height: 2px; /* Wysokość podkreślenia */
+              bottom: 0;
+              left: 0;
+              background-color: #000000; /* Kolor podkreślenia */
+              transform: scaleX(0); /* Początkowo podkreślenie jest niewidoczne */
+              transform-origin: bottom right;
+              transition: transform 0.3s;
+            }
+        
+            .underline-link:hover::after {
+              transform: scaleX(1); /* Po najechaniu kursorem, podkreślenie się pojawia */
+              transform-origin: bottom left;
+            }
+        </style>
     </head>
 
     <body class="bg-dark text-light">
         {% block header %}
-        <div class="container-fluid bg-primary sticky-top" style="margin-bottom: 2rem;">
-            {% comment %} tu możesz zmienić kolory {% endcomment %}
-            <nav class='navbar navbar-expand-sm navbar-dark'>
-                {% comment %} tu nic nie zmieniaj!!! {% endcomment %}
+        <div class="container-fluid sticky-top" style="margin-bottom: 2rem; padding: 0rem;">
+            <nav class='navbar navbar-expand-md navbar-dark' style="background-color: rgba(0, 79, 255, 1); padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
                 {% if user.is_authenticated %}
-                    <label class="navbar-brand"><strong>Witaj, {{ user.username }}</strong></label>
+                    <label class="navbar-brand fs-5"><strong>Witaj, {{ user.username }}</strong></label>
                 {% else %}
-                    <label class="navbar-brand"><strong>Witaj</strong></label>
+                    <label class="navbar-brand fs-5"><strong>Witaj</strong></label>
                 {% endif %}
 
                 <button class="navbar-toggler" 
@@ -34,28 +71,28 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                     
-                <div class="collapse navbar-collapse sticky-sm-bottom" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse sticky-md-bottom" id="navbarSupportedContent">
                 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:homepage' %}">Strona główna</a>
+                    <ul class="navbar-nav ms-auto text-end" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <li class="nav-item" style="padding-left: 1rem; ">
+                            <a class="underline-link fs-5" style="text-decoration: none;" href="{% url 'my_apps:homepage' %}">Strona główna</a>
                         </li>
                         {% if user.is_authenticated %}    
-                            <li class="nav-item">
-                                <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:users_friends' %}">Lista znajomych</a>
+                            <li class="nav-item" style="padding-left: 1rem; ">
+                                <a class="underline-link fs-5" style="text-decoration: none;" href="{% url 'my_apps:users_friends' %}">Lista znajomych</a>
                             </li>
                             
-                            <li class="nav-item">
-                                <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:users_log_out' %}">Wyloguj</a>
+                            <li class="nav-item" style="padding-left: 1rem; ">
+                                <a class="underline-link fs-5" style="text-decoration: none;" href="{% url 'my_apps:users_log_out' %}">Wyloguj</a>
                             </li>
 
                         {% else %} 
-                            <li class="nav-item">
-                                <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:users_log_in' %}">Logowanie</a>
+                            <li class="nav-item" style="padding-left: 1rem; ">
+                                <a class="underline-link fs-5" style="text-decoration: none;" href="{% url 'my_apps:users_log_in' %}">Logowanie</a>
                             </li>
                             
-                            <li class="nav-item">
-                                <a class="navbar-brand" style="padding: 0rem;" href="{% url 'my_apps:users_register' %}">Rejestracja</a>
+                            <li class="nav-item" style="padding-left: 1rem; ">
+                                <a class="underline-link fs-5" style="text-decoration: none;" href="{% url 'my_apps:users_register' %}">Rejestracja</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -67,27 +104,27 @@
         {% block content %}{% endblock content %}
       
         {% block footer %}
-            <div class="container-fluid bg-primary sticky-bottom" style="padding-top: 0.5rem; padding-bottom: 0.5rem; margin-top: 2rem;">
-                <nav class='navbar navbar-expand-sm navbar-dark'>
-                    <div class="container-fluid">
-                        <ul class="nav navbar-nav navbar-dark me-auto">
-                            <li class="nav-item">
-                                <a class="navbar-brand" href="https://github.com/skrzypa">
-                                    <svg class="d-inline-block align-text-top" xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-                                    </svg>
-                                    <span>Patryk Skrzyński</span>
-                                </a>
-                            </li>
+            <div class="container-fluid sticky-bottom" style="margin-top: 2rem; background-color: rgba(0, 79, 255, 1)">
+                <div class="text-center text-break container-fluid" style="margin: 0; padding: 0;">
+                    <div class="d-flex flex-row justify-content-center col-11" style="flex-wrap: wrap; margin: auto; padding-top: 0.5rem; padding-bottom: 0.5rem;">
 
-                            {% if user.is_authenticated and user.is_superuser %} 
-                                <li class="nav-item">
-                                    <a class="navbar-brand" href= "{% url 'my_apps:admin' %}">Witryna administracyjna Django</a>
-                                </li>
-                            {% endif %}
-                        </ul>
+                        <div class="" style="padding: 0.5rem;">
+                            <a class="link-light underline-link" href="https://github.com/skrzypa" target="_blank">
+                                <svg style="vertical-align: sub;" class="d-inline-block align-text-top" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                                </svg>
+                                <label class="f-5 ">Patryk Skrzyński</label>
+                            </a>
+                        </div>
+
+                        <div class="" style="padding: 0.5rem;">
+                            <a class="link-light underline-link" href= "{% url 'my_apps:admin' %}">
+                                <label class="f-5 ">Witryna administracyjna Django</label>
+                            </a>
+                        </div>
+
                     </div>
-                </nav>
+                </div>
             </div>
         {% endblock footer %}
     </body>

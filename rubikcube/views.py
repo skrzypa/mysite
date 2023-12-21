@@ -10,7 +10,7 @@ import pathlib
 
 def rubiccube(request):
 
-    path = pathlib.Path(mysite.settings.MEDIA_ROOT, 'rubiccube')
+    path = pathlib.Path(mysite.settings.MEDIA_ROOT, 'rubikcube')
 
     if not os.path.exists(path):
         os.mkdir(path)
