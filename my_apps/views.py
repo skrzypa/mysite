@@ -10,7 +10,6 @@ from django.template.defaulttags import register
 
 from .forms import *
 from .models import *
-from .my_classes import *
 import mysite.settings
 
 from rubikcube.models import DescribeApp as RubikApp
@@ -76,7 +75,40 @@ def admin(request):
 
 
 
-# BEER CALC 
+# BEER CALC
+class BeerCalc():
+
+    def Bx_Blg(bx):
+        blg = round(bx / 1.04, 1)
+        return blg
+
+    def Blg_Bx(blg):
+        bx = round(blg * 1.04, 1)
+        return bx
+
+    def Bx_proc(bx_start, bx_end): 
+        blg_start = BeerCalc.Bx_Blg(bx_start)
+        blg_end = BeerCalc.Bx_Blg(bx_end)
+        proc_bx = BeerCalc.Blg_proc(blg_start, blg_end)
+        return proc_bx
+
+    def Blg_proc(blg_start, blg_end): 
+        proc_blg = round((blg_start - blg_end) / 1.938, 1)
+        return proc_blg
+    
+    def ile_glukozy(co2, piwo, temp):
+        # glukoza = (co2 * piwo) / (0.8115 + (0.0125 * temp))
+        glukoza = (piwo * co2 * (temp / 20)) / (0.811 * 1000 * co2)
+        glukoza = round(glukoza, 2)
+        return glukoza
+    
+    def roztwor(bx_pocz, glukoza):
+        woda_ml = round(glukoza * 100 / bx_pocz, 2)
+        return woda_ml
+
+    def style_piwne():
+        return BeerStyles.objects.all()
+
 def calc(request):
     context, baling_wynik, brix_wynik, proc_blg_wynik, proc_bx_wynik, glukoza_wynik, roztwor_wynik = {}, 0, 0, 0, 0, 0, 0
     
@@ -88,7 +120,7 @@ def calc(request):
 
             try:
                 brix = float(brix)
-                baling_wynik = f"{brix} Bx = {Calculators.Bx_Blg(brix)} Blg"
+                baling_wynik = f"{brix} Bx = {BeerCalc.Bx_Blg(brix)} Blg"
             except ValueError:
                 context['error'] = 'Zła wartość'
 
@@ -99,7 +131,7 @@ def calc(request):
 
             try:
                 baling = float(baling)
-                brix_wynik = f"{baling} Blg = {Calculators.Blg_Bx(baling)} BX"
+                brix_wynik = f"{baling} Blg = {BeerCalc.Blg_Bx(baling)} BX"
             except ValueError:
                 context['error'] = 'Zły typ wartości'
 
@@ -112,7 +144,7 @@ def calc(request):
             try:
                 brix_s = float(brix_s)
                 brix_e = float(brix_e)
-                proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {Calculators.Bx_proc(brix_s, brix_e)} % ± 0.5%"
+                proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {BeerCalc.Bx_proc(brix_s, brix_e)} % ± 0.5%"
             except:
                 context['error'] = 'Zły typ wartości'
 
@@ -125,7 +157,7 @@ def calc(request):
             try:
                 blg_s = float(blg_s)
                 blg_e = float(blg_e)
-                proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {Calculators.Blg_proc(blg_s, blg_e)} % ± 0.5%"
+                proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {BeerCalc.Blg_proc(blg_s, blg_e)} % ± 0.5%"
             except:
                 context['error'] = 'Zły typ wartości'
 
@@ -154,17 +186,17 @@ def calc(request):
             try:
                 roztwor = float(roztwor)
                 glukoza = float(glukoza)
-                roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {Calculators.roztwor(roztwor, glukoza)} ml wody"
+                roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {BeerCalc.roztwor(roztwor, glukoza)} ml wody"
             except:
                 context['error'] = 'Zły typ wartości'
-            
+
     context = {     "baling_wynik": baling_wynik, 
                     "brix_wynik": brix_wynik, 
                     "proc_bx_wynik": proc_bx_wynik,
                     "proc_blg_wynik": proc_blg_wynik,
                     "glukoza_wynik": glukoza_wynik,
                     "roztwor_wynik": roztwor_wynik,
-                    "style_piwne": Calculators.style_piwne(),
+                    "style_piwne": [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerCalc.style_piwne()],
                 }
 
     return render(request= request, 

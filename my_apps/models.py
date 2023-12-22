@@ -1,12 +1,7 @@
 from django.db import models
 
 from django.contrib.auth.models import User # powiążemy wpis z danym użytkownikiem
-
-import mysite.settings
-
-
-import datetime
-
+from django.utils import timezone
 
 # Create your models here.
 
@@ -41,7 +36,7 @@ class NewEventModel(models.Model):
     event_date_month = models.CharField(max_length= 2, default= "") #DELETE
     event_date_day = models.CharField(max_length= 2, default= "") #DELETE
 
-    event_date = models.DateTimeField(default= datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    event_date = models.DateTimeField(auto_now_add= True)
 
     date_added = models.DateTimeField(auto_now_add= True)
     
@@ -139,3 +134,15 @@ class AddFriendToExpense(models.Model):
 class OpenRegistration(models.Model):
     describe = models.TextField(default="The registration is open? (Don't create new entry, edit this one)")
     is_open = models.BooleanField(default= False)
+
+
+
+class BeerStyles(models.Model):
+    id = models.AutoField(primary_key= True)
+    style_name = models.TextField(default= "")
+    max_carbonation = models.FloatField(default= 0)
+    min_carbonation = models.FloatField(default= 0)
+
+    class Meta:
+        verbose_name = "Beer style"
+        verbose_name_plural = "Beer styles"

@@ -1,13 +1,18 @@
 # mysite
 ## Several web applications in Django, including a meeting planner with friends and a split bills aplication
-
-Django 4.1.7  
-django-bootstrap-v5 1.0.11  
+ 
 Python 3.11.1  
-requests 2.30.0
-gunicorn 21.2.0
-django-environ 0.11.2
-Pillow 9.5.0
+django 4.1.7  
+django-bootstrap-v5 1.0.11  
+requests 2.30.0  
+gunicorn 21.2.0  
+django-environ 0.11.2  
+Pillow 9.5.0  
+```
+pip install django==4.1.7 django-bootstrap-v5==1.0.11 requests==2.30.0 gunicorn==21.2.0 django-environ==0.11.2 Pillow==9.5.0 
+```
+#
+### You can see the site here: https://www.pskrzynski.pl/
 
 #
 ### To do:  
@@ -19,7 +24,6 @@ Split the bills:
 
 Beer calc
 1. Find formula for beer carbonation
-1. Add all beer styles to the database
 
 Meeting planner
 1. Past event on the calendar

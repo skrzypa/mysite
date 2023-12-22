@@ -58,3 +58,9 @@ admin.site.register(AddFriendToExpense, AddFriendToExpenseAdmin)
 class OpenRegistrationAdmin(admin.ModelAdmin):
     list_display = ["describe", "is_open"]
 admin.site.register(OpenRegistration, OpenRegistrationAdmin)
+
+
+
+class BeerStylesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'style_name', 'max_carbonation', 'min_carbonation')
+admin.site.register(BeerStyles, BeerStylesAdmin)

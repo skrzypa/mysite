@@ -199,10 +199,10 @@
                         </thead>
                         
                         <tbody>
-                            {% for piwo in style_piwne %}
+                            {% for beer in style_piwne %}
                                 <tr>
-                                    {% for key, value in piwo.items %}
-                                        <td>{{ value }}</td>
+                                    {% for data in beer %}
+                                        <td>{{ data }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}
