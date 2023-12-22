@@ -3,56 +3,74 @@
 
 {% block content %}
 
+<style>
+    .chapter_link a{
+        text-decoration: none;
+    } 
+    .chapter_link a:hover{
+        color: #006eff;
+        text-decoration: wavy underline;
+    } 
+</style>
+
 <div class="container-fluid justify-content-center" style='min-height: 100vh; display: flex'>
-    <div class="col-11">
+    <div class="row col-11 justify-content-center">
+
+            <div class="col-sm-12 col-md-11 col-lg-10 col-xl-9 col-xxl-8 text-center" style="position: sticky; top: 56; padding: 0;">
+
+                <div class="rounded col-12 text-center {{ menu_class }}" style="{{ menu_style }} position: sticky; top: 56px; padding-top: 0px;">
+                    
+                    <button class="rounded btn btn-primary text-center border-dark" style="width: 100%; padding: 0.75rem;"
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapseExample" 
+                        aria-expanded="false" 
+                        aria-controls="collapseExample">
+                        <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                        </svg>
+                        <label class="h5" style="margin: 0;">Etapy układania kostki</label>
+                    </button>
+    
+                    <div class="collapse" id="collapseExample" style="">
+                        <ul class="list-unstyled list-group" style="margin: 0;">
+    
+                            <li class="chapter_link list-group-item" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                                <label class="fs-5">
+                                    <a href="#moves" class="link-{{ menu_link }}">0. Oznaczenia ruchów </a>
+                                </label>
+                            </li>
         
-        <div class="row" style="align-items: start;">
-
-            <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4 {{ menu_class }}" style="{{ menu_style }} position: sticky; top: 56; padding: 0;">
-                
-                <button class="btn btn-primary text-start" style="width: 100%; border-radius: 0;"
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#collapseExample" 
-                    aria-expanded="false" 
-                    aria-controls="collapseExample">
-                    <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
-                    </svg>
-                    <label class="h6" style="margin: 0;">Etapy układania</label>
-                </button>
-
-                <div class="collapse" id="collapseExample" style="padding-left: 2rem; padding-right: 2rem;">
-                    <ul class="list-unstyled" style="margin: 0;">
-
-                        <li class="fs-6" style="padding: 0.25rem;">
-                            0. Oznaczenia ruchów <a href="#moves" class="link-{{ menu_link }}">--></a>
-                        </li>
+                            <li class="chapter_link list-group-item" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                                <label class="fs-5">
+                                    <a href="#white_cross" class="link-{{ menu_link }}">1. Cross </a>
+                                </label>
+                            </li>
+        
+                            <li class="chapter_link list-group-item" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                                <label class="fs-5">
+                                    <a href="#f2l" class="link-{{ menu_link }}">2. F2L </a>
+                                </label>
+                            </li>
+        
+                            <li class="chapter_link list-group-item" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                                <label class="fs-5">
+                                    <a href="#oll" class="link-{{ menu_link }}">3. OLL </a>
+                                </label>
+                            </li>
+        
+                            <li class="chapter_link list-group-item" style="padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                                <label class="fs-5">
+                                    <a href="#pll" class="link-{{ menu_link }}">4. PLL </a>
+                                </label>
+                            </li>
+        
+                        </ul>
     
-                        <li class="fs-6" style="padding: 0.25rem;">
-                            1. Cross <a href="#white_cross" class="link-{{ menu_link }}">--></a>
-                        </li>
-    
-                        <li class="fs-6" style="padding: 0.25rem;">
-                            2. F2L <a href="#f2l" class="link-{{ menu_link }}">--></a>
-                        </li>
-    
-                        <li class="fs-6" style="padding: 0.25rem;">
-                            3. OLL <a href="#oll" class="link-{{ menu_link }}">--></a>
-                        </li>
-    
-                        <li class="fs-6" style="padding: 0.25rem;">
-                            4. PLL <a href="#pll" class="link-{{ menu_link }}">--></a>
-                        </li>
-    
-                    </ul>
-
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 col-xxl-8 text-center" style="padding: 0;">
-
-                <div class="chapter" id="moves" style="scroll-margin-top: 125px;">
+                <div class="chapter" id="moves" style="scroll-margin-top: 350px;">
                     <div class="{{ chapter_class }}" style="{{ chapter_style }}">
                         <label class="display-4">Oznaczenia ruchów na kostce</label>
                     </div>
@@ -78,7 +96,7 @@
                     </div>
                 </div>
 
-                <div class="chapter" id="white_cross" style="scroll-margin-top: 125px;">
+                <div class="chapter" id="white_cross" style="scroll-margin-top: 350px;">
                     <div class="{{ chapter_class }}" style="{{ chapter_style }}">
                         <label class="display-4">Układnie białego krzyża</label>
                     </div>
@@ -105,7 +123,7 @@
                     </div>
                 </div>
         
-                <div class="chapter" id="f2l" style="scroll-margin-top: 125px;">
+                <div class="chapter" id="f2l" style="scroll-margin-top: 350px;">
                     <div class="{{ chapter_class }}" style="{{ chapter_style }}">
                         <label class="display-4">Dwie pierwsze warstwy</label>
                     </div>
@@ -155,7 +173,7 @@
                     </div>
                 </div>
         
-                <div class="chapter" id="oll" style="scroll-margin-top: 125px;">
+                <div class="chapter" id="oll" style="scroll-margin-top: 350px;">
                     <div class="{{ chapter_class }}" style="{{ chapter_style }}">
                         <label class="display-4">Orientacja żółtej ściany</label>
                     </div>
@@ -208,7 +226,7 @@
                     </div>
                 </div>
         
-                <div class="chapter" id="pll" style="scroll-margin-top: 125px;">
+                <div class="chapter" id="pll" style="scroll-margin-top: 350px;">
                     <div class="{{ chapter_class }}" style="{{ chapter_style }}">
                         <label class="display-4">Permutacja żółtej ściany</label>
                     </div>
@@ -269,7 +287,6 @@
 
             </div>
 
-        </div>
     </div>
 </div>
 
