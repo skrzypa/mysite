@@ -110,13 +110,15 @@
                             </label>
                         </div>
 
+                        {% if user.is_authenticated and user.is_superuser %}
                         <div class="">
                             <label class="fs-5" style="padding: 1rem; padding-top: 0rem; padding-bottom: 0rem;">
                                 <a class="link-light underline-link" href="/admin">
-                                    Witryna administracyjna Django
+                                    Panel admina
                                 </a>
                             </label>
                         </div>
+                        {% endif %}
 
                     </div>
                 </div>
