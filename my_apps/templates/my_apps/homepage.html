@@ -10,13 +10,18 @@
 {% endif %}
 
 <div class="text-center">
-    <button type="button" 
-        data-bs-toggle="modal" 
-        class="btn btn-success btn-lg"
-        data-bs-target="#exampleModal1"
-        id="random-dog-button"
-        name='dog'>
-        Wylosuj pieska!
+    <button type="button" data-bs-toggle="modal" class="btn btn-success btn-lg" data-bs-target="#exampleModal1" id="random-dog-button" name='dog'>
+        
+        <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-suit-heart-fill" viewBox="0 0 16 16">
+            <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
+        </svg>
+
+        Wylosuj pieska
+
+        <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-suit-heart-fill" viewBox="0 0 16 16">
+            <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
+        </svg>
+
     </button>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -64,7 +69,48 @@
     </div>    
 </div>
 
-<div class="container-fluidtext-center text-center" style="margin-top: 2rem;">
+<div class="container-fluid text-center" style="margin: 0rem; margin-top: 2rem; padding:0">
+    <div class="row justify-content-center" style="margin: 0; padding:0">
+
+        <div class="col-11" style="margin: 0rem; padding:0">
+
+            <div class="" style="margin: 0; padding:0">
+                <button class="btn btn-lg btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#HomepageMenu" aria-expanded="false" aria-controls="HomepageMenu">
+                    <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    Menu
+                </button>
+            </div>
+            
+            <div class="collapse" id="HomepageMenu" style="margin: 0; margin-top: 1rem; padding: 0">
+                <div class="card card-body text-dark container-fluid" style="margin: 0; padding: 0">
+
+                    <div class="d-flex flex-wrap justify-content-center">
+
+                        {% for app_name in app_ids %}
+                            <div class="" style="margin: 0; padding: 0.5rem;">
+                                <button class="btn btn-sm btn-primary">
+                                    <label class="fs-6" style="margin: 0; margin: 0;">
+                                        <a href="#{{ app_name }}" class="link-light" style="text-decoration: none;">
+                                            {{ forloop.counter }}. {{ app_name }}
+                                        </a>
+                                    </label>
+                                </button>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid text-center" style="margin-top: 2rem;">
 
     <div class="">
         <h1>Załóż konto i uzyskaj dostęp do wszystkich następujących aplikacji.</h1>
@@ -78,7 +124,7 @@
         <div class="row">
 
             {% for app in log_in_app %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
+                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ app.name }}">
                         {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
                     <div class="card shadow-lg" style="width: 20rem;">
                         <div id="carouselExample{{forloop.counter}}" class="carousel slide">
@@ -143,7 +189,7 @@
         <div class="row">
 
             {% for app in log_out_app %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
+                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ app.name }}">
                         {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
                     <div class="card shadow-lg" style="width: 20rem;">
                         <div id="carouselExample" class="carousel slide">
@@ -205,7 +251,7 @@
     <div class="container text-dark">
         <div class="row">
             {% for tutorial in tutorials %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem;">
+                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ tutorial.app_name }}">
                     <div class="card shadow-lg" aria-hidden="true" style="width: 20rem;">
 
                         <div>

@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.template.defaulttags import register
 
 from .forms import *
 from .models import *
@@ -18,7 +19,6 @@ from flac_mp3_tag.models import DescribeApp as FlacMp3
 import calendar
 import datetime
 import os
-import pathlib
 # Create your views here.
 
 # HOMEPAGE
@@ -54,49 +54,16 @@ def index(request):
             log_out_app.append(apps_dict)
 
     tutorials = [RubikApp.objects.last(), FlacMp3.objects.last()]
-            
-    # meetings_planner = {'name': "Meetings Planner",
-    #                     'description': 'Aplikacja umożliwiająca tworzenie wydarzeń i zapraszanie do nich znajomych.',
-    #                     'url': 'my_apps:meetings_calendar',
-    #                     'images': ['meetings_1.png', 'meetings_2.png','meetings_3.png','meetings_4.png',],
-    #                     'more_img': True,
-    #                     }
-    
-    # split_bills = {'name': "Split the bills",
-    #                     'description': 'Aplikacja, dzięki której ułatwisz proces dzielenia się wydatkami z dowolną grupą ludzi.',
-    #                     'url': 'my_apps:split_homepage',
-    #                     'images': ['money.png',],
-    #                     'more_img': False,
-    #                     }
-    
-    # beer_calculators = {'name': "Beer Calculators",
-    #                     'description': 'Oblicz podstawowe parametry oraz sprawdź poziom nagazowania dla różnych styli piwnych.',
-    #                     'url': 'my_apps:beer_calc',
-    #                     'images': ['beer_1.png',],
-    #                     'more_img': False,
-    #                     }
-    
-    # password_generator = {'name': "Password Generator",
-    #                     'description': 'Prosty generator haseł wraz z obliczeniem jego entropii. Wygenreowane hasło nie jest nigdzie zapisywane.',
-    #                     'url': 'password_generator:password_generator',
-    #                     'images': ['pass_gen.png',],
-    #                     'more_img': False,
-    #                     }
-    
-    # currency_calc = {'name': "Currency Calculator",
-    #                     'description': 'Prosty kalkulator walutowny z wykorzystaniem API NBP.',
-    #                     'url': 'currency_calc:currency_calc',
-    #                     'images': ['money.png',],
-    #                     'more_img': False,
-    #                     }
-    
-    
-    # log_in_app = [meetings_planner, split_bills, '0']
-    # log_out_app = [beer_calculators, password_generator, currency_calc,]
+
+    app_names = []
+    app_names.extend([app.app_name for app in apps])
+    app_names.extend([app.app_name for app in tutorials])
+
 
     context = {'log_in_app': log_in_app,
                'log_out_app': log_out_app,
                'tutorials': tutorials,
+               'app_ids': app_names,
                }
 
     return render(request, 'my_apps/homepage.html', context= context)
