@@ -14,7 +14,7 @@ def deploying(request):
         os.mkdir(path)
 
     
-    photos = ["/media/deploying/"+str(x).split('\\')[-1] for x in sorted(path.iterdir(), key= lambda x: int((str(x).split('\\')[-1].split('.')[0])))]
+    photos = ["/media/deploying/"+str(x).split('\\')[-1] for x in sorted(path.iterdir(), key= lambda x: int((str(x).split('\\')[-1].split('_')[0])))]
     # print(photos)
 
 
