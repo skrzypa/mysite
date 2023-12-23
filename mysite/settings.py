@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'currency_calc',
     'rubikcube',
     'flac_mp3_tag',
+    'deploying',
     
     # aplikacje zewnętrzne
     'bootstrap5',

@@ -31,4 +31,5 @@ urlpatterns = [
     path('', include('currency_calc.urls')),        # dodajemy url naszej apki
     path('', include('rubikcube.urls')),        # dodajemy url naszej apki
     path('', include('flac_mp3_tag.urls')),        # dodajemy url naszej apki
+    path('', include('deploying.urls')),        # dodajemy url naszej apki
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

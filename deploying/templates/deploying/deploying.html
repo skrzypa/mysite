@@ -1,0 +1,871 @@
+{% extends 'my_apps/homepage_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .title-div {
+        margin: 0rem; 
+        margin-top: 5rem;
+        margin-bottom: 2rem;
+        padding: 0.5rem;
+        border-radius: 50px;
+        background-color: #8f0000;
+        scroll-margin-top: 65px;
+    }
+
+    .title-label {
+        margin: 0rem;
+        padding: 0rem;
+        color: #FFFFFF;
+    }
+
+    .title-label-en {
+        margin: 0rem;
+        padding: 0rem;
+        color: #d4af37;
+    }
+
+    .chapter-div {
+        background-color: rgba(1, 1, 1, 1);
+        margin: 0rem;
+        padding: 2rem;
+        border-radius: 50px;
+        scroll-margin-top: 65px;
+    }
+
+    .chapter-label {
+        margin: 0rem;
+        padding: 0rem;
+        color: #FFFFFF;
+    }
+
+    .chapter-label-en {
+        margin: 0rem;
+        padding: 0rem;
+        color: #b0b0b0;
+    }
+
+    .img-div {
+        margin: 0rem;
+        padding: 1rem;
+    }
+
+    .img-img {
+        margin: 0rem;
+        padding: 0rem;
+        border-radius: 15px;
+    }
+
+    .code-div {
+        margin: 0rem;
+        padding: 1rem;
+    }
+
+    .code-pl {
+        margin: 0rem;
+        padding: 0rem;
+        color: #000000;
+    }
+
+    .code-en {
+        margin: 0rem;
+        padding: 0rem;
+        color: #b0b0b0;
+    }
+
+    .code-label {
+        margin: 0rem;
+        padding: 1rem;
+        background-color: #000000;
+        color: #FFFFFF;
+        border-radius: 15px;
+    }
+
+    .ul-li-a {
+        margin: 0rem;
+        padding: 0rem;
+    }
+</style>
+
+<div class="container-fluid" style="margin: 0; padding: 0">
+    <div class="row col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7 mx-auto" style="margin: 0; padding: 0">
+
+        <div class="title-div text-center" style="margin-top: 0" id="chapter0">
+            <label class="title-label h1">
+                Zawartość
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Contents
+            </label>
+            <ul class='list-group list-group-numbered text-start' style="padding: 3rem;">
+
+                <li>
+                    <a href="#chapter1" class="ul-li-a link-light">Technologie - Technologies</a>
+                </li>
+
+                <li style="margin-top: 1rem;">
+                    <a href="#chapter2" class="ul-li-a link-light">OVH, CloudFlare</a>
+                    <ul class='list-group list-group-numbered'>
+                        <li><a href="#chapter2.1" class="ul-li-a link-light">Skopiuj IPv6 - Copy IPv6</a></li>
+                        <li><a href="#chapter2.2" class="ul-li-a link-light">OVH rekord AAAA - OVH record AAAA</a></li>
+                        <li><a href="#chapter2.3" class="ul-li-a link-light">Rekord AAAA - Record AAAA</a></li>
+                        <li><a href="#chapter2.4" class="ul-li-a link-light">IPv6 w nowym rekordzie - IPv6 in new record</a></li>
+                        <li><a href="#chapter2.5" class="ul-li-a link-light">IPv6 w nowym rekordzie - IPv6 in new record</a></li>
+                        <li><a href="#chapter2.6" class="ul-li-a link-light">CloudFlare</a></li>
+                        <li><a href="#chapter2.7" class="ul-li-a link-light">Dodaj domenę - Add new domain</a></li>
+                        <li><a href="#chapter2.8" class="ul-li-a link-light">Darmowy plan - Free plan</a></li>
+                        <li><a href="#chapter2.9" class="ul-li-a link-light">Nowy rekord - New record</a></li>
+                        <li><a href="#chapter2.10" class="ul-li-a link-light">Nowy rekord - New record</a></li>
+                        <li><a href="#chapter2.11" class="ul-li-a link-light">Nameservers</a></li>
+                        <li><a href="#chapter2.12" class="ul-li-a link-light">Https rewrite</a></li>
+                        <li><a href="#chapter2.13" class="ul-li-a link-light">OVH serwery DNS - OVH DNS servers</a></li>
+                    </ul>
+                </li>
+
+                <li style="margin-top: 1rem;">
+                    <a href="#chapter3" class="ul-li-a link-light">Instalacja Pythona i Nginx - Installing Python and Nginx</a>
+                    <ul class='list-group list-group-numbered'>
+                        <li><a href="#chapter3.14" class="ul-li-a link-light">Nginx</a></li>
+                        <li><a href="#chapter3.15" class="ul-li-a link-light">Python, virtualenv</a></li>
+                        <li><a href="#chapter3.16" class="ul-li-a link-light">Repozytorium - Repository</a></li>
+                        <li><a href="#chapter3.17" class="ul-li-a link-light">Środowisko wirtualne - Virtualenv</a></li>
+                        <li><a href="#chapter3.18" class="ul-li-a link-light">Włącz środowisko wirtualne - Turn on the virtualenv</a></li>
+                        <li><a href="#chapter3.19" class="ul-li-a link-light">Baza danych, admin - Database, admin</a></li>
+                        <li><a href="#chapter3.20" class="ul-li-a link-light">Plik .env - .env file</a></li>
+                    </ul>
+                </li>
+
+                <li style="margin-top: 1rem;">
+                    <a href="#chapter4" class="ul-li-a link-light">Serwer nginx, własny błąd 404 - Nginx server, own 404 error</a>
+                    <ul class='list-group list-group-numbered'>
+                        <li><a href="#chapter4.21" class="ul-li-a link-light">Nginx serwer - Nginx server</a></li>
+                        <li><a href="#chapter4.22" class="ul-li-a link-light">Błąd 404 - 404 error</a></li>
+                    </ul>
+                </li>
+
+                <li style="margin-top: 1rem;">
+                    <a href="#chapter5" class="ul-li-a link-light">Gunicorn</a>
+                    <ul class='list-group list-group-numbered'>
+                        <li><a href="#chapter5.23" class="ul-li-a link-light">Plik konfiguracyjny - Configuration file</a></li>
+                        <li><a href="#chapter5.24" class="ul-li-a link-light">Uruchom Gunicorna - Run Gunicorn</a></li>
+                        <li><a href="#chapter5.25" class="ul-li-a link-light">Wyłączenie Gunicorna - Disabling Gunicorn</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+
+
+
+        {% comment %} CHAPTER 1 {% endcomment %}
+        <div class="title-div text-center" style="" id="chapter1">
+            <label class="title-label h1">
+                Technologie
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Technologies
+            </label>
+        </div>
+
+        <div class="chapter-div" style="">
+            <label class="chapter-label fs-5">
+                Backend: Python 3.11.1 (3.10.2 na VPS - 3.10.2 on VPS), Django 4.1.7<br>
+                Frontend: Bootstrap<br>
+                Dostawca domeny (Domain provider): OVH<br>
+                Tunelowanie z IPv6 (Tunneling from IPv6): CloudFlare<br>
+                VPS: Mikrus2.1
+            </label>
+        </div>
+
+
+        {% comment %} CHAPTER 2 {% endcomment %}
+        <div class="title-div text-center" style="" id="chapter2">
+            <label class="title-label h1">
+                Dodanie adresu IP do OVH i CloudFlare
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Adding an IP address to OVH and CloudFlare
+            </label>
+        </div>
+
+
+
+        <div class="chapter-div" style="" id="chapter2.1">
+            <label class="chapter-label fs-5">
+                1. Zaloguj się na swój serwer i skopiuj widoczny w czerwonym prostokącie adres IPv6
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                1. Log in to your server and copy the IPv6 address shown in the red rectangle
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.0 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.2">
+            <label class="chapter-label fs-5">
+                2. Zaloguj się do swojego konta OVH i dodaj nowy rekord
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                2. Log in to your OVH account and add a new record
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.1 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.3">
+            <label class="chapter-label fs-5">
+                3. Dodaj rekord AAAA
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                3. Add AAAA record
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.2 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.4">
+            <label class="chapter-label fs-5">
+                4. Dodaj adress IPv6 w miejsce czarnego prostokąta
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                4. Add the IPv6 address in place of the black rectangle
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.3 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.5">
+            <label class="chapter-label fs-5">
+                5. Dodaj adress IPv6 w miejsce czarnego prostokąta
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                5. Add the IPv6 address in place of the black rectangle
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.4 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.6">
+            <label class="chapter-label fs-5">
+                6. Zaloguj się na swoje konto w CloudFlare i dodaj nową stronę
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                6. Log in to your CloudFlare account and add a new site
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.5 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.7">
+            <label class="chapter-label fs-5">
+                7. Podaj swoją domenę
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                7. Enter your domain
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.6 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.8">
+            <label class="chapter-label fs-5">
+                8. Wybierz darmowy plan
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                8. Choose a free plan
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.7 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.9">
+            <label class="chapter-label fs-5">
+                9. Dodaj nowy rekord
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                9. Add new record
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.8 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.10">
+            <label class="chapter-label fs-5">
+                10. Wybierz AAAA, wpisz @, wklej ten sam adres IPv6, zaznacz pomarańczową chmurkę
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                10. Select AAAA, type @, paste the same IPv6 address, select the orange cloud
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.9 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.11">
+            <label class="chapter-label fs-5">
+                11. Punkty 2-5 zrobimy za chwilę. Przejdźmy dalej
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                11. We will do points 2-5 in a moment. Let's move on
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.10 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.12">
+            <label class="chapter-label fs-5">
+                12. Zaznacz wszystko
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                12. Mark everything
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.11 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.12 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.13 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.14 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.15 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter2.13">
+            <label class="chapter-label fs-5">
+                13. Podmień DNS u dostawcy domeny na te, o które poprosił CloudFlare
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                13. Replace DNS at the domain provider with the one requested by CloudFlare
+            </label>
+        </div>
+
+        <div class="img-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <img src="{{ photos.16 }}" class="img-img img-fluid object-fit-none" style="width: 100%;">
+            </div>
+        </div>
+
+
+        {% comment %} CHAPTER 3 {% endcomment %}
+        <div class="title-div text-center" style="" id="chapter3">
+            <label class="title-label h1">
+                Instalacja enviroment, nginxa i potrzebnych bibliotek
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Installation of enviroment, nginx and needed libraries
+            </label>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.14">
+            <label class="chapter-label fs-5">
+                14. Zaloguj się na VPSa i wyszukaj czy dostępny jest nginx w wersji extras
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                14. Log on to the VPS and search to see if nginx extras is available
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    apt search nginx | grep nginx
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label" style="">
+                    nginx-extras/jammy-updates,now 1.18.0-6ubuntu14.4 amd64 [installed]<br>
+                    &emsp;&emsp;nginx web/proxy server (extended version)
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    apt install nginx-extras
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    systemctl start nginx<br>
+                    systemctl status nginx<br>
+                    netstat -plntu
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.15">
+            <label class="chapter-label fs-5">
+                15. Zainstaluj potrzebne bilbioteki
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                15. Install the necessary libraries
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    sudo apt -y install python3-pip python3-dev
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    sudo pip3 install virtualenv
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.16">
+            <label class="chapter-label fs-5">
+                16. Pobierz repozytorium
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                16. Download the repository
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    cd<br>
+                    mkdir pskrzynski<br>
+                    cd pskrzynski<br>
+                    git clone https://github.com/skrzypa/mysite
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.17">
+            <label class="chapter-label fs-5">
+                17. Wejdź w nowo utworzony folder, a następnie utwórz środowisko wirtualne
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                17. Enter the newly created folder, then create a virtual environment
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    ls<br>
+                    cd mysite<br>
+                    virtualenv 0_venv
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.18">
+            <label class="chapter-label fs-5">
+                18. Włącz środowisko wirtualne, a następnie pobierz potrzebne bibliotek
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                18. Turn on the virtual environment, and then download the necessary libraries
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    source 0_venv/bin/activate<br>
+                    pip install django==4.1.7 gunicorn==21.2.0 django-bootstrap-v5==1.0.11 requests==2.30.0 django-environ==0.11.2 Pillow==9.5.0
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.19">
+            <label class="chapter-label fs-5">
+                19. Utwórz bazę danych, pliki statyczne oraz admina
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                19. Create database, static and admin 
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    python manage.py makemigrations<br>
+                    python manage.py migrate<br>
+                    python manage.py collectstatic<br>
+                    python manage.py createsuperuser
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter3.20">
+            <label class="chapter-label fs-5">
+                20. Utwórz plik .env o następującej treści
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                20. Create an .env file with the following content
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    vim .env
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    DEBUG=False<br>
+                    SECRET_KEY=’twoj klucz’<br>
+                    #ALLOWED_HOSTS=[]<br>
+                    #CSRF_TRUSTED_ORIGINS=[]<br>
+                    ALLOWED_HOSTS=['127.0.0.1', 'pskrzynski.pl']<br>
+                    CSRF_TRUSTED_ORIGINS=['http://0.0.0.0:8000', 'https://pskrzynski.pl', 'https://*.pskrzynski.pl']<br>
+                    CSRF_COOKIE_SECURE=True<br>
+                    SESSION_COOKIE_SECURE=True
+                </label> 
+            </div>
+        </div>
+
+
+        {% comment %} CHAPTER 4 {% endcomment %}
+        <div class="title-div text-center" style="" id="chapter4">
+            <label class="title-label h1">
+                Serwer nginx, własny błąd 404
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Nginx server, own 404 error
+            </label>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter4.21">
+            <label class="chapter-label fs-5">
+                21. Wejdz w następujący plik, a następnie na samym początku wpisz poniższą treść
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                21. Go to the following file, and then at the very beginning, type the following content
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    vim /etc/nginx/sites-enabled/default
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    serwer {<br>
+                    &emsp;&emsp;listen 80;<br>
+                    &emsp;&emsp;listen 80;<br>
+                    &emsp;&emsp;listen [::]:80;<br>
+                    <br>    
+                    &emsp;&emsp;server_name pskrzynki.pl www.pskrzynski.pl;<br>  
+                    <br>
+                    &emsp;&emsp;set $expire_cache 3h;<br>  
+                    &emsp;&emsp;expires $expire_cache;<br>  
+                    <br>
+                    &emsp;&emsp;error_page 404 /error404.html;<br> 
+                    &emsp;&emsp;location = /error404.html {<br>  
+                    &emsp;&emsp;&emsp;&emsp;root /var/www/my_erros;<br>  
+                    &emsp;&emsp;}<br>  
+                    <br>  
+                    &emsp;&emsp;location / {<br>  
+                    &emsp;&emsp;&emsp;&emsp;proxy_pass http://127.0.0.1:8000;<br>  
+                    &emsp;&emsp;}<br>  
+                    <br>  
+                    &emsp;&emsp;location /podstrona_1/ {<br>  
+                    &emsp;&emsp;&emsp;&emsp;proxy_pass http://127.0.0.1:8000;<br>  
+                    &emsp;&emsp;}<br> 
+                    <br>  
+                    &emsp;&emsp;location /podstrona_2/ {<br>  
+                    &emsp;&emsp;&emsp;&emsp;proxy_pass http://127.0.0.1:8000;<br>  
+                    &emsp;&emsp;}<br> 
+                    &emsp;&emsp;...<br>
+                    }
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    nginx -t<br>
+                    nginx -s reload
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter4.22">
+            <label class="chapter-label fs-5">
+                22. Stwórz własny błąd 404
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                22. Create your own 404 error
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    cd /var/www/<br>
+                    mkdir my_errors<br>
+                    vim error404.html
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    Błąd 404<br>
+                    404 error
+                </label> 
+            </div>
+        </div>
+
+
+        {% comment %} CHAPTER 5 {% endcomment %}
+        <div class="title-div text-center" style="" id="chapter5">
+            <label class="title-label h1">
+                Gunicorn
+            </label>
+            <br>
+            <label class="title-label-en h5">
+                Gunicorn
+            </label>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter5.23">
+            <label class="chapter-label fs-5">
+                23. Stwórz plik konfiguracyjny
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                23. Create a configuration file
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    cd<br>
+                    cd pskrzynski<br>
+                    mkdir gunicorn_file<br>
+                    cd gunicorn_file<br>
+                    vim gconf.py<br>
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    command = '/root/pskrzynski/mysite/0_venv/bin/gunicorn'<br>
+                    pythonpath = '/root/pskrzynski/mysite'<br>
+                    bind = '127.0.0.1:8000'<br>
+                    workers = 3
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter5.24">
+            <label class="chapter-label fs-5">
+                24. Uruchom Gunicorna, jeśli zobaczysz poniższą treść po wspisaniu tej komendy, twoja strona powinna być widoczna dla każdego pod twoją domeną
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                24. Run Gunicorn, if you see the following after typing this command, your site should be visible to everyone under your domain
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    cd<br>
+                    gunicorn -c pskrzynski/gunicorn_file/gconf.py mysite.wsgi
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label" style="">
+                    [2023-12-23 18:23:31 +0000] [38868] [INFO] Starting gunicorn 21.2.0<br>
+                    [2023-12-23 18:23:31 +0000] [38868] [INFO] Listening at: http://127.0.0.1:8000 (38868)<br>
+                    [2023-12-23 18:23:31 +0000] [38868] [INFO] Using worker: sync<br>
+                    [2023-12-23 18:23:31 +0000] [38869] [INFO] Booting worker with pid: 38869<br>
+                    [2023-12-23 18:23:31 +0000] [38870] [INFO] Booting worker with pid: 38870<br>
+                    [2023-12-23 18:23:32 +0000] [38871] [INFO] Booting worker with pid: 38871
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter5.25">
+            <label class="chapter-label fs-5">
+                25. Wyłączanie procesu odpowiedzialnego za Gunicorna
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                25. Disabling the process responsible for Gunicorn
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    ps -aux | grep gunicorn
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label" style="">
+                    root       >PID<  0.0  1.8  33304 19096 ?        ...<br>
+                    root       >PID<  0.0  3.4  51984 36532 ?        ...<br>
+                    root       >PID<  0.0  4.0  57684 42252 ?        ...<br>
+                    root       >PID<  0.0  3.4  51904 36528 ?        ...<br>
+                    root       >PID<  0.0  0.2   9144  2296 pts/5    ...
+                </label> 
+            </div>
+            <br>
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label user-select-all" style="">
+                    kill -9 >PID<
+                </label> 
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

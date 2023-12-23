@@ -14,6 +14,7 @@ import mysite.settings
 
 from rubikcube.models import DescribeApp as RubikApp
 from flac_mp3_tag.models import DescribeApp as FlacMp3
+from deploying.models import DescribeApp as Deploying
 
 import calendar
 import datetime
@@ -52,7 +53,7 @@ def index(request):
         elif app.app_log_in is False:
             log_out_app.append(apps_dict)
 
-    tutorials = [RubikApp.objects.last(), FlacMp3.objects.last()]
+    tutorials = [RubikApp.objects.last(), FlacMp3.objects.last(), Deploying.objects.last()]
 
     app_names = []
     app_names.extend([app.app_name for app in apps])
