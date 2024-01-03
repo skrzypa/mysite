@@ -36,7 +36,7 @@ class NewEventModel(models.Model):
     event_date_month = models.CharField(max_length= 2, default= "") #DELETE
     event_date_day = models.CharField(max_length= 2, default= "") #DELETE
 
-    event_date = models.DateTimeField(auto_now_add= True)
+    event_date = models.DateTimeField(auto_now_add= False)
 
     date_added = models.DateTimeField(auto_now_add= True)
     
