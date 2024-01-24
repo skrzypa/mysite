@@ -280,27 +280,50 @@ def calendar_generate(request):
             invited.save()
             return redirect('my_apps:meetings_calendar')
  
-    all_events = []
+    # pobieranie eventów
+    # all_events = []
+    past_events, future_events, today_events = [], [], []
     for event in EventsModel.filter(event_date__year= year_choosen).order_by('event_date'):
         
         dict_all_events = {}
         dict_all_events['event'] = event
 
         dict_all_events['invited_friend'] = InvitedModel.filter(event_id = event.id).values_list('invited_friend__username', flat=True)
+        
         dict_all_events['accepted_invitation'] = InvitedModel.filter(event_id = event.id, accepted_invitation= True).values_list('invited_friend__username', flat=True)
+        
         dict_all_events['decline_invitation'] = InvitedModel.filter(event_id = event.id, decline_invitation= True).values_list('invited_friend__username', flat=True)
 
+        past_today_future = (event.event_date.date() - datetime.date.today()).days
+
+        print(past_today_future, event.event_title)
+
         if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
-            all_events.append(dict_all_events)
+            # all_events.append(dict_all_events)
+
+            if past_today_future < 0:
+                past_events.append(dict_all_events)
+                print("przeszłe")
+
+            elif past_today_future == 0:
+                today_events.append(dict_all_events)
+                print("dziś")
+
+            elif past_today_future > 0:
+                future_events.append(dict_all_events)
+                print("przyszłe")
+
 
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
-    all_my_own_events =     EventsModel.filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    all_my_own_events = EventsModel.filter(owner= request.user, event_date_year= year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    
     for event in all_my_own_events:
         date = f"{event.event_date_day}.{month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_my_dates.append(date)
     
     event_all_shared_dates = [] # eventy, na które zalogowany użytkonwik został zaproszony
-    all_shared_event =      EventsModel.filter(invitedtoeventmodel__invited_friend= request.user, event_date_year=year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    all_shared_event = EventsModel.filter(invitedtoeventmodel__invited_friend= request.user, event_date_year=year_choosen).order_by('event_date_year', 'event_date_month', 'event_date_day')
+    
     for event in all_shared_event:
         date = f"{event.event_date_day}.{month_list_1[int(event.event_date_month) -1]}.{event.event_date_year}"
         event_all_shared_dates.append(date)
@@ -320,7 +343,10 @@ def calendar_generate(request):
                 'event_all_my_dates':           event_all_my_dates,
                 'event_all_shared_dates':       event_all_shared_dates,
                 'current_user':                 request.user,
-                'all_events':                   all_events,
+                # 'all_events':                   all_events,
+                'future_events':                future_events,
+                'past_events':                  past_events,
+                'today_events':                 today_events,
 
                 'year_progress':                year_progress,
             }

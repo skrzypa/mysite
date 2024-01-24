@@ -12,8 +12,8 @@ class AvailableApp(models.Model):
     app_link = models.TextField(default= '')
     app_log_in = models.BooleanField(default= True)
 
-    def __str__(self) -> str:
-        return f"{self.id_app}. {self.app_name}"
+    # def __str__(self) -> str:
+    #     return f"{self.id_app}. {self.app_name}"
 
 
 
@@ -43,9 +43,9 @@ class NewEventModel(models.Model):
     class Meta:
         verbose_name_plural = "Events"
 
-    def __str__(self):
-        """ Zwraca reprezentację modelu w postaci ciągu tekstowego """
-        return self.event_title
+    # def __str__(self):
+    #     """ Zwraca reprezentację modelu w postaci ciągu tekstowego """
+    #     return self.event_title
 
 
 
@@ -68,8 +68,8 @@ class Friendship(models.Model):
         # z tymi samymi wartościami pól "from_friend" i "to_friend
         unique_together = ('from_friend', 'to_friend')  
 
-    def __str__(self):
-        return f"{self.from_friend} add {self.to_friend} to friend"
+    # def __str__(self):
+    #     return f"{self.from_friend} add {self.to_friend} to friend"
 
 
 
@@ -82,8 +82,8 @@ class AddExpenseGroup(models.Model):
     date_added = models.DateTimeField(auto_now_add= True)
 
 
-    def __str__(self):
-        return f"{self.owner} create new group: '{self.expense_title}'."
+    # def __str__(self):
+    #     return f"{self.owner} create new group: '{self.expense_title}'."
 
 
 
@@ -93,8 +93,8 @@ class AddFriendToExpenseGroup(models.Model):
     invited_to_group_friend = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-    def __str__(self):
-        return f"{AddExpenseGroup.owner} add {self.invited_to_group_friend} to '{AddExpenseGroup.expense_title}' group."
+    # def __str__(self):
+    #     return f"{AddExpenseGroup.owner} add {self.invited_to_group_friend} to '{AddExpenseGroup.expense_title}' group."
 
 
 
@@ -110,8 +110,8 @@ class AddExpense(models.Model):
     
     date_added = models.DateTimeField(auto_now_add= True)
 
-    def __str__(self):
-        return f"{self.creator} add new expense: '{self.description}'."
+    # def __str__(self):
+    #     return f"{self.creator} add new expense: '{self.description}'."
 
 
 
@@ -126,8 +126,8 @@ class AddFriendToExpense(models.Model):
     to_repayment = models.FloatField(default= 0)  
 
 
-    def __str__(self):
-        return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount}/{self.to_repayment} PLN. --- {self.expense_id}" 
+    # def __str__(self):
+    #     return f"{self.invited_to_expense_friend} hangs {AddExpense.creator} {self.amount}/{self.to_repayment} PLN. --- {self.expense_id}" 
 
 
 
