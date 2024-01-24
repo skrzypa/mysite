@@ -296,22 +296,17 @@ def calendar_generate(request):
 
         past_today_future = (event.event_date.date() - datetime.date.today()).days
 
-        print(past_today_future, event.event_title)
-
         if request.user == event.owner or str(request.user) in list(dict_all_events['invited_friend']):
             # all_events.append(dict_all_events)
 
             if past_today_future < 0:
                 past_events.append(dict_all_events)
-                print("przeszłe")
 
             elif past_today_future == 0:
                 today_events.append(dict_all_events)
-                print("dziś")
 
             elif past_today_future > 0:
                 future_events.append(dict_all_events)
-                print("przyszłe")
 
 
     event_all_my_dates = [] # eventy utworzone przez zalogowanego użytkownika
