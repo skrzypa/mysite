@@ -56,7 +56,8 @@ def index(request):
     tutorials = [RubikApp.objects.last(), FlacMp3.objects.last(), Deploying.objects.last()]
 
     app_names = []
-    app_names.extend([app.app_name for app in apps])
+    app_names.extend([app.app_name for app in apps if app.app_log_in is True])
+    app_names.extend([app.app_name for app in apps if app.app_log_in is False])
     app_names.extend([app.app_name for app in tutorials])
 
 
@@ -112,62 +113,85 @@ class BeerCalc():
 
 def calc(request):
     context, baling_wynik, brix_wynik, proc_blg_wynik, proc_bx_wynik, glukoza_wynik, roztwor_wynik = {}, 0, 0, 0, 0, 0, 0
-    
+    error = 'Podaj prawidłową liczbę'
+    context["style_piwne"] =  [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerCalc.style_piwne()]
     
     
     if request.method == 'POST':
         if 'brix' in request.POST:
-            brix = request.POST["brix"]
+            brix: str = request.POST["brix"]
+            brix = brix.replace(',', '.')
 
             try:
                 brix = float(brix)
                 baling_wynik = f"{brix} Bx = {BeerCalc.Bx_Blg(brix)} Blg"
             except ValueError:
-                context['error'] = 'Zła wartość'
+                context['error'] = error
+            else:
+                context["baling_wynik"] = baling_wynik
+                context['url']= "bx-blg"
 
 
 
-        if 'baling' in request.POST:
-            baling = request.POST["baling"]
+
+        elif 'baling' in request.POST:
+            baling: str = request.POST["baling"]
+            baling = baling.replace(',', '.')
 
             try:
                 baling = float(baling)
                 brix_wynik = f"{baling} Blg = {BeerCalc.Blg_Bx(baling)} BX"
             except ValueError:
-                context['error'] = 'Zły typ wartości'
+                context['error'] = error
+            else:
+                context["brix_wynik"] =  brix_wynik
+                context['url']= "bx-blg"
 
 
 
-        if 'brix_start' in request.POST and 'brix_end' in request.POST:
-            brix_s = request.POST["brix_start"]
-            brix_e = request.POST["brix_end"]
+        elif 'brix_start' in request.POST and 'brix_end' in request.POST:
+            brix_s: str = request.POST["brix_start"]
+            brix_e: str = request.POST["brix_end"]
+            brix_s = brix_s.replace(',', '.')
+            brix_e = brix_e.replace(',', '.')
 
             try:
                 brix_s = float(brix_s)
                 brix_e = float(brix_e)
                 proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {BeerCalc.Bx_proc(brix_s, brix_e)} % ± 0.5%"
             except:
-                context['error'] = 'Zły typ wartości'
+                context['error'] = error
+            else:
+                context["proc_bx_wynik"] =  proc_bx_wynik
+                context['url']= "bx-proc"
 
 
 
-        if 'blg_start' in request.POST and 'blg_end' in request.POST:
-            blg_s = request.POST["blg_start"]
-            blg_e = request.POST["blg_end"]
+        elif 'blg_start' in request.POST and 'blg_end' in request.POST:
+            blg_s: str = request.POST["blg_start"]
+            blg_e: str = request.POST["blg_end"]
+            blg_s = blg_s.replace(',', '.')
+            blg_e = blg_e.replace(',', '.')
 
             try:
                 blg_s = float(blg_s)
                 blg_e = float(blg_e)
                 proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {BeerCalc.Blg_proc(blg_s, blg_e)} % ± 0.5%"
             except:
-                context['error'] = 'Zły typ wartości'
+                context['error'] = error
+            else:
+                context["proc_blg_wynik"] =  proc_blg_wynik
+                context['url']= "blg-proc"
 
 
 
-        if 'co2' in request.POST and 'piwo' in request.POST and  'temp' in request.POST:
-            co2 = request.POST['co2']
-            piwo = request.POST['piwo']
-            temp = request.POST['temp']
+        elif 'co2' in request.POST and 'piwo' in request.POST and  'temp' in request.POST:
+            co2: str = request.POST['co2']
+            piwo: str = request.POST['piwo']
+            temp: str = request.POST['temp']
+            co2 = co2.replace(',', '.')
+            piwo = piwo.replace(',', '.')
+            temp = temp.replace(',', '.')
 
             try:
                 co2 = float(co2)
@@ -176,33 +200,33 @@ def calc(request):
                 # glukoza_wynik = f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {Calculators.ile_glukozy(co2, piwo, temp)} gram glukozy"
                 glukoza_wynik = f"Nie znalazłem jeszcze odpowiedniego wzoru :c"
             except:
-                context['error'] = 'Zły typ wartości'
+                context['error'] = error
+            else:
+                context["glukoza_wynik"] =  glukoza_wynik
+                context['url']= "glucose"
 
 
 
-        if 'blg_pocz' in request.POST or 'glukoza' in request.POST:
-            roztwor = request.POST['blg_pocz']
-            glukoza = request.POST['glukoza']
+        elif 'blg_pocz' in request.POST or 'glukoza' in request.POST:
+            roztwor: str = request.POST['blg_pocz']
+            glukoza: str = request.POST['glukoza']
+            roztwor =  roztwor.replace(',', '.')
+            glukoza = glukoza.replace(',', '.')
             
             try:
                 roztwor = float(roztwor)
                 glukoza = float(glukoza)
                 roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {BeerCalc.roztwor(roztwor, glukoza)} ml wody"
             except:
-                context['error'] = 'Zły typ wartości'
-
-    context = {     "baling_wynik": baling_wynik, 
-                    "brix_wynik": brix_wynik, 
-                    "proc_bx_wynik": proc_bx_wynik,
-                    "proc_blg_wynik": proc_blg_wynik,
-                    "glukoza_wynik": glukoza_wynik,
-                    "roztwor_wynik": roztwor_wynik,
-                    "style_piwne": [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerCalc.style_piwne()],
-                }
-
+                context['error'] = error
+            else:
+                context["roztwor_wynik"] =  roztwor_wynik
+                context['url']= "co2-glucose"
+        
     return render(request= request, 
-                    template_name= 'my_apps/beer_calc.html', 
-                    context= context)
+                template_name= f'my_apps/beer_calc.html', 
+                context= context,
+            )
 
 
 

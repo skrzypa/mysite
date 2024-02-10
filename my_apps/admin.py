@@ -28,7 +28,9 @@ admin.site.register(InvitedToEventModel, InvitedToEventModelAdmin)
 
 
 
-admin.site.register(Friendship)
+class FriendshipClass(admin.ModelAdmin):
+    list_display = ('from_friend', 'to_friend')
+admin.site.register(Friendship, FriendshipClass)
 
 
 

@@ -6,9 +6,15 @@
 <div class="container text-center">
     <div class="">
 
+        {% if error %}
+            <div class="alert alert-danger" style="margin: 0, padding: 0" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
         <div class="row justify-content-center">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="bx-blg">
                     <h2 class="border-bottom">Zamień Brixy na Balingi</h2>
                     <form method="post">
                         {% csrf_token %}
@@ -31,7 +37,7 @@
             </div>
     
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="bx-blg">
                     <h2 class="border-bottom">Zamień Balingi na Brixy</h2>
                     <form method="post">
                         {% csrf_token %}
@@ -57,7 +63,7 @@
 
         <div class="row justify-content-center">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="bx-proc">
                     <h2 class="border-bottom">Zamień Brixy na procenty</h2>
             
                     <form method="post">
@@ -86,7 +92,7 @@
             </div>
     
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="blg-proc">
                     <h2 class="border-bottom">Zamień Balingi na procenty</h2>
             
                     <form method="post">
@@ -118,7 +124,7 @@
 
         <div class="row justify-content-center">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="glucose">
                     <h2 class="border-bottom">Ilość glukozy do refermentacji</h2>
                 
                     <form method="post">
@@ -152,7 +158,7 @@
             </div>
             
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6" style="margin-bottom: 5rem;">
-                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem;">
+                <div class="bg-body-tertiary rounded bg-light text-dark" style="padding: 1rem; scroll-margin: 65px" id="co2-glucose">
                     <h2 class="border-bottom">Roztwór o podanej gęstości</h2>
                 
                     <form method="post">
@@ -219,5 +225,14 @@
     </div>
 </div>
 
+<script>
+    {% if url %}
+        // Jeżeli url jest zdefiniowane, przewiń do odpowiedniego elementu
+        var element = document.getElementById('{{ url }}');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    {% endif %}
+</script>
 
 {% endblock content %}
