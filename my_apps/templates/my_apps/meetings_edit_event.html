@@ -1,77 +1,91 @@
 {% extends 'my_apps/homepage_base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center text-dark">
-        <div class="border col-10 shadow-lg bg-body-tertiary rounded bg-light">
+<div class="container-fluid text-dark col-11" style="min-height: 100%;">
+    <div class="row justify-content-center bg-light rounded" style="">
+        <div class="border shadow-lg bg-body-tertiary rounded">
             <div style="margin: 0rem;">
                 <h1 style="margin-top: 2rem; margin-bottom: 5rem;">Edytuj wydarzenie</h1>
                 <form method='post' class="mb-0" action="{% url 'my_apps:meetings_edit_event' id %}">
 
                     {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="{{ form_new_event.event_title.id_for_label }}" class="col-sm-2 col-form-label">{{ form_new_event.event_title.label }}</label>
-                        <div class="col-sm-10">
-                          {{ form_new_event.event_title }}
-                        </div>
-                      </div>
                     
-                      <div class="form-group row">
-                        <label for="{{ form_new_event.event_location.id_for_label }}" class="col-sm-2 col-form-label">{{ form_new_event.event_location.label }}</label>
-                        <div class="col-sm-10">
-                          {{ form_new_event.event_location }}
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_title.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_title.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_title }}
                         </div>
-                      </div>
+                    </div>
                     
-                      <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_day.label }}</label>
-                        <div class="col-sm-2">
-                          {{ form_new_event.event_date_day }}
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_location.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_location.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_location }}
                         </div>
+                    </div>
                     
-                        <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_month.label }}</label>
-                        <div class="col-sm-2">
-                          {{ form_new_event.event_date_month }}
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_day.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_day }}
+                            </div>
                         </div>
-                    
-                        <label class="col-sm-2 col-form-label">{{ form_new_event.event_date_year.label }}</label>
-                        <div class="col-sm-2">
-                          {{ form_new_event.event_date_year }}
+                        
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_month.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_month }}
+                            </div>
                         </div>
-                      </div>
-                    
-                      <div class="form-group row" class="border-top: 0rem; border-bottom: 0rem;">
-                          <label class="col-sm-2 col-form-label">Godzina</label>
-  
-                          <div class="col-sm-2 col-form-label">
-                                <select class="form-select" name="selected_hour">
-                                    {% for h in hours %}
-                                        {% if h == event_date_hour %}
-                                            <option selected>{{ h }}</option>
-                                        {% endif %}
-                                        <option>{{ h }}</option>
-                                    {% endfor %}
-                                </select>
-                          </div>
-  
-                          <div class="col-sm-2 col-form-label">
-                                <select class="form-select" name="selected_minute">
-                                    {% for m in minutes %}
-                                        {% if m == event_date_minute %}
-                                            <option selected>{{ m }}</option>
-                                        {% endif %}
-                                        <option>{{ m }}</option>
-                                    {% endfor %}
-                                </select>
-                          </div>
-                      </div>
-                    
-                      <div class="form-group row">
-                        <label for="{{ form_new_event.event_description.id_for_label }}" class="col-sm-2 col-form-label">{{ form_new_event.event_description.label }}</label>
-                        <div class="col-sm-10">
-                          {{ form_new_event.event_description }}
+                        
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_year.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_year }}
+                            </div>
                         </div>
-                      </div>
+
+                    </div>
+                
+                    <div class="form-group d-flex flex-row flex-wrap" style="gap: 1rem;">
+
+                        <div class="flex-col col-form-label">
+                            <label>
+                                Godzina
+                            </label>
+                        </div>
+
+                        <div class="flex-col col-form-label">
+                            <select class="form-select" name="selected_hour">
+                                {% for h in hours %}
+                                    {% if h == event_date_hour %}
+                                        <option selected>{{ h }}</option>
+                                    {% endif %}
+                                    <option>{{ h }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="flex-col col-form-label">
+                            <select class="form-select" name="selected_minute">
+                                {% for m in minutes %}
+                                    {% if m == event_date_minute %}
+                                        <option selected>{{ m }}</option>
+                                    {% endif %}
+                                    <option>{{ m }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    
+                    <div class="form-group d-flex flex-row flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_description.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_description.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_description }}
+                        </div>
+                    </div>
     
                       <div class="mt-0 mb-2 btn-group" role="group">
                         <button type="submit" name='save_event' class="btn btn-success btn-sm">Zapisz zmiany</button>
@@ -81,70 +95,49 @@
                           <button type="button" class="btn btn-danger btn-sm">Anuluj</button>
                         </a>
                       </div>
-            
-                    {% comment %} LISTA ZNAJOMYCH {% endcomment %}
-                    <div class="container-fluid mt-5 mb-5">
-                        <div class="row justify-content-center text-center">
-                            <div class="col" style="padding: 0;">
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td style="width: 50%" class="text-dark">
-                                                <h4>Zaproś znajomego:</h4>
-                                            </td>
-                                        </tr>
-                    
-                                        <tr>
-                                            <td>
-                                                {% for friend in rest_friends %}
-                                                    <form method="post" class="mb-0 mt-2">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="invite_friend_id" value="{{ friend.id }}">
-                                                        <button type="submit" class="btn btn-success btn-sm">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                                                                <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                                                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-                                                            </svg> {{ friend }}
-                                                        </button>
-                                                    </form>
-                                                {% endfor %}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="col" style="padding: 0;">
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td style="width: 50%" class="text-dark">
-                                                <h4>Na liście:</h4>
-                                            </td>
-                                        </tr>
-        
-                                        <tr>
-                                            <td>
-                                                {% for friend in invited_friends %}
-                                                    <form method="post" class="mb-0 mt-2">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="delete_friend_id" value="{{ friend.id }}">
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z"/>
-                                                            </svg> {{ friend }}
-                                                        </button>
-                                                    </form>
-                                                {% endfor %}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
                 </form>
+            
+                {% comment %} LISTA ZNAJOMYCH {% endcomment %}
+                <div class="h3">
+                    Na liście:
+                </div>
+                <div class="d-flex flex-wrap flex-row" style="gap: 0.5rem;">
+                    {% for friend in invited_friends %}
+                        <div class="flex-col">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_friend_id" value="{{ friend.id }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-x-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6.146-2.854a.5.5 0 0 1 .708 0L14 6.293l1.146-1.147a.5.5 0 0 1 .708.708L14.707 7l1.147 1.146a.5.5 0 0 1-.708.708L14 7.707l-1.146 1.147a.5.5 0 0 1-.708-.708L13.293 7l-1.147-1.146a.5.5 0 0 1 0-.708z"/>
+                                    </svg> {{ friend }}
+                                </button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+
+
+                <div class="h3">
+                    Zaproś znajomego:
+                </div>
+                <div class="d-flex flex-wrap flex-row" style="gap: 0.5rem;">
+                    {% for friend in rest_friends %}
+                        <div class="flex-col">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="invite_friend_id" value="{{ friend.id }}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg> {{ friend }}
+                                </button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

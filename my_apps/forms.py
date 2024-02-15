@@ -10,18 +10,18 @@ class NewEventForm(forms.ModelForm):
         labels = {'event_title': 'Wydarzenie',  
                     'event_location': 'Lokalizacja', 
                     'event_description': 'Opis',
-                    'event_date_year': 'Rok', #DELETE
-                    'event_date_month': 'Miesiąc', #DELETE
-                    'event_date_day': 'Dzień', #DELETE
-                }
+                    'event_date_year': 'Rok', 
+                    'event_date_month': 'Miesiąc', 
+                    'event_date_day': 'Dzień',
+        }
 
-        widgets = {'event_title':           forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
-                   'event_location':       forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
-                   'event_description':    forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-                   'event_date_year':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
-                   'event_date_month':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
-                   'event_date_day':           forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}), #DELETE
-                }
+        widgets = {'event_title':           forms.Textarea(attrs= {'rows': 1}),
+                   'event_location':       forms.Textarea(attrs= {'rows': 1}),
+                   'event_description':    forms.Textarea(attrs= {'rows': 2}),
+                   'event_date_year':           forms.TextInput(attrs={'readonly': 'readonly'}), 
+                   'event_date_month':           forms.TextInput(attrs={'readonly': 'readonly'}), 
+                   'event_date_day':           forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

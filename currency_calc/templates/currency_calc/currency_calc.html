@@ -29,11 +29,11 @@
 
             {% if result is not None and message is not None%}
                 {% if result == 'False' %}
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger text-dark" role="alert">
                         {{ message }}
                     </div>
                 {% elif result == 'True' %}
-                    <div class="alert alert-success" role="alert">
+                    <div class="alert alert-success text-dark" role="alert">
                         {{ message }}
                     </div>
                 {% endif %}
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem; margin-bottom: 1rem;">
-                            <label class="input-group-text" for="inputGroupSelect01">Wybierz walutę</label>
+                            <label class="input-group-text" for="inputGroupSelect01">Waluta</label>
                             <select class="form-select" id="inputGroupSelect01" name="selected_currency">
                                 {% for currency in currencies %}
                                     {% if currency.code == currency_choose %}
@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem; margin-bottom: 1rem;">
-                            <label class="input-group-text" for="inputGroupSelect01">Wybierz walutę</label>
+                            <label class="input-group-text" for="inputGroupSelect01">Waluta</label>
                             <select class="form-select" id="inputGroupSelect01" name="selected_currency">
                                 {% for currency in currencies %}
                                     {% if currency.code == currency_choose %}
