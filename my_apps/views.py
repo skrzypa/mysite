@@ -51,7 +51,8 @@ def index(request):
                 'description': app.app_describe,
                 'url':app.app_link,
                 'images': [p.photo for p in apps_photos.filter(id_app= app.id_app)],
-                'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1
+                'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1,
+                'app_log_in': app.app_log_in,
             }
         )
 
