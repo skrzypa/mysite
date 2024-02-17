@@ -11,6 +11,7 @@ class AvailableApp(models.Model):
     app_describe = models.TextField(default= '')
     app_link = models.TextField(default= '')
     app_log_in = models.BooleanField(default= True)
+    app_tutorial = models.BooleanField(default= False)
 
     def __str__(self) -> str:
         return f"id: {self.id_app}, name: {self.app_name}"

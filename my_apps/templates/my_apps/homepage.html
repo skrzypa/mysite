@@ -88,7 +88,7 @@
 
                     <div class="d-flex flex-wrap justify-content-center">
 
-                        {% for app_name in app_ids %}
+                        {% for app_name in app_names %}
                             <div class="" style="margin: 0; padding: 0.5rem;">
                                 <button class="btn btn-sm btn-primary">
                                     <label class="fs-6" style="margin: 0; margin: 0;">
@@ -110,23 +110,20 @@
     </div>
 </div>
 
-<div class="container-fluid text-center" style="margin-top: 2rem;">
+<div class="text-center" style="margin-top: 2rem; min-height: 100%">
 
-    <div class="">
-        <h1>Załóż konto i uzyskaj dostęp do wszystkich następujących aplikacji.</h1>
-    </div>
+    <div class="d-flex flex-wrap justify-content-center text-dark" style="margin: 0;">
 
-    <div class="mt-5 mb-3">
-        <h2>Aplikacje dostępne po zalogowaniu się:</h2>
-    </div>
+        <label class="h1 text-wrap text-break text-light">Załóz konto aby uzyskać dostęp do wszystkich aplikacji</label>
 
-    <div class="container text-dark">
-        <div class="row">
+        {% for key, apps in app_dict.items %}
+            <div class='flex-row text-light' style="width: 100%; margin-top: 10rem; margin-bottom: 1rem;">
+                <label class="h1">{{ key }}</label>
+            </div>
 
-            {% for app in log_in_app %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ app.name }}">
-                        {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
-                    <div class="card shadow-lg" style="width: 20rem;">
+            {% for app in apps %}
+                <div class="mx-auto" style="scroll-margin-top: 75px; margin-top: 2rem;" id="{{ app.name }}">
+                    <div class="card shadow-lg" style="width: 20rem; height: 100%">
                         <div id="carouselExample{{forloop.counter}}" class="carousel slide">
                             <div class="carousel-inner">
                                 {% for img in app.images %}
@@ -174,106 +171,9 @@
                     </div>
                 </div>
             {% endfor %}
+        {% endfor %}
             
-            
-        </div>
     </div>
-     
-    
-    
-    <div class="mt-5 mb-3">
-        <h2>Aplikacje dostępne bez logowania:</h2>
-    </div>
-    
-    <div class="container text-dark">
-        <div class="row">
-
-            {% for app in log_out_app %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ app.name }}">
-                        {#}d-flex justify-content-center - wyśrodkowało mi element w kolumnie{#}
-                    <div class="card shadow-lg" style="width: 20rem;">
-                        <div id="carouselExample" class="carousel slide">
-                            <div class="carousel-inner">
-                                {% for img in app.images %}
-
-                                    {% if forloop.counter == 1 %}
-                                        <div class="carousel-item active">
-                                    {% else %}
-                                        <div class="carousel-item">
-                                    {% endif %}
-                                            <img src= "{{ img.url }}"
-                                            class="d-block w-100 img-fluid" alt="...">
-                                        </div>
-
-                                {% endfor %}
-                                
-                                {% if app.more_img %}
-                                    <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-        
-                                    <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
-                                {% else %}
-                                
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="card-body">
-                            <h5 class="card-title">{{ app.name }}</h5>
-                            <p class="card-text">{{ app.description }}</p>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <a href= {% url app.url %}>
-                                <button class="btn btn-sm btn-primary">Otwórz</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-
-            
-
-        </div>
-    </div>
-     
-    
-    
-    <div class="mt-5 mb-3">
-        <h2>Poradniki:</h2>
-    </div>
-    
-    <div class="container text-dark">
-        <div class="row">
-            {% for tutorial in tutorials %}
-                <div class="col d-flex justify-content-center" style="margin-top: 1rem; scroll-margin-top: 100px;" id="{{ tutorial.app_name }}">
-                    <div class="card shadow-lg" aria-hidden="true" style="width: 20rem;">
-
-                        <div>
-                            <img src= "{{ tutorial.app_photo.url }}" class="d-block w-100 img-fluid" alt="...">
-                        </div>
-                        
-                        <div class="card-body">
-                            <h5 class="card-title">{{ tutorial.app_name }}</h5>
-                            <p class="card-text">{{ tutorial.app_describe }}</p>
-                        </div>
-                        
-                        <div class="card-footer">
-                            <a href= {% url tutorial.app_link %}>
-                                <button class="btn btn-sm btn-primary">Otwórz</button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    
 </div>
 
 {% endblock content %}  

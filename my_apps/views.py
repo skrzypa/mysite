@@ -12,13 +12,10 @@ from .forms import *
 from .models import *
 import mysite.settings
 
-from rubikcube.models import DescribeApp as RubikApp
-from flac_mp3_tag.models import DescribeApp as FlacMp3
-from deploying.models import DescribeApp as Deploying
-
 import calendar
 import datetime
 import os
+from pprint import pprint
 # Create your views here.
 
 # HOMEPAGE
@@ -31,43 +28,43 @@ def index(request):
     if not os.path.exists(mysite.settings.MEDIA_ROOT):
         os.mkdir(mysite.settings.MEDIA_ROOT)
 
-    # [print(i.id_app, i.app_name, i.app_describe, i.app_link, i.app_log_in) for i in apps]
-    # [print(i.id_app, i.id_photo, i.photo) for i in apps_photos]
 
-    log_in_app = []
-    log_out_app = []
+    app_dict = {
+        'Aplikacje dostępne po zalogowaniu:': [],
+        'Aplikacje dostępne bez logowania:': [],
+        'Poradniki:': [],
+    }
     for app in apps:
-        apps_dict = {
-            'name':  app.app_name,
-            'description': app.app_describe,
-            'url':app.app_link,
-            'images': [p.photo for p in apps_photos.filter(id_app= app.id_app)],
-            'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1
+        if app.app_log_in is True and app.app_tutorial is False:
+            key = list(app_dict.keys())[0]
+
+        elif app.app_log_in is False and app.app_tutorial is False:
+            key = list(app_dict.keys())[1]
+
+        elif app.app_log_in is False and app.app_tutorial is True:
+            key = list(app_dict.keys())[2]
+
+        app_dict[key].append(
+            {
+                'app_id': app.id_app,
+                'name': app.app_name,
+                'description': app.app_describe,
+                'url':app.app_link,
+                'images': [p.photo for p in apps_photos.filter(id_app= app.id_app)],
+                'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1
+            }
+        )
+
+
+
+    return render(
+        request= request, 
+        template_name= 'my_apps/homepage.html', 
+        context= {
+            'app_dict': app_dict,
+            'app_names': [app['name'] for _, apps in app_dict.items() for app in apps]
         }
-        # print(len(apps_photos.filter(id_app= app.id_app)) >= 1)
-        # [print('/'.join(str(p.photo).split('/')[1:])) for p in apps_photos.filter(id_app= app.id_app)]
-        
-        if app.app_log_in is True:
-            log_in_app.append(apps_dict)
-
-        elif app.app_log_in is False:
-            log_out_app.append(apps_dict)
-
-    tutorials = [RubikApp.objects.last(), FlacMp3.objects.last(), Deploying.objects.last()]
-
-    app_names = []
-    app_names.extend([app.app_name for app in apps if app.app_log_in is True])
-    app_names.extend([app.app_name for app in apps if app.app_log_in is False])
-    app_names.extend([app.app_name for app in tutorials])
-
-
-    context = {'log_in_app': log_in_app,
-               'log_out_app': log_out_app,
-               'tutorials': tutorials,
-               'app_ids': app_names,
-               }
-
-    return render(request, 'my_apps/homepage.html', context= context)
+    )
 
 def contact(request):
     return render(request, 'my_apps/contact.html')

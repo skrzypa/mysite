@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 
 class AvailableAppAdmin(admin.ModelAdmin):
-    list_display = ('id_app', 'app_name', 'app_describe', 'app_link', 'app_log_in')
+    list_display = ('id_app', 'app_name', 'app_describe', 'app_link', 'app_log_in', 'app_tutorial')
 admin.site.register(AvailableApp, AvailableAppAdmin)
 
 

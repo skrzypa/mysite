@@ -17,15 +17,3 @@ class Colors(models.Model):
     class Meta:
         verbose_name = "Colors"
         verbose_name_plural = "Colors"
-    
-
-class DescribeApp(models.Model):
-    id_app = models.AutoField(primary_key= True)
-    app_name = models.TextField(default= '')
-    app_describe = models.TextField(default= '')
-    app_link = models.TextField(default= '')
-    app_photo = models.ImageField(upload_to= 'homepage/')
-
-    class Meta:
-        verbose_name = "Describe App"
-        verbose_name_plural = "Describe App"
