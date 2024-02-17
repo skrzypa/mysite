@@ -9,7 +9,7 @@ def automatictagging(request):
 
 
     context = {
-        "video_link": DescribeApp.objects.last().video_link
+        "video_link": VideoLink.objects.last().video_link
     }
 
     return render(request= request, template_name= "flac_mp3_tag/flac_mp3_tag.html", context= context) 
