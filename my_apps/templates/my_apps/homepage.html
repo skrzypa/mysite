@@ -45,7 +45,7 @@
     </script>
 
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered text-dark">
+        <div class="modal-dialog modal-dialog-centered text-dark" >
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Wylosowany piesek</h1>
@@ -53,7 +53,7 @@
     
                 <div class="modal-body text-center">
                     <div style="margin-bottom: 1rem;">
-                        <img id="random-dog-image" class="img-fluid">
+                        <img id="random-dog-image" class="img-fluid border border-dark shadow-lg" style="border-radius: 20px;">
                     </div>
     
                     <div>
@@ -133,19 +133,19 @@
                                     {% else %}
                                         <div class="carousel-item">
                                     {% endif %}
-                                            <img src= "{{ img.url }}" class="d-block w-100 img-fluid" alt="..." id="img">
+                                            <img src= "{{ img.url }}" class="img-fluid" style="padding: 1.5rem; transition: all 0.5s;" alt="..." id="size_up">
                                         </div>
 
                                 {% endfor %}
                                 
                                 {% if app.more_img %}
                                     <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
                                         <span class="visually-hidden">Previous</span>
                                     </button>
         
                                     <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
                                         <span class="visually-hidden">Next</span>
                                     </button>
                                 {% else %}
@@ -177,5 +177,19 @@
             
     </div>
 </div>
+
+<script>
+    var img_m = document.querySelectorAll('img[id="size_up"]');
+    for (var i = 0; i < img_m.length; i++) {
+        img_m[i].addEventListener('mouseover', function() {
+            this.style.transform = "scale(1.15)";
+        });
+    }
+    for (var i = 0; i < img_m.length; i++) {
+        img_m[i].addEventListener('mouseout', function() {
+            this.style.transform = "scale(1)";
+        });
+    }
+</script>
 
 {% endblock content %}  
