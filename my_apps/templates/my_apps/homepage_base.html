@@ -57,7 +57,7 @@
     <body class="bg-dark text-light margins">
         {% block header %}
         <div class="container-fluid sticky-top margins" style="margin-bottom: 2rem;">
-            <nav class='navbar navbar-expand-md navbar-dark' style="background-color: rgba(0, 0, 0, 1); padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+            <nav class='navbar navbar-expand-md navbar-dark' style="background-color: #1c1c1c; padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
                 {% if user.is_authenticated %}
                     <label class="navbar-brand fs-5"><strong>Witaj, {{ user.username }}</strong></label>
                 {% else %}
@@ -107,7 +107,7 @@
         {% block content %}{% endblock content %}
       
         {% block footer %}
-            <div class="container-fluid sticky-bottom margins" style="padding: 0; margin-top: 2rem; background-color: rgba(0, 0, 0, 1)">
+            <div class="container-fluid sticky-bottom margins" style="padding: 0; margin-top: 2rem; background-color: #1c1c1c">
                 <div class="text-center text-break container-fluid" style="margin: 0; padding: 0;">
                     <div class="d-flex flex-row justify-content-center col-11" style="flex-wrap: wrap; margin: auto; padding: 0rem; padding-top: 1rem; padding-bottom: 1rem;">
                         
