@@ -547,7 +547,7 @@ def register(request):
         
         else:
             messages.error(request, "Popraw następujące błędy:", "danger")
-            messages.error(request, form.errors, "")
+            messages.error(request, form.errors, "danger")
         
     return render(request, 'my_apps/users_register.html', context)
 
