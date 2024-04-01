@@ -10,6 +10,23 @@ admin.site.register(AvailableApp, AvailableAppAdmin)
 
 
 class AppPhotosAdmin(admin.ModelAdmin):
+    # actions = ['del_entry_and_photo_file']
+
+    # @admin.action(description= "Delete entry and photo file")
+    # def del_entry_and_photo_file(self, request, queryset):
+    #     for obj in queryset:
+            
+    #         image = getattr(obj, 'photo')
+    #         image.delete()
+
+    #         obj.delete()
+            
+    #     self.message_user(
+    #         request,
+    #         f"Deleted entries and photos: {queryset.count()}",
+    #     )
+
+
     list_display = ('id_photo', 'id_app', 'photo')
 admin.site.register(AppPhotos, AppPhotosAdmin)
     
