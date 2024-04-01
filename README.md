@@ -19,8 +19,8 @@ pip install django==4.1.7 django-bootstrap-v5==1.0.11 requests==2.30.0 gunicorn=
 Split the bills:
 1. ??? Sending an email with a link to the group, if you are invited, and any expenses that apply to you
 
+Calendar:
+1. ??? Sending an email when an invitation is received
+
 Beer calc
 1. Find formula for beer carbonation
-
-Checklist:
-1. Ajax

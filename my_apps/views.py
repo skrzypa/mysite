@@ -10,6 +10,7 @@ from django.template.defaulttags import register
 
 from .forms import *
 from .models import *
+from .beercalc import BeerCalc
 import mysite.settings
 
 import calendar
@@ -34,6 +35,7 @@ def index(request):
         'Aplikacje dostępne bez logowania:': [],
         'Poradniki:': [],
     }
+    app_nr = 1
     for app in apps:
         if app.app_log_in is True and app.app_tutorial is False:
             key = list(app_dict.keys())[0]
@@ -53,8 +55,10 @@ def index(request):
                 'images': [p.photo for p in apps_photos.filter(id_app= app.id_app)],
                 'more_img':  len(apps_photos.filter(id_app= app.id_app)) > 1,
                 'app_log_in': app.app_log_in,
+                'app_nr': app_nr,
             }
         )
+        app_nr += 1
 
 
 
@@ -76,39 +80,6 @@ def admin(request):
 
 
 # BEER CALC
-class BeerCalc():
-
-    def Bx_Blg(bx):
-        blg = round(bx / 1.04, 1)
-        return blg
-
-    def Blg_Bx(blg):
-        bx = round(blg * 1.04, 1)
-        return bx
-
-    def Bx_proc(bx_start, bx_end): 
-        blg_start = BeerCalc.Bx_Blg(bx_start)
-        blg_end = BeerCalc.Bx_Blg(bx_end)
-        proc_bx = BeerCalc.Blg_proc(blg_start, blg_end)
-        return proc_bx
-
-    def Blg_proc(blg_start, blg_end): 
-        proc_blg = round((blg_start - blg_end) / 1.938, 1)
-        return proc_blg
-    
-    def ile_glukozy(co2, piwo, temp):
-        # glukoza = (co2 * piwo) / (0.8115 + (0.0125 * temp))
-        glukoza = (piwo * co2 * (temp / 20)) / (0.811 * 1000 * co2)
-        glukoza = round(glukoza, 2)
-        return glukoza
-    
-    def roztwor(bx_pocz, glukoza):
-        woda_ml = round(glukoza * 100 / bx_pocz, 2)
-        return woda_ml
-
-    def style_piwne():
-        return BeerStyles.objects.all()
-
 def calc(request):
     context, baling_wynik, brix_wynik, proc_blg_wynik, proc_bx_wynik, glukoza_wynik, roztwor_wynik = {}, 0, 0, 0, 0, 0, 0
     error = 'Podaj prawidłową liczbę'
@@ -542,35 +513,42 @@ def log_in(request):
             return redirect('my_apps:homepage')
 
     return render(request, "my_apps/users_log_in.html")
-    
+
+ 
 def register(request):
     """Rejestracja nowego użytkownika"""
+    context = {}
 
-    open_registration = OpenRegistration.objects.last()
-    open_registration = open_registration.is_open
+    if OpenRegistration.objects.last() is None:
+        OpenRegistration().save()
+    
+    open_registration = OpenRegistration.objects.last().is_open
+    context["open_registration"] = open_registration
+
+    # Wyświetlenie pustego formularza rejestracji użytkownika
+    if request.method != "POST":
+        form = UserCreationForm()
+        context['form'] = form
 
     if open_registration is False:
-            messages.warning(request, "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować")
+            messages.warning(request = request, 
+                            message = "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować",
+                            extra_tags = "danger",
+            )
 
-    if request.method != 'POST':
-        # Wyświetlenie pustego formularza rejestracji użytkownika
-        form = UserCreationForm()
-
-    else:
-        if open_registration is True:
-            # Przetworzenie wypełnionego formularza
-            form = UserCreationForm(data= request.POST)
-            if form.is_valid():
-                new_user = form.save()
-                # Zalogowanie użytkownika, a następnie przekierowanie do na stronę główną
-                login(request, new_user)
-                messages.success(request, "Dziękuję za założenie konta!")
-                return redirect('my_apps:homepage')
+    elif open_registration is True and request.method == 'POST':
+        # Przetworzenie wypełnionego formularza
+        form = UserCreationForm(data= request.POST)
+        if form.is_valid():
+            new_user = form.save()
+            # Zalogowanie użytkownika, a następnie przekierowanie do na stronę główną
+            login(request, new_user)
+            return redirect('my_apps:homepage')
         
-    # Wyświetlenie pustego formularza
-    context = {'form': form, 
-               "open_registration": open_registration
-               }
+        else:
+            messages.error(request, "Popraw następujące błędy:", "danger")
+            messages.error(request, form.errors, "")
+        
     return render(request, 'my_apps/users_register.html', context)
 
 @login_required

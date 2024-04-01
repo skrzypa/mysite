@@ -124,7 +124,7 @@
             {% for app in apps %}
                 <div class="mx-auto" style="scroll-margin-top: 75px; margin-top: 2rem;" id="{{ app.name }}">
                     <div class="card shadow-lg" style="width: 20rem; height: 100%">
-                        <div id="carouselExample{{forloop.counter}}" class="carousel slide">
+                        <div id="carouselExample{{ app.app_nr }}" class="carousel slide">
                             <div class="carousel-inner">
                                 {% for img in app.images %}
 
@@ -139,12 +139,12 @@
                                 {% endfor %}
                                 
                                 {% if app.more_img %}
-                                    <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="prev">
+                                    <button class="carousel-control-prev btn-primary" data-bs-target="#carouselExample{{ app.app_nr }}" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
                                         <span class="visually-hidden">Previous</span>
                                     </button>
         
-                                    <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample{{forloop.counter}}" data-bs-slide="next">
+                                    <button class="carousel-control-next btn-primary" data-bs-target="#carouselExample{{ app.app_nr }}" data-bs-slide="next">
                                         <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
                                         <span class="visually-hidden">Next</span>
                                     </button>

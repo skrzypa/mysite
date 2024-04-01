@@ -133,7 +133,7 @@ class AddFriendToExpense(models.Model):
 
 class OpenRegistration(models.Model):
     describe = models.TextField(default="The registration is open? (Don't create new entry, edit this one)")
-    is_open = models.BooleanField(default= False)
+    is_open = models.BooleanField(default= True)
 
 
 

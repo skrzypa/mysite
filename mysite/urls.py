@@ -22,14 +22,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', include('homepage.urls')),     # dodajemy url naszej apki
-    # path('', include('meetings.urls')),     # dodajemy url naszej apki
-    # path('', include('users.urls')),        # dodajemy url naszej apki
-    # path('', include('beer_calc.urls')),        # dodajemy url naszej apki
-    path('', include('my_apps.urls')),        # dodajemy url naszej apki
-    path('', include('password_generator.urls')),        # dodajemy url naszej apki
-    path('', include('currency_calc.urls')),        # dodajemy url naszej apki
-    path('', include('rubikcube.urls')),        # dodajemy url naszej apki
-    path('', include('flac_mp3_tag.urls')),        # dodajemy url naszej apki
-    path('', include('deploying.urls')),        # dodajemy url naszej apki
+    # path('', include('homepage.urls')),     
+    # path('', include('meetings.urls')),     
+    # path('', include('users.urls')),        
+    # path('', include('beer_calc.urls')),        
+    path('', include('my_apps.urls')),        
+    path('', include('password_generator.urls')),        
+    path('', include('currency_calc.urls')),        
+    path('', include('rubikcube.urls')),        
+    path('', include('flac_mp3_tag.urls')),        
+    path('', include('deploying.urls')),        
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -153,6 +153,7 @@
                         <li><a href="#chapter5.1" class="ul-li-a link-dark">Plik konfiguracyjny - Configuration file</a></li>
                         <li><a href="#chapter5.2" class="ul-li-a link-dark">Uruchom Gunicorna - Run Gunicorn</a></li>
                         <li><a href="#chapter5.3" class="ul-li-a link-dark">Wyłączenie Gunicorna - Disabling Gunicorn</a></li>
+                        <li><a href="#chapter5.4" class="ul-li-a link-dark">Przeładowanie Gunicorna - Reloading Gunicorn</a></li>
                     </ul>
                 </li>
 
@@ -864,6 +865,26 @@
             <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
                 <label class="code-label text-wrap text-break user-select-all" style="">
                     kill -9 >PID<
+                </label> 
+            </div>
+        </div>
+            
+
+
+        <div class="chapter-div" style="" id="chapter5.4">
+            <label class="chapter-label fs-5">
+                5.4. Przeładowanie procesu odpowiedzialnego za Gunicorna
+            </label>
+            <br>
+            <label class="chapter-label-en fs-6">
+                5.4. Reloading the process responsible for Gunicorn
+            </label>
+        </div>
+
+        <div class="code-div container-fluid" style="">
+            <div class="row mx-auto col-sm-11 col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+                <label class="code-label text-wrap text-break user-select-all" style="">
+                    kill -HUP >PID<
                 </label> 
             </div>
         </div>
