@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.template.defaulttags import register
+from django.core.handlers.wsgi import WSGIRequest
 
 from .forms import *
 from .models import *
@@ -20,7 +21,7 @@ from pprint import pprint
 # Create your views here.
 
 # HOMEPAGE
-def index(request):
+def index(request: WSGIRequest):
     """Strona główna"""
 
     apps = AvailableApp.objects.all()
@@ -35,8 +36,8 @@ def index(request):
         'Aplikacje dostępne bez logowania:': [],
         'Poradniki:': [],
     }
-    app_nr = 1
-    for app in apps:
+    
+    for app_nr, app in enumerate(apps, start= 1):
         if app.app_log_in is True and app.app_tutorial is False:
             key = list(app_dict.keys())[0]
 
@@ -58,7 +59,6 @@ def index(request):
                 'app_nr': app_nr,
             }
         )
-        app_nr += 1
 
 
 
@@ -71,126 +71,93 @@ def index(request):
         }
     )
 
-def contact(request):
+def contact(request: WSGIRequest):
     return render(request, 'my_apps/contact.html')
     
-def admin(request):
+def admin(request: WSGIRequest):
     return render(request, 'admin')
 
 
 
 # BEER CALC
-def calc(request):
-    context, baling_wynik, brix_wynik, proc_blg_wynik, proc_bx_wynik, glukoza_wynik, roztwor_wynik = {}, 0, 0, 0, 0, 0, 0
-    error = 'Podaj prawidłową liczbę'
-    context["style_piwne"] =  [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerCalc.style_piwne()]
+def calc(request: WSGIRequest):
+    context = {
+        'style_piwne': [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerStyles.objects.all()],
+    }
+    error = 'Podaj prawidłową liczbę',
     
     
     if request.method == 'POST':
         if 'brix' in request.POST:
-            brix: str = request.POST["brix"]
-            brix = brix.replace(',', '.')
+            brix = request.POST["brix"]
+            baling_result = BeerCalc().brix_to_baling(brix)
 
-            try:
-                brix = float(brix)
-                baling_wynik = f"{brix} Bx = {BeerCalc.Bx_Blg(brix)} Blg"
-            except ValueError:
+            if baling_result is None:
                 context['error'] = error
             else:
-                context["baling_wynik"] = baling_wynik
+                context["baling_wynik"] = f"{brix} Bx = {baling_result} Blg"
                 context['url']= "bx-blg"
-
-
 
 
         elif 'baling' in request.POST:
-            baling: str = request.POST["baling"]
-            baling = baling.replace(',', '.')
+            baling = request.POST["baling"]
+            brix_result = BeerCalc().baling_to_brix(baling)
 
-            try:
-                baling = float(baling)
-                brix_wynik = f"{baling} Blg = {BeerCalc.Blg_Bx(baling)} BX"
-            except ValueError:
+            if brix_result is None:
                 context['error'] = error
             else:
-                context["brix_wynik"] =  brix_wynik
+                context["brix_wynik"] = f"{baling} Blg = {brix_result} Bx"
                 context['url']= "bx-blg"
-
 
 
         elif 'brix_start' in request.POST and 'brix_end' in request.POST:
             brix_s: str = request.POST["brix_start"]
             brix_e: str = request.POST["brix_end"]
-            brix_s = brix_s.replace(',', '.')
-            brix_e = brix_e.replace(',', '.')
 
-            try:
-                brix_s = float(brix_s)
-                brix_e = float(brix_e)
-                proc_bx_wynik = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {BeerCalc.Bx_proc(brix_s, brix_e)} % ± 0.5%"
-            except:
+            brix_to_percent = BeerCalc().brix_to_percent(brix_s, brix_e)
+            if brix_to_percent is None:
                 context['error'] = error
             else:
-                context["proc_bx_wynik"] =  proc_bx_wynik
+                context["proc_bx_wynik"] = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {brix_to_percent} % ± 0.5%"
                 context['url']= "bx-proc"
-
 
 
         elif 'blg_start' in request.POST and 'blg_end' in request.POST:
             blg_s: str = request.POST["blg_start"]
             blg_e: str = request.POST["blg_end"]
-            blg_s = blg_s.replace(',', '.')
-            blg_e = blg_e.replace(',', '.')
 
-            try:
-                blg_s = float(blg_s)
-                blg_e = float(blg_e)
-                proc_blg_wynik = f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {BeerCalc.Blg_proc(blg_s, blg_e)} % ± 0.5%"
-            except:
+            baling_to_percent = BeerCalc().baling_to_percent(blg_s, blg_e)
+            if baling_to_percent is None:
                 context['error'] = error
             else:
-                context["proc_blg_wynik"] =  proc_blg_wynik
+                context["proc_blg_wynik"] =  f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {baling_to_percent} % ± 0.5%"
                 context['url']= "blg-proc"
-
 
 
         elif 'co2' in request.POST and 'piwo' in request.POST and  'temp' in request.POST:
             co2: str = request.POST['co2']
             piwo: str = request.POST['piwo']
             temp: str = request.POST['temp']
-            co2 = co2.replace(',', '.')
-            piwo = piwo.replace(',', '.')
-            temp = temp.replace(',', '.')
 
-            try:
-                co2 = float(co2)
-                piwo = float(piwo)
-                temp = float(temp)
-                # glukoza_wynik = f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {Calculators.ile_glukozy(co2, piwo, temp)} gram glukozy"
-                glukoza_wynik = f"Nie znalazłem jeszcze odpowiedniego wzoru :c"
-            except:
+            glucose_for_refermentation = BeerCalc().how_much_sugar(co2, piwo, temp)
+            if glucose_for_refermentation is None:
                 context['error'] = error
             else:
-                context["glukoza_wynik"] =  glukoza_wynik
+                context["glukoza_wynik"] =  f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {glucose_for_refermentation} gram glukozy"
                 context['url']= "glucose"
 
 
-
-        elif 'blg_pocz' in request.POST or 'glukoza' in request.POST:
+        elif 'blg_pocz' in request.POST and 'glukoza' in request.POST:
             roztwor: str = request.POST['blg_pocz']
             glukoza: str = request.POST['glukoza']
-            roztwor =  roztwor.replace(',', '.')
-            glukoza = glukoza.replace(',', '.')
-            
-            try:
-                roztwor = float(roztwor)
-                glukoza = float(glukoza)
-                roztwor_wynik = f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {BeerCalc.roztwor(roztwor, glukoza)} ml wody"
-            except:
+
+            sugar_solution = BeerCalc().sugar_solution(roztwor, glukoza)
+            if sugar_solution is None:
                 context['error'] = error
             else:
-                context["roztwor_wynik"] =  roztwor_wynik
+                context["roztwor_wynik"] =  f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {sugar_solution} ml wody"
                 context['url']= "co2-glucose"
+
         
     return render(request= request, 
                 template_name= f'my_apps/beer_calc.html', 
@@ -200,12 +167,12 @@ def calc(request):
 
 
 # MEETINGS
-def homepage(request):
+def homepage(request: WSGIRequest):
     """Strona główna"""
     return render(request, "my_apps/meetings_homepage.html")
 
 @login_required
-def calendar_generate(request):
+def calendar_generate(request: WSGIRequest):
     """Strona z kalendarzem"""
 
     #months
@@ -342,7 +309,7 @@ def calendar_generate(request):
     return render(request= request, template_name= 'my_apps/meetings_calendar.html', context= context)
 
 @login_required
-def new_event(request):
+def new_event(request: WSGIRequest):
     hours = range(0, 24)
     minutes = range(0, 60)
 
@@ -499,7 +466,7 @@ def delete_event(request, id):
 
 
 # USERS
-def log_in(request):
+def log_in(request: WSGIRequest):
 
     if request.method == 'POST':
         user = authenticate(
@@ -515,7 +482,7 @@ def log_in(request):
     return render(request, "my_apps/users_log_in.html")
 
  
-def register(request):
+def register(request: WSGIRequest):
     """Rejestracja nowego użytkownika"""
     context = {}
 
@@ -552,13 +519,13 @@ def register(request):
     return render(request, 'my_apps/users_register.html', context)
 
 @login_required
-def log_out(request):
+def log_out(request: WSGIRequest):
     logout(request)
     messages.success(request, "Zostałeś wylogowany. Dziękuję za skorzystanie z serwisu!")
     return redirect("my_apps:homepage")
 
 @login_required
-def friends(request):
+def friends(request: WSGIRequest):
     current_user = request.user
 
     users_list = Friendship.all_users.exclude(id= current_user.id) # tworzymy listę wszystkich użytkowników (bez aktulanie zalogowanego)
@@ -598,7 +565,7 @@ def delete_observed_user(request, current_user):
 
 # SPLIT THE BILLS
 @login_required
-def add_expense_group(request):
+def add_expense_group(request: WSGIRequest):
     current_user = request.user 
 
 
