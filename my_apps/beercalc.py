@@ -40,7 +40,7 @@ class BeerCalc():
         def wrapper(*args):
 
             try:
-                float_args = [float(arg) if isinstance(arg, str) else arg for arg in args]
+                float_args = [float(arg.replace(',', '.')) if isinstance(arg, str) else arg for arg in args]
             except ValueError:
                 return None
             
