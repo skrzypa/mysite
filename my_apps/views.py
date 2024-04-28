@@ -172,7 +172,8 @@ def calc(request: WSGIRequest):
 @login_required
 def meetings_homepage(request: WSGIRequest):
     meetings = Meetings()
-    year_choosen: str = request.POST.get('year_button', str(meetings.year_today))
+    # year_choosen: str = request.POST.get('year_button', str(meetings.year_today))
+    # print(year_choosen)
     current_user = request.user
     current_user_id = current_user.id
 
@@ -208,6 +209,8 @@ def meetings_homepage(request: WSGIRequest):
             invitation.decline_invitation = False
             invitation.save()
 
+            return redirect(to= 'my_apps:meetings_calendar')
+
         elif 'decline_invitation' in request.POST:
             invitation = InvitedToEventModelNew.objects.get(
                 event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
@@ -216,7 +219,13 @@ def meetings_homepage(request: WSGIRequest):
             invitation.decline_invitation = True
             invitation.save()
 
-        return redirect(to= 'my_apps:meetings_calendar')
+            return redirect(to= 'my_apps:meetings_calendar')
+    
+        elif 'year_button' in request.POST:
+            year_choosen = int(request.POST['year_button'])
+    
+    else:
+        year_choosen = meetings.year_today
 
 
     return render(
@@ -224,7 +233,7 @@ def meetings_homepage(request: WSGIRequest):
         template_name= 'my_apps/meetings_calendar.html', 
         context= {
             'year_progress':        str(meetings.year_progress),
-            'year_choosen':         year_choosen,
+            'year_choosen':         str(year_choosen),
             'year_range':           [str(y) for y in meetings.year_range],
             'year_today':           str(meetings.date_today.year),
 
