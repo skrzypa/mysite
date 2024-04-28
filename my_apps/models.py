@@ -26,28 +26,6 @@ class AppPhotos(models.Model):
 
 
 
-class NewEventModel(models.Model):
-    """ Wydarzenie tworzone przez użytkownika """
-    owner = models.ForeignKey(User, on_delete= models.CASCADE) # powiążemy wpis z danym użytkownikiem
-
-    event_title = models.CharField(max_length= 20, default= "")
-    event_location = models.CharField(max_length= 20, default= "")
-    event_description = models.CharField(max_length= 200, default= "")
-    event_date_year = models.CharField(max_length= 4, default= "") #DELETE
-    event_date_month = models.CharField(max_length= 2, default= "") #DELETE
-    event_date_day = models.CharField(max_length= 2, default= "") #DELETE
-
-    event_date = models.DateTimeField(auto_now_add= False)
-
-    date_added = models.DateTimeField(auto_now_add= True)
-    
-    class Meta:
-        verbose_name_plural = "EventsOld"
-
-    def __str__(self):
-        return self.event_title
-
-
 class NewEventModelNew(models.Model):
     """ Wydarzenie tworzone przez użytkownika """
     owner = models.ForeignKey(User, on_delete= models.CASCADE) # powiążemy wpis z danym użytkownikiem
@@ -62,18 +40,10 @@ class NewEventModelNew(models.Model):
     date_added = models.DateTimeField(auto_now_add= True)
     
     class Meta:
-        verbose_name_plural = "EventsNew"
+        verbose_name_plural = "Events"
 
     def __str__(self):
         return self.event_title
-
-
-
-class InvitedToEventModel(models.Model):
-    event = models.ForeignKey(NewEventModel, on_delete=models.CASCADE)
-    invited_friend = models.ForeignKey(User, on_delete=models.CASCADE)
-    accepted_invitation = models.BooleanField(default= False) # 1 - przyjął; 0 - brak odp./odrzucił
-    decline_invitation = models.BooleanField(default= False) # 1 - odrzucił; 0 - brak odp./przyjął
 
 
 
@@ -82,6 +52,10 @@ class InvitedToEventModelNew(models.Model):
     invited_friend = models.ForeignKey(User, on_delete=models.CASCADE)
     accepted_invitation = models.BooleanField(default= False) # 1 - przyjął; 0 - brak odp./odrzucił
     decline_invitation = models.BooleanField(default= False) # 1 - odrzucił; 0 - brak odp./przyjął
+    
+    class Meta:
+        verbose_name_plural = "Invitations to events"
+        verbose_name = "Invitations to events"
 
 
 

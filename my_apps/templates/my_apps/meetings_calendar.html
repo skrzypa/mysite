@@ -71,14 +71,6 @@
                 Utwórz wydarzenie
             </button>
         </a>
-
-        {% comment %} delete in next commit {% endcomment %}
-        {% if request.user.is_superuser %}
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="save_records">przenieś rekordy</button>
-        </form>
-        {% endif %}
     </div>
 
     <div class="row mx-auto" style="margin-top: 2rem; padding: 0rem;">
