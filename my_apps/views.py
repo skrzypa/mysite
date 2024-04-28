@@ -216,11 +216,7 @@ def meetings_homepage(request: WSGIRequest):
             invitation.decline_invitation = True
             invitation.save()
 
-        return HttpResponseRedirect(
-            redirect_to= reverse(
-                viewname= 'my_apps:meetings_calendar'
-            )
-        )
+        return redirect(to= 'my_apps:meetings_calendar')
 
 
     return render(
@@ -279,7 +275,7 @@ def new_event(request: WSGIRequest, year: str):
                     )
                     invited_to_event.save()
 
-            return HttpResponseRedirect(reverse(viewname= 'my_apps:meetings_calendar'))
+            return redirect(to= 'my_apps:meetings_calendar')
 
     return render(
         request= request, 
@@ -344,7 +340,7 @@ def edit_event(request: WSGIRequest, id):
                 message= f"Usunięto wydarzenie: {edited_event.event_title}",
                 extra_tags= "alert alert-danger"
             )
-            return HttpResponseRedirect(reverse(viewname= 'my_apps:meetings_calendar'))
+            return redirect(to= 'my_apps:meetings_calendar')
         
         else:
             raise Http404

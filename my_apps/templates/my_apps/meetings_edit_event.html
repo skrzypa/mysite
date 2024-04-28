@@ -109,7 +109,7 @@
             </div>
         </div>
 
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="d-flex justify-content-end">
             <button class="btn btn-md btn-success" type="submit" name="save_changes">
                 Zapisz
             </button>
@@ -117,14 +117,14 @@
 
     </form>
 
-    <div class="d-flex flex-row flex-wrap justify-content-end mx-auto" style="gap: 2rem;">
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+    <div class="d-flex flex-row flex-wrap justify-content-end mx-auto" style="gap: 1rem;">
+        <div class="d-flex justify-content-end">
             <button class="btn btn-md btn-danger"  data-bs-toggle="modal" data-bs-target="#exampleModalDel">
                 Usuń
             </button>
         </div>
 
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="d-flex justify-content-end">
             <button class="btn btn-md btn-primary">
                 <a class="text-decoration-none text-light" href="{% url 'my_apps:meetings_calendar' %}">
                     Wróć

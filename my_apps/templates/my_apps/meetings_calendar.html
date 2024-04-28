@@ -193,11 +193,11 @@
                                                                                 </tr>
 
                                                                                 <tr>
-                                                                                    <td colspan="2">
-                                                                                        <div class="btn-group d-flex flex-wrap gap-4">
+                                                                                    <td colspan="2" style="padding: 0;">
+                                                                                        <div class="btn-group d-flex flex-wrap" style="gap: 0.5rem; margin-top: 2rem;">
                                                                                             <div class="dropdown">
                                                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                                                    Zaproszeni
+                                                                                                    Zaproszeni ({{ event.1|length }})
                                                                                                 </button>
                                                                                                 <ul class="dropdown-menu">
                                                                                                     {% for f in event.1 %}
@@ -208,7 +208,7 @@
 
                                                                                             <div class="dropdown">
                                                                                                 <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                                                    Obecni
+                                                                                                    Obecni ({{ event.2|length }})
                                                                                                 </button>
                                                                                                 <ul class="dropdown-menu">
                                                                                                     {% for f in event.2 %}
@@ -219,7 +219,7 @@
 
                                                                                             <div class="dropdown">
                                                                                                 <button class="btn btn-sm btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                                                    Nieobecni
+                                                                                                    Nieobecni ({{ event.3|length }})
                                                                                                 </button>
                                                                                                 <ul class="dropdown-menu">
                                                                                                     {% for f in event.3 %}
@@ -230,40 +230,33 @@
 
                                                                                             
                                                                                             {% if event.0.owner.id != current_user_id %}
-                                                                                            <div>
-                                                                                                <form method="POST">
+                                                                                            <div class="btn-group" style="gap: 0.5rem;">
+                                                                                                <form method="POST" style="margin: 0;">
                                                                                                     {% csrf_token %}
                                                                                                     <button class="btn btn-sm btn-success" type="submit" name='accept_invitation' value={{ event.0.id }}>
                                                                                                         Przyjmij zaproszenie
                                                                                                     </button>
                                                                                                 </form>
-                                                                                            </div>
 
-                                                                                            <div>
-                                                                                                <form method="POST">
+                                                                                                <form method="POST" style="margin: 0;">
                                                                                                     {% csrf_token %}
                                                                                                     <button class="btn btn-sm btn-danger" type="submit" name='decline_invitation' value={{ event.0.id }}>
                                                                                                         Odrzuć zaproszenie
                                                                                                     </button>
                                                                                                 </form>
                                                                                             </div>
+                                                                                            {% else %}
+                                                                                            <div class="btn-group" style="gap: 0.5rem;">
+                                                                                                <button class="btn btn-sm btn-dark">
+                                                                                                    <a class="link-light text-decoration-none" href="{% url 'my_apps:meetings_edit_event' id=event.0.id %}">
+                                                                                                            Edytuj / usuń
+                                                                                                    </a>
+                                                                                                </button>
+                                                                                            </div>
                                                                                             {% endif %}
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>
-
-                                                                                {% if event.0.owner.id == current_user_id %}
-                                                                                <tr colspan=2>
-                                                                                    <td>
-                                                                                        <button class="btn btn-sm btn-dark">
-                                                                                            <a class="link-light text-decoration-none" href="{% url 'my_apps:meetings_edit_event' id=event.0.id %}">
-                                                                                                    Edytuj / usuń
-                                                                                            </a>
-                                                                                        </button>
-
-                                                                                    </td>
-                                                                                </tr>
-                                                                                {% endif %}
                                                                             </table>
                                                                         </div>
                                                                     {% endfor %}
