@@ -227,10 +227,11 @@
                                                                                                     {% endfor %}
                                                                                                 </ul>
                                                                                             </div>
+                                                                                        </div>
 
-                                                                                            
+                                                                                        <div>
                                                                                             {% if event.0.owner.id != current_user_id %}
-                                                                                            <div class="btn-group" style="gap: 0.5rem;">
+                                                                                            <div class="btn-group d-flex flex-wrap text-nowrap" style="gap: 0.5rem; margin-top: 0.5rem;">
                                                                                                 <form method="POST" style="margin: 0;">
                                                                                                     {% csrf_token %}
                                                                                                     <button class="btn btn-sm btn-success" type="submit" name='accept_invitation' value={{ event.0.id }}>
@@ -246,7 +247,7 @@
                                                                                                 </form>
                                                                                             </div>
                                                                                             {% else %}
-                                                                                            <div class="btn-group" style="gap: 0.5rem;">
+                                                                                            <div class="" style="margin-top: 0.5rem;">
                                                                                                 <button class="btn btn-sm btn-dark">
                                                                                                     <a class="link-light text-decoration-none" href="{% url 'my_apps:meetings_edit_event' id=event.0.id %}">
                                                                                                             Edytuj / usuń
