@@ -155,7 +155,7 @@
                             {% for week in weeks %}
                                 {% for day in week %}
                                     {% if day != '00' %}
-                                        <button class="btn btn-sm btn-primary date-link" value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}">
+                                        <button data-bs-dismiss="modal" class="btn btn-sm btn-primary date-link" value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}">
                                             {{ day }}
                                         </button>
                                     {% endif %}

@@ -114,8 +114,8 @@
 
 
 <div class="modal fade text-dark" id="exampleModalDate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="margin: auto;">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="max-height: 80%;">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Wybierz datę</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -132,7 +132,7 @@
                             {% for week in weeks %}
                                 {% for day in week %}
                                     {% if day != '00' %}
-                                        <button class="btn btn-sm btn-primary date-link" value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}">
+                                        <button data-bs-dismiss="modal" class="btn btn-sm btn-primary date-link" value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}">
                                             {{ day }}
                                         </button>
                                     {% endif %}
