@@ -227,6 +227,27 @@
                                                                                                     {% endfor %}
                                                                                                 </ul>
                                                                                             </div>
+
+                                                                                            
+                                                                                            {% if event.0.owner.id != current_user_id %}
+                                                                                            <div>
+                                                                                                <form method="POST">
+                                                                                                    {% csrf_token %}
+                                                                                                    <button class="btn btn-sm btn-success" type="submit" name='accept_invitation' value={{ event.0.id }}>
+                                                                                                        Przyjmij zaproszenie
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                            </div>
+
+                                                                                            <div>
+                                                                                                <form method="POST">
+                                                                                                    {% csrf_token %}
+                                                                                                    <button class="btn btn-sm btn-danger" type="submit" name='decline_invitation' value={{ event.0.id }}>
+                                                                                                        Odrzuć zaproszenie
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            {% endif %}
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>

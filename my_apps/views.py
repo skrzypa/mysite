@@ -198,6 +198,29 @@ def meetings_homepage(request: WSGIRequest):
         else:
             events[key]['event'].append([event, invited, accepted_the_invitation, not_accept_the_invitation])
             events[key]['count'] += 1
+    
+    if request.method == 'POST':
+        if 'accept_invitation' in request.POST:
+            invitation = InvitedToEventModelNew.objects.get(
+                event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
+            )
+            invitation.accepted_invitation = True
+            invitation.decline_invitation = False
+            invitation.save()
+
+        elif 'decline_invitation' in request.POST:
+            invitation = InvitedToEventModelNew.objects.get(
+                event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
+            )
+            invitation.accepted_invitation = False
+            invitation.decline_invitation = True
+            invitation.save()
+
+        return HttpResponseRedirect(
+            redirect_to= reverse(
+                viewname= 'my_apps:meetings_calendar'
+            )
+        )
 
 
     return render(
