@@ -172,8 +172,6 @@ def calc(request: WSGIRequest):
 @login_required
 def meetings_homepage(request: WSGIRequest):
     meetings = Meetings()
-    # year_choosen: str = request.POST.get('year_button', str(meetings.year_today))
-    # print(year_choosen)
     current_user = request.user
     current_user_id = current_user.id
 
