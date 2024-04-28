@@ -146,23 +146,38 @@
 
             <div class="modal-body">
                 {% for month, weeks in calendar.items %}
-                    <div>
-                        <div>
-                            <label>{{ month }}</label>
-                        </div>
+                <table class="table">
+                    <thead>
+                        <label class="h3">{{ month }}</label>
 
-                        <div>
-                            {% for week in weeks %}
+                        <tr class="border-bottom">
+                            {% for day in days %}
+                                <th class="flex-fill text-center">{{ day }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for week in weeks %}
+                            <tr>
                                 {% for day in week %}
-                                    {% if day != '00' %}
-                                        <button data-bs-dismiss="modal" class="btn btn-sm btn-primary date-link" value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}">
-                                            {{ day }}
-                                        </button>
+                                    {% if day == '00' %}
+                                        <th></th>
+                                    {% else %}
+                                        <th class="text-center" style="margin: 0; padding: 0.15rem;">
+                                            <button data-bs-dismiss="modal" 
+                                            class="btn btn-sm btn-primary date-link" 
+                                            value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}" 
+                                            style="width: 100%">
+                                                {{ day }}
+                                            </button>
+                                        </th>
                                     {% endif %}
                                 {% endfor %}
-                            {% endfor %}
-                        </div>
-                    </div>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
             </div>
         </div>

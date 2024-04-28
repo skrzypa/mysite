@@ -287,6 +287,7 @@ def new_event(request: WSGIRequest, year: str):
             'hours':                meetings.hours,
             'minutes':              meetings.minutes,
             'friends':              friends,
+            'days':                 meetings.days,
         }
     )
 
@@ -361,6 +362,7 @@ def edit_event(request: WSGIRequest, id):
             'event_time':           [str(t).zfill(2) for t in [edited_event.event_time.hour, edited_event.event_time.minute]],
             'invited_friends':      invited,
             'rest_friends':         rest_friends,
+            'days':                 meetings.days,
         },
     )
 
