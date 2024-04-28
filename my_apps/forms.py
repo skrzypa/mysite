@@ -29,6 +29,32 @@ class NewEventForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({'class': 'form-control mb-3'})
 
 
+
+class NewEventFormNew(forms.ModelForm):
+    class Meta:
+        model = NewEventModelNew
+        fields = ['event_title', 'event_location', 'event_description', 'event_date', 'event_time']
+
+        labels = {  'event_title':          'Tytuł',  
+                    'event_location':       'Lokalizacja (opcjonalnie)', 
+                    'event_description':    'Opis (opcjonalnie)',
+                    'event_date':           'Data',
+                    'event_time':           'Godzina',
+        }
+
+        widgets = { 'event_title':              forms.Textarea(attrs= {'rows': 1, 'class': 'h1'}),
+                    'event_location':           forms.Textarea(attrs= {'rows': 1}),
+                    'event_description':        forms.Textarea(attrs= {'rows': 3}),
+                    'event_date':               forms.DateInput(attrs= {'readonly': 'readonly'}),
+                    'event_time':               forms.TimeInput(attrs= {'readonly': 'readonly'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control mb-3'})
+
+
 class NewExpenseGroupForm(forms.ModelForm):
     class Meta:
         model = AddExpenseGroup

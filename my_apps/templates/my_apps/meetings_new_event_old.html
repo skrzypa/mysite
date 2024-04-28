@@ -1,0 +1,111 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+
+<div class="container-fluid text-dark col-11" style="min-height: 100%;">
+    <div class="row justify-content-center bg-light rounded" style="">
+        <div class="border shadow-lg bg-body-tertiary rounded">
+              <h3 class="text-center" style="margin-top: 2rem; margin-bottom: 2rem;">Dodaj nowe wydarzenie</h3>
+              <form method="post" class="mb-0" action="{% url 'my_apps:meetings_new_event' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_title.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_title.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_title }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_location.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_location.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_location }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group d-flex flex-wrap" style="gap: 1rem;">
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_day.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_day }}
+                            </div>
+                        </div>
+                        
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_month.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_month }}
+                            </div>
+                        </div>
+                        
+                        <div class="flex-row">
+                            <label class="flex-col col-form-label">{{ form_new_event.event_date_year.label }}</label>
+                            <div class="flex-col">
+                                {{ form_new_event.event_date_year }}
+                            </div>
+                        </div>
+
+                    </div>
+                
+                    <div class="form-group d-flex flex-row flex-wrap" style="gap: 1rem;">
+
+                        <div class="flex-col col-form-label">
+                            <label>
+                                Godzina
+                            </label>
+                        </div>
+
+                        <div class="flex-col col-form-label">
+                            <select class="form-select" name="selected_hour">
+                                {% for h in hours %}
+                                    <option>{{ h }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="flex-col col-form-label">
+                            <select class="form-select" name="selected_minute">
+                                {% for m in minutes %}
+                                    <option>{{ m }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    
+                    <div class="form-group d-flex flex-row flex-wrap" style="gap: 1rem;">
+                        <label for="{{ form_new_event.event_description.id_for_label }}" class="flex-col col-form-label">{{ form_new_event.event_description.label }}</label>
+                        <div class="flex-col">
+                            {{ form_new_event.event_description }}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-0 mb-2 btn-group" role="group">
+                        <button type="submit" class="btn btn-success btn-sm">Dodaj wydarzenie</button>
+                    </div>
+                    <div class="mt-0 mb-2 btn-group" role="group">
+                        <a href="{% url 'my_apps:meetings_calendar' %}">
+                            <button type="button" class="btn btn-danger btn-sm">Anuluj</button>
+                        </a>
+                    </div>
+                    
+                    {% comment %} LISTA ZNAJOMYCH {% endcomment %}
+                    <div style="margin-bottom: 2rem;">
+                        <h3 class="text-center" style="margin-top: 2rem; margin-bottom: 2rem;">Zaproś znajomego:</h3>
+                        {% for friend in your_friends_list %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="friends" value="{{ friend.id }}" id="friend{{ friend.id }}">
+                                <label class="form-check-label" for="friend{{ friend.id }}">
+                                    {{ friend }}
+                                </label>
+                            </div>
+                        {% empty %}
+                        {% endfor %}
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

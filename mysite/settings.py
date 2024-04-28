@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'rubikcube',
     'flac_mp3_tag',
     'deploying',
+    #'tests',
+    'checklist',
     
     # aplikacje zewnętrzne
     'bootstrap5',
@@ -138,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'pl'
 DATETIME_FORMAT = 'd-m-Y H:i:s'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 

@@ -45,7 +45,7 @@ def test_brix_to_percent_None():
 
 
 def test_how_much_sugar():
-    assert bc.how_much_sugar('2.5', '20', '22') == 136.34
+    assert bc.how_much_sugar('2,5', '20', '22') == 136.34
 
 
 def test_how_much_sugar_None():
@@ -53,7 +53,7 @@ def test_how_much_sugar_None():
 
 
 def test_sugar_solution():
-    assert bc.sugar_solution('18', '136.34') == 757.44
+    assert bc.sugar_solution('18', '136,34') == 757.44
 
 
 def test_sugar_solution_None():

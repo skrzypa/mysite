@@ -42,7 +42,27 @@ class NewEventModel(models.Model):
     date_added = models.DateTimeField(auto_now_add= True)
     
     class Meta:
-        verbose_name_plural = "Events"
+        verbose_name_plural = "EventsOld"
+
+    def __str__(self):
+        return self.event_title
+
+
+class NewEventModelNew(models.Model):
+    """ Wydarzenie tworzone przez użytkownika """
+    owner = models.ForeignKey(User, on_delete= models.CASCADE) # powiążemy wpis z danym użytkownikiem
+
+    event_title = models.CharField(max_length= 20, default= "")
+    event_location = models.CharField(max_length= 20, default= "", blank= True)
+    event_description = models.CharField(max_length= 200, default= "", blank= True)
+
+    event_date = models.DateField()
+    event_time = models.TimeField()
+
+    date_added = models.DateTimeField(auto_now_add= True)
+    
+    class Meta:
+        verbose_name_plural = "EventsNew"
 
     def __str__(self):
         return self.event_title
@@ -51,6 +71,14 @@ class NewEventModel(models.Model):
 
 class InvitedToEventModel(models.Model):
     event = models.ForeignKey(NewEventModel, on_delete=models.CASCADE)
+    invited_friend = models.ForeignKey(User, on_delete=models.CASCADE)
+    accepted_invitation = models.BooleanField(default= False) # 1 - przyjął; 0 - brak odp./odrzucił
+    decline_invitation = models.BooleanField(default= False) # 1 - odrzucił; 0 - brak odp./przyjął
+
+
+
+class InvitedToEventModelNew(models.Model):
+    event = models.ForeignKey(NewEventModelNew, on_delete=models.CASCADE)
     invited_friend = models.ForeignKey(User, on_delete=models.CASCADE)
     accepted_invitation = models.BooleanField(default= False) # 1 - przyjął; 0 - brak odp./odrzucił
     decline_invitation = models.BooleanField(default= False) # 1 - odrzucił; 0 - brak odp./przyjął

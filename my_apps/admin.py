@@ -31,14 +31,26 @@ class AppPhotosAdmin(admin.ModelAdmin):
 admin.site.register(AppPhotos, AppPhotosAdmin)
     
 
-
+# delete
 class NewEventModelAdmin(admin.ModelAdmin):
     """EDIT"""
-    list_display = ('id', 'event_title', 'event_location', 'owner', 'event_description', 'event_date_year', 'event_date_month', 'event_date_day')
+    list_display = ('id', 'event_title', 'event_location', 'owner', 'event_description', 'event_date_year', 'event_date_month', 'event_date_day', 'event_date', 'date_added')
 admin.site.register(NewEventModel, NewEventModelAdmin)
 
 
 
+class NewEventModelAdminNew(admin.ModelAdmin):
+    """EDIT""", 
+    list_display = ('id', 'event_title', 'event_location', 'owner', 'event_description', 'event_date', 'event_time', 'date_added')
+admin.site.register(NewEventModelNew, NewEventModelAdminNew)
+
+
+class InvitedToEventModelAdminNew(admin.ModelAdmin):
+    list_display = ('id', 'event', 'invited_friend', 'accepted_invitation', 'decline_invitation')
+admin.site.register(InvitedToEventModelNew, InvitedToEventModelAdminNew)
+
+
+# delete
 class InvitedToEventModelAdmin(admin.ModelAdmin):
     list_display = ('event', 'invited_friend', 'accepted_invitation')
 admin.site.register(InvitedToEventModel, InvitedToEventModelAdmin)

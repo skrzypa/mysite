@@ -32,4 +32,6 @@ urlpatterns = [
     path('', include('rubikcube.urls')),        
     path('', include('flac_mp3_tag.urls')),        
     path('', include('deploying.urls')),        
+    #path('', include('tests.urls')),          
+    path('', include('checklist.urls')),             
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

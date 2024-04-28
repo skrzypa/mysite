@@ -12,3 +12,4 @@ django
 static
 media/*
 config_nginx
+.pytest_cache
