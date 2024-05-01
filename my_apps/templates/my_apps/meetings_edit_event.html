@@ -41,17 +41,16 @@
             </button>
         </div>
 
-        <div>
-
+        <div style="margin-top: 1rem;">
             <div class="dropdown">
                 <div class="form-group d-flex flex-row flex-wrap">
-                    <div class="flex-col m-2">
-                        <label class="h3 m-0 p-0">
-                            {{ form_new_event.event_time.label }}
+                    <div class="flex-col m-1">
+                        <label class="h2 m-0 p-0">
+                            {{ form_new_event.event_time.label }}:
                         </label>
                     </div>
 
-                    <div class="flex-col m-2">
+                    <div class="flex-col m-1">
                         <select class="form-select" name="selected_hour">
                             {% for h in hours %}
                                 {% if h == event_time.0 %}
@@ -63,7 +62,13 @@
                         </select>
                     </div>
 
-                    <div class="flex-col m-2">
+                    <div class="flex-col m-1">
+                        <label class="h2 m-0 p-0">
+                            :
+                        </label>
+                    </div>
+
+                    <div class="flex-col m-1">
                         <select class="form-select" name="selected_minute">
                             {% for m in minutes %}
                                 {% if m == event_time.1 %}
@@ -74,11 +79,8 @@
                             {% endfor %}
                         </select>
                     </div>
-    
                 </div>
-
             </div>
-    
         </div>
 
         <div class="text-center mt-2 mb-2">
@@ -166,6 +168,11 @@
                                     {% else %}
                                         <th class="text-center" style="margin: 0; padding: 0.15rem;">
                                             <button data-bs-dismiss="modal" 
+                                            {% if today_date.0 == year and today_date.1 == month and today_date.2 == day %}
+                                            class="btn btn-sm btn-success date-link" 
+                                            {% else %}
+                                            class="btn btn-sm btn-primary date-link" 
+                                            {% endif %}
                                             class="btn btn-sm btn-primary date-link" 
                                             value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}" 
                                             style="width: 100%">
@@ -211,9 +218,8 @@
 
 <script>
     $(function() {
-        // Funkcja, która reaguje na kliknięcie na datę
         $('.date-link').click(function(event) {
-            event.preventDefault(); // Zatrzymuje domyślne zachowanie przycisku
+            event.preventDefault();
             var dateParts = $(this).val().split('/');
             var selectedDate = dateParts[0] + '-' + dateParts[1].padStart(2, '0') + '-' + dateParts[2];
             $("#id_event_date").val(selectedDate);

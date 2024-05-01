@@ -186,9 +186,10 @@ def meetings_homepage(request: WSGIRequest):
     meetings = Meetings()
     current_user = request.user
     current_user_id = current_user.id
+    year_choosen = request.POST.get('year_button', str(meetings.year_today))
 
-    my_events: QuerySet[NewEventModelNew] =         NewEventModelNew.objects.filter(owner = current_user_id)
-    my_invitations: QuerySet[NewEventModelNew] =    NewEventModelNew.objects.filter(invitedtoeventmodelnew__invited_friend = current_user_id)
+    my_events: QuerySet[NewEventModelNew] =         NewEventModelNew.objects.filter(owner = current_user_id, event_date__year = year_choosen)
+    my_invitations: QuerySet[NewEventModelNew] =    NewEventModelNew.objects.filter(invitedtoeventmodelnew__invited_friend = current_user_id, event_date__year = year_choosen)
 
     all_events = my_events.union(my_invitations).order_by('event_date', 'event_time')
 
@@ -233,7 +234,6 @@ def meetings_homepage(request: WSGIRequest):
             )
 
 
-    year_choosen = request.POST.get('year_button', str(meetings.year_today))
     if request.method == 'POST':
 
         for m in messages.get_messages(request):
@@ -258,12 +258,6 @@ def meetings_homepage(request: WSGIRequest):
             invitation.save()
 
             return redirect(to= 'my_apps:meetings_calendar')
-    
-        elif 'year_button' in request.POST:
-            year_choosen = int(request.POST['year_button'])
-    
-    else:
-        year_choosen = meetings.year_today
 
 
     return render(
@@ -335,6 +329,8 @@ def new_event(request: WSGIRequest, year: str):
             'minutes':              meetings.minutes,
             'friends':              friends,
             'days':                 meetings.days,
+            'year_range':           meetings.year_range,
+            'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
         }
     )
 
@@ -410,6 +406,7 @@ def edit_event(request: WSGIRequest, id):
             'invited_friends':      invited,
             'rest_friends':         rest_friends,
             'days':                 meetings.days,
+            'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
         },
     )
 

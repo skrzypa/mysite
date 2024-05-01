@@ -9,8 +9,18 @@
         {% endfor %}
     {% endif %}
 
-    <div class="text-center">
-        <label class="h1 m-0">Dodaj wydarzenie</label>
+    <div class="dropdown text-center" style="margin-bottom: 1rem;">
+        <label class="h2 m-0">
+            Dodaj wydarzenie w 
+            <button class="btn btn-lg btn-outline-light dropdown-toggle" style="padding: 0.25rem 0.5rem 0.35rem 0.5rem;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ year }}
+            </button>
+            <ul class="dropdown-menu">
+                {% for y in year_range %}
+                    <li><a class="dropdown-item" href="{% url 'my_apps:meetings_new_event' y %}">{{ y }}</a></li>
+                {% endfor %}
+            </ul>
+        </label>
     </div>
 
     <form method="post">
@@ -144,7 +154,11 @@
                                         {% else %}
                                             <th class="text-center" style="margin: 0; padding: 0.15rem;">
                                                 <button data-bs-dismiss="modal" 
+                                                {% if today_date.0 == year and today_date.1 == month and today_date.2 == day %}
+                                                class="btn btn-sm btn-success date-link" 
+                                                {% else %}
                                                 class="btn btn-sm btn-primary date-link" 
+                                                {% endif %}
                                                 value="{{ day }}/{{ forloop.parentloop.parentloop.counter }}/{{ year }}" 
                                                 style="width: 100%">
                                                     {{ day }}
