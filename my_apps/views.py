@@ -41,7 +41,7 @@ def index(request: WSGIRequest):
     if new_invitations:
         messages.warning(
             request= request,
-            message= f"Masz {len(new_invitations)} nowe zaproszenia na wydarzenia",
+            message= f"Masz {len(new_invitations)} nowe zaproszeni(a/e) na wydarzenia",
             extra_tags= 'warning'
         )
 
@@ -224,6 +224,13 @@ def meetings_homepage(request: WSGIRequest):
                 message= f"Masz nowe zaproszenie w dniu: {key.replace('-', ' ')}",
                 extra_tags= 'warning',
             )
+        
+        if (event.event_date - meetings.date_today.date()).days in list(range(0, 7)):
+            messages.info(
+                request= request,
+                message= f"Nadciągające wydarzenie: {event.event_title} ({event.event_date}).",
+                extra_tags= 'info'
+            )
 
 
     year_choosen = request.POST.get('year_button', str(meetings.year_today))
@@ -295,7 +302,7 @@ def new_event(request: WSGIRequest, year: str):
                 messages.warning(
                     request = request, 
                     message= "Należy podać datę oraz godzinę", 
-                    extra_tags= "alert alert-danger"
+                    extra_tags= "danger"
                 )
                 return HttpResponseRedirect(reverse(viewname= 'my_apps:meetings_new_event', args=[year]))
 
@@ -372,10 +379,10 @@ def edit_event(request: WSGIRequest, id):
         
         elif 'del_event' in request.POST and request.user == edited_event.owner:
             edited_event.delete()
-            messages.success(
+            messages.error(
                 request= request,
                 message= f"Usunięto wydarzenie: {edited_event.event_title}",
-                extra_tags= "alert alert-danger"
+                extra_tags= "danger"
             )
             return redirect(to= 'my_apps:meetings_calendar')
         
