@@ -6,13 +6,13 @@
 <div class="col-11 mx-auto" style="min-height: 100%;">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.extra_tags }}">{{ message }}</div>
+            <div class="alert alert-{{ message.extra_tags }} h6 text-dark" style="padding: 0.5rem 0.5rem;">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
     <div class="container-fluid center" style="margin-top: 2rem; padding: 0;">
         
-        <label style="margin: 0; padding: 0; ">
+        <label style="margin: 0; padding: 0; margin-bottom: 0.5rem;">
             <h4 style="margin: 0; padding: 0;">Pasek postępu {{ today_date.0 }} roku:</h4>
         </label>
 

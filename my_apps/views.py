@@ -41,7 +41,7 @@ def index(request: WSGIRequest):
     if new_invitations:
         messages.warning(
             request= request,
-            message= f"Masz {len(new_invitations)} nowe zaproszeni(a/e) na wydarzenia",
+            message= f"Masz {len(new_invitations)} nowe zaproszeni(a/e) na wydarzeni(a/e)",
             extra_tags= 'warning'
         )
 
@@ -228,13 +228,17 @@ def meetings_homepage(request: WSGIRequest):
         if (event.event_date - meetings.date_today.date()).days in list(range(0, 7)):
             messages.info(
                 request= request,
-                message= f"Nadciągające wydarzenie: {event.event_title} ({event.event_date}).",
+                message= f"Nadciągające wydarzenie: \"{event.event_title}\" - {key.replace('-', ' ')}",
                 extra_tags= 'info'
             )
 
 
     year_choosen = request.POST.get('year_button', str(meetings.year_today))
     if request.method == 'POST':
+
+        for m in messages.get_messages(request):
+            del m
+
         if 'accept_invitation' in request.POST:
             invitation = InvitedToEventModelNew.objects.get(
                 event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
