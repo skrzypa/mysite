@@ -32,6 +32,18 @@ def index(request: WSGIRequest):
     if not os.path.exists(mysite.settings.MEDIA_ROOT):
         os.mkdir(mysite.settings.MEDIA_ROOT)
 
+    new_invitations = InvitedToEventModelNew.objects.filter(
+        invited_friend = User.objects.get(id = request.user.id), 
+        accepted_invitation = False, 
+        decline_invitation = False
+    )
+
+    if new_invitations:
+        messages.warning(
+            request= request,
+            message= f"Masz {len(new_invitations)} nowe zaproszenia na wydarzenia",
+            extra_tags= 'warning'
+        )
 
     app_dict = {
         'Aplikacje dostępne po zalogowaniu:': [],
@@ -175,9 +187,10 @@ def meetings_homepage(request: WSGIRequest):
     current_user = request.user
     current_user_id = current_user.id
 
-    all_events = NewEventModelNew.objects.filter(owner = current_user_id).union(
-        NewEventModelNew.objects.filter(invitedtoeventmodelnew__invited_friend = current_user_id)
-    )
+    my_events: QuerySet[NewEventModelNew] =         NewEventModelNew.objects.filter(owner = current_user_id)
+    my_invitations: QuerySet[NewEventModelNew] =    NewEventModelNew.objects.filter(invitedtoeventmodelnew__invited_friend = current_user_id)
+
+    all_events = my_events.union(my_invitations).order_by('event_date', 'event_time')
 
     events = {}
     for event in all_events:
@@ -188,16 +201,32 @@ def meetings_homepage(request: WSGIRequest):
         accepted_the_invitation = [User.objects.get(id = f.invited_friend.id) for f in InvitedToEventModelNew.objects.filter(event = event, accepted_invitation = True, decline_invitation = False)]
         not_accept_the_invitation = [User.objects.get(id = f.invited_friend.id) for f in InvitedToEventModelNew.objects.filter(event = event, accepted_invitation = False, decline_invitation = True)]
 
+        new_invitations = InvitedToEventModelNew.objects.filter(
+            event = event, invited_friend = User.objects.get(id = current_user_id), accepted_invitation = False, decline_invitation = False
+        )
+
         if key not in events:
             events[key] = {
                 'event': [[event, invited, accepted_the_invitation, not_accept_the_invitation]],
                 'count': 1,
+                'color': 'danger' # default color for counter on calendar
             }
             
         else:
             events[key]['event'].append([event, invited, accepted_the_invitation, not_accept_the_invitation])
             events[key]['count'] += 1
-    
+
+        # if you have a new invitation (False and False in InvitedToEventModelNew) then show other color
+        if new_invitations:
+            events[key]['color'] = 'warning'    
+            messages.warning(
+                request= request,
+                message= f"Masz nowe zaproszenie w dniu: {key.replace('-', ' ')}",
+                extra_tags= 'warning',
+            )
+
+
+    year_choosen = request.POST.get('year_button', str(meetings.year_today))
     if request.method == 'POST':
         if 'accept_invitation' in request.POST:
             invitation = InvitedToEventModelNew.objects.get(
@@ -235,7 +264,7 @@ def meetings_homepage(request: WSGIRequest):
             'year_range':           [str(y) for y in meetings.year_range],
             'year_today':           str(meetings.date_today.year),
 
-            'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month)-1]), str(meetings.date_today.day)],
+            'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
 
             'calendar':             meetings.generate_calendar(int(year_choosen)),
             'days':                 meetings.days,

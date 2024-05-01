@@ -6,7 +6,7 @@
 <div class="col-11 mx-auto" style="min-height: 100%;">
     {% if messages %}
         {% for message in messages %}
-            <div class="{{ message.extra_tags }}">{{ message }}</div>
+            <div class="alert alert-{{ message.extra_tags }}">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
@@ -113,7 +113,7 @@
 
                                                 {% with date_day=year_choosen|add:'-'|add:month_name|add:'-'|add:day %}
                                                     {% if date_day in events.keys %}
-                                                        <span class="position-absolute badge rounded-pill bg-danger">
+                                                        <span class="position-absolute badge rounded-pill bg-{{ events|get_event_color_value:date_day }}">
                                                             {{ events|get_count_value:date_day }}
                                                         </span>
                                                     {% endif  %}

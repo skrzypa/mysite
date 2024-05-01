@@ -10,7 +10,7 @@ class Meetings():
         self.date_today: datetime =                 datetime.datetime.now()
         self.formatted_date_today: datetime =       self.date_today.strftime(self.date_format)
         self.year_progress: float =                 self._year_progress()
-        self.year_range: list =                     list(range(2022, self.date_today.year + 2))[::-1]
+        self.year_range: list =                     list(range(2023, self.date_today.year + 2))
         self.year_today: int =                      self.date_today.year
         self.days: list[str] =                      ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd']
         self.months: list[str] =                    ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"]

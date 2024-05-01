@@ -10,7 +10,7 @@
     {% endif %}
 
     <div class="text-center">
-        <label class="h1">Dodaj wydarzenie w {{ year }}</label>
+        <label class="h1 m-0">Dodaj wydarzenie</label>
     </div>
 
     <form method="post">
@@ -47,17 +47,16 @@
             </button>
         </div>
 
-        <div>
-
+        <div style="margin-top: 1rem;">
             <div class="dropdown">
                 <div class="form-group d-flex flex-row flex-wrap">
-                    <div class="flex-col m-2">
-                        <label class="h3 m-0 p-0">
-                            {{ form_new_event.event_time.label }}
+                    <div class="flex-col m-1">
+                        <label class="h2 m-0 p-0">
+                            {{ form_new_event.event_time.label }}:
                         </label>
                     </div>
 
-                    <div class="flex-col m-2">
+                    <div class="flex-col m-1">
                         <select class="form-select" name="selected_hour">
                             {% for h in hours %}
                                 <option>{{ h }}</option>
@@ -65,19 +64,21 @@
                         </select>
                     </div>
 
-                    <div class="flex-col m-2">
+                    <div class="flex-col m-1">
+                        <label class="h2 m-0 p-0">
+                            :
+                        </label>
+                    </div>
+
+                    <div class="flex-col m-1">
                         <select class="form-select" name="selected_minute">
                             {% for m in minutes %}
                                 <option>{{ m }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
-    
                 </div>
-
             </div>
-
         </div>
 
         <div class="text-center mt-2 mb-2">
