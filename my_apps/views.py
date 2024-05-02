@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login,  logout
-from django.http import HttpResponseRedirect, Http404
-from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.template.defaulttags import register
+from django.http import HttpResponseRedirect, Http404
+from django.urls import reverse
+from django.db.models import QuerySet
+
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import QuerySet, Q
 
 from .forms import *
 from .models import *
@@ -16,7 +16,6 @@ from .beercalc import BeerCalc
 from .meetings import Meetings
 import mysite.settings
 
-import calendar
 import datetime
 import os
 from pprint import pprint
@@ -32,18 +31,20 @@ def index(request: WSGIRequest):
     if not os.path.exists(mysite.settings.MEDIA_ROOT):
         os.mkdir(mysite.settings.MEDIA_ROOT)
 
-    new_invitations = InvitedToEventModelNew.objects.filter(
-        invited_friend = User.objects.get(id = request.user.id), 
-        accepted_invitation = False, 
-        decline_invitation = False
-    )
 
-    if new_invitations:
-        messages.warning(
-            request= request,
-            message= f"Masz {len(new_invitations)} nowe zaproszeni(a/e) na wydarzeni(a/e)",
-            extra_tags= 'warning'
+    if request.user.is_authenticated:
+        new_invitations = InvitedToEventModelNew.objects.filter(
+            invited_friend = User.objects.get(id = request.user.id), 
+            accepted_invitation = False, 
+            decline_invitation = False
         )
+
+        if new_invitations:
+            messages.warning(
+                request= request,
+                message= f"Masz {len(new_invitations)} nowe zaproszeni(a/e) na wydarzeni(a/e)",
+                extra_tags= 'warning'
+            )
 
     app_dict = {
         'Aplikacje dostępne po zalogowaniu:': [],
@@ -278,6 +279,7 @@ def meetings_homepage(request: WSGIRequest):
         }
     )
 
+
 @login_required
 def new_event(request: WSGIRequest, year: str):
     form_new_event = NewEventFormNew()
@@ -333,6 +335,7 @@ def new_event(request: WSGIRequest, year: str):
             'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
         }
     )
+
 
 @login_required
 def edit_event(request: WSGIRequest, id):
@@ -414,12 +417,15 @@ def edit_event(request: WSGIRequest, id):
 # USERS
 def log_in(request: WSGIRequest):
 
+    if request.user.is_authenticated:
+        return redirect('my_apps:homepage')
+
     if request.method == 'POST':
         user = authenticate(
-                        request,
-                        username= request.POST['username'],
-                        password= request.POST['password']
-                    )
+            request,
+            username= request.POST['username'],
+            password= request.POST['password']
+        )
 
         if user is not None:
             login(request, user)
@@ -444,10 +450,11 @@ def register(request: WSGIRequest):
         context['form'] = form
 
     if open_registration is False:
-            messages.warning(request = request, 
-                            message = "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować",
-                            extra_tags = "danger",
-            )
+        messages.warning(
+            request = request, 
+            message = "Rejestracja jest zamknięta. Skontaktuj się z twórcą strony jeśli chcesz się zarejestrować",
+            extra_tags = "danger",
+        )
 
     elif open_registration is True and request.method == 'POST':
         # Przetworzenie wypełnionego formularza
@@ -464,13 +471,19 @@ def register(request: WSGIRequest):
         
     return render(request, 'my_apps/users_register.html', context)
 
+
 @login_required
 def log_out(request: WSGIRequest):
     logout(request)
-    messages.success(request, "Zostałeś wylogowany. Dziękuję za skorzystanie z serwisu!")
+    messages.success(
+        request, 
+        "Zostałeś wylogowany. Dziękuję za skorzystanie ze strony!",
+        "success"
+    )
     return redirect("my_apps:homepage")
 
-@login_required
+
+@login_required(login_url= "")
 def friends(request: WSGIRequest):
     current_user = request.user
 
@@ -868,5 +881,3 @@ def split_group(request, group_id):
             }
 
     return render(request, template_name='my_apps/split_group.html', context= context)
-
-
