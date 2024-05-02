@@ -193,8 +193,10 @@ def meetings_homepage(request: WSGIRequest):
     my_invitations: QuerySet[NewEventModelNew] =    NewEventModelNew.objects.filter(invitedtoeventmodelnew__invited_friend = current_user_id, event_date__year = year_choosen)
 
     all_events = my_events.union(my_invitations).order_by('event_date', 'event_time')
+    all_events_counter = len(all_events)
 
     events = {}
+    past_future_events: dict[str, list] = {'past': [], 'future': [],}
     for event in all_events:
         event: NewEventModelNew
         key = f"{str(event.event_date.year)}-{meetings.months[event.event_date.month - 1]}-{str(event.event_date.day).zfill(2)}"
@@ -211,12 +213,16 @@ def meetings_homepage(request: WSGIRequest):
             events[key] = {
                 'event': [[event, invited, accepted_the_invitation, not_accept_the_invitation]],
                 'count': 1,
-                'color': 'danger' # default color for counter on calendar
+                'color': 'danger', # default color for counter on calendar
             }
-            
         else:
             events[key]['event'].append([event, invited, accepted_the_invitation, not_accept_the_invitation])
             events[key]['count'] += 1
+        
+        if (event.event_date - meetings.date_today.date()).days < 0:
+            past_future_events['past'].append(event)
+        else:
+            past_future_events['future'].append(event)
 
         # if you have a new invitation (False and False in InvitedToEventModelNew) then show other color
         if new_invitations:
@@ -276,6 +282,8 @@ def meetings_homepage(request: WSGIRequest):
             'days':                 meetings.days,
             'events':               events,
             'current_user_id':      current_user_id,
+            'past_future_events':   past_future_events,
+            'all_events_counter':   all_events_counter,
         }
     )
 
