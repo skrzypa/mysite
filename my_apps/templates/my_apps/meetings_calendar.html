@@ -131,76 +131,76 @@
                                             <div class="modal fade text-dark" id="exampleModal{{ year_choosen }}{{ month_name }}{{ day }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="margin: auto;">
                                                     <div class="modal-content">
-                                                        <div class="modal-header">
+                                                        <div class="modal-header bg-dark text-light">
                                                             <h1 class="modal-title fs-5" id="exampleModalLabel">{{ day }} {{ month_name }} {{ year_choosen }}</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
 
-                                                        <div class="modal-body">
+                                                        <div class="modal-body bg-dark">
                                                             {% with date_day=year_choosen|add:'-'|add:month_name|add:'-'|add:day %}
                                                                 {% if date_day in events.keys %}
                                                                     {% for event in events|get_events_values:date_day %}
                                                                         {% if current_user_id == event.0.owner.id %}
-                                                                        <div class="alert alert-success" role="alert">
+                                                                        <div class="alert alert-success" style="padding: 0.5rem;">
                                                                         {% else %}
-                                                                        <div class="alert alert-primary" role="alert">
+                                                                        <div class="alert alert-primary" style="padding: 0.5rem;">
                                                                         {% endif %}
                                                                             <table class="table text-dark m-0">
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Tytuł:</h6>
                                                                                     </td>
 
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Data i godzina:</h6>
                                                                                     </td>
                                                                                 </tr>
             
                                                                                 <tr>
-                                                                                    <td class="text-break" style="padding: 0;">
+                                                                                    <td class="text-break" style="padding: 0.1rem;">
                                                                                         <label>{{ event.0.event_title }}</label>
                                                                                     </td>
                                                 
-                                                                                    <td class="text-break" style="padding: 0;">
+                                                                                    <td class="text-break" style="padding: 0.1rem;">
                                                                                         <label>{{ event.0.event_date}} {{ event.0.event_time}}</label>
                                                                                     </td>
                                                                                 </tr>
             
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Lokalizacja:</h6>
                                                                                     </td>
                                                 
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Autor:</h6>
                                                                                     </td>
                                                                                 </tr>
                                                 
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <label>{{ event.0.event_location }}</label>
                                                                                     </td>
                                                 
-                                                                                    <td style="width: 50%; padding: 0;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
                                                                                         <label>{{ event.0.owner }}</label>
                                                                                     </td>
                                                                                 </tr>
                 
                                                                                 <tr>
-                                                                                    <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
+                                                                                    <td style="width: 100%; padding: 0.1rem;" colspan="2" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Opis:</h6>
                                                                                     </td>
                                                                                 </tr>
                                                 
                                                                                 <tr>
-                                                                                    <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
+                                                                                    <td style="width: 100%; padding: 0.1rem;" colspan="2" class="text-break">
                                                                                         <label>{{ event.0.event_description }}</label>
                                                                                     </td>
                                                                                 </tr>
 
                                                                                 <tr>
                                                                                     <td colspan="2" style="padding: 0;">
-                                                                                        <div class="btn-group d-flex flex-wrap" style="gap: 0.5rem; margin-top: 2rem;">
+                                                                                        <div class="btn-group d-flex flex-wrap" style="gap: 0.5rem; margin-top: 1rem;">
                                                                                             <div class="dropdown">
                                                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                                                                     Zaproszeni ({{ event.1|length }})
@@ -303,61 +303,46 @@
             <label class="h2">Przyszłe wydarzenia</label>
             {% endif %}
             {% for event in past_future_events.future %}
-                <div class="alert alert-success" style="padding: 0.5rem;">
-                    <table class="table text-dark m-0">
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Tytuł:</h6>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Data i godzina:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-break" style="padding: 0;">
-                                <label>{{ event.event_title }}</label>
-                            </td>
-
-                            <td class="text-break" style="padding: 0;">
-                                <label>{{ event.event_date}} {{ event.0.event_time}}</label>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Lokalizacja:</h6>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Autor:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <label>{{ event.event_location }}</label>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <label>{{ event.owner }}</label>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
-                                <h6 style="margin: 0rem;">Opis:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
-                                <label>{{ event.event_description }}</label>
-                            </td>
-                        </tr>
-                    </table>
+            <div class="alert alert-success text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Tytuł:</strong>
+                            {{ event.event_title }}
+                        </label>
+                    </div>
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Data i godzina:</strong>
+                            {{ event.event_date}} {{ event.event_time}}
+                        </label>
+                    </div>
                 </div>
+                
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Lokalizacja:</strong>
+                            {{ event.event_location }}
+                        </label>
+                    </div>
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Autor:</strong>
+                            {{ event.owner }}
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Opis:</strong>
+                            {{ event.event_description }}
+                        </label>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
 
@@ -367,61 +352,46 @@
             <label class="h2">Przeszłe wydarzenia</label>
             {% endif %}
             {% for event in past_future_events.past %}
-                <div class="alert alert-primary" style="padding: 0.5rem;">
-                    <table class="table text-dark m-0">
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Tytuł:</h6>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Data i godzina:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-break" style="padding: 0;">
-                                <label>{{ event.event_title }}</label>
-                            </td>
-
-                            <td class="text-break" style="padding: 0;">
-                                <label>{{ event.event_date}} {{ event.0.event_time}}</label>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Lokalizacja:</h6>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <h6 style="margin: 0rem;">Autor:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <label>{{ event.event_location }}</label>
-                            </td>
-
-                            <td style="width: 50%; padding: 0;" class="text-break">
-                                <label>{{ event.owner }}</label>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
-                                <h6 style="margin: 0rem;">Opis:</h6>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="width: 100%; padding: 0;" colspan="2" class="text-break">
-                                <label>{{ event.event_description }}</label>
-                            </td>
-                        </tr>
-                    </table>
+            <div class="alert alert-primary text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Tytuł:</strong>
+                            {{ event.event_title }}
+                        </label>
+                    </div>
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Data i godzina:</strong>
+                            {{ event.event_date}} {{ event.event_time}}
+                        </label>
+                    </div>
                 </div>
+                
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Lokalizacja:</strong>
+                            {{ event.event_location }}
+                        </label>
+                    </div>
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Autor:</strong>
+                            {{ event.owner }}
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                        <label style="margin: 0rem;">
+                            <strong>Opis:</strong>
+                            {{ event.event_description }}
+                        </label>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
 
