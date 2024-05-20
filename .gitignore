@@ -11,5 +11,9 @@ django
 .env
 static
 media/*
+backups/*
+tests/*
 config_nginx
 .pytest_cache
+
+checklist/*

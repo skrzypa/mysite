@@ -1,0 +1,129 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+<div class="container-fluid text-dark text-center col-sm-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6" style="margin: auto; min-height: 100%">
+    <div class="justify-content-center">
+
+        <div class="bg-body-tertiary rounded bg-light" style="padding: 1rem; margin-top: 10rem; margin-bottom: 10rem;">
+            {% if user.is_superuser %}
+            <div>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class= "btn btn-sm btn-success" name="download_rates" style= "margin-top: 1rem;">Pobierz kursy</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div>
+                <label class="h1 display-4 border-bottom">Kalkulator walutowy</label>
+            </div>
+
+            <div>
+                <label class= "h6">Dane z dnia: {{ selected_data.currencies.effectiveDate }}</label>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label class= "h6"><a href="http://api.nbp.pl/api/exchangerates/tables/a/" target="_blank">Źródło danych</a></label>
+            </div>
+
+            {% if messages %}
+                {% for m in messages %}
+                    <div class="col-11 justify-content-center mx-auto alert alert-{{ m.extra_tags }} text-dark text-wrap">
+                        <label class="h1">{{ m }}</label>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div style="margin-top: 2rem;">
+                <form method="post">
+                    {% csrf_token %}
+                    <div style="margin: 1rem;">
+                        <div>
+                            <label class="h4 display-6">Przelicz PLN na inną walutę</label>
+                        </div>
+
+                        <div class="form-floating col-12">
+                            <input type="text" class="form-control" name="PLN" id="PLN" placeholder="pln" value= {{ input_value1 }}>
+                            <label for="PLN">Kwota w PLN</label>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1rem; margin-bottom: 1rem;">
+                            <label class="input-group-text" for="inputGroupSelect01">Waluta</label>
+                            <select class="form-select" id="inputGroupSelect01" name="selected_currency">
+                                {% for currency in selected_data.currencies.rates %}
+                                    {% if currency.code == 'USD' %}
+                                        <option value= {{ currency.code }} selected >
+                                    {% else %}
+                                        <option value= {{ currency.code }}>
+                                    {% endif %}
+                                            {{ currency.code }} - {{ currency.currency.capitalize }} ({{ currency.mid }} PLN)
+                                        </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-success btn" style="width: 100%;" name="PLN_to_other">Przelicz</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div style="margin-top: 5rem;">
+                <form method="post">
+                    {% csrf_token %}
+                    <div style="margin: 1rem;">
+                        <div>
+                            <label class="h4 display-6">Przelicz inną walutę na PLN</label>
+                        </div>
+
+                        <div class="form-floating col-12">
+                            <input type="text" class="form-control" name="Other" id="Other" placeholder="Other" value= {{ input_value2 }}>
+                            <label for="Other">Kwota do przeliczenia na PLN</label>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1rem; margin-bottom: 1rem;">
+                            <label class="input-group-text" for="inputGroupSelect01">Waluta</label>
+                            <select class="form-select" id="inputGroupSelect01" name="selected_currency">
+                                {% for currency in selected_data.currencies.rates %}
+                                    {% if currency.code == 'USD' %}
+                                        <option value= {{ currency.code }} selected >
+                                    {% else %}
+                                        <option value= {{ currency.code }}>
+                                    {% endif %}
+                                            {{ currency.code }} - {{ currency.currency.capitalize }} ({{ currency.mid }} PLN)
+                                        </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-success btn" style="width: 100%;" name="other_to_PLN">Przelicz</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            
+            <div style="margin-top: 5rem;">
+                <div>
+                    <label class="h4 display-6">Wybierz dane z innego dnia</label>
+                </div>
+
+                <div class="d-flex flex-wrap flex-row justify-content-center mx-auto">
+                    {% for r in records %}
+                        <form method="POST" class="m-1 p-0">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-primary" type="submit" value="{{ r.id }}" name="select_data">
+                                {{ r.currencies.effectiveDate }}
+                            </button> 
+                        </form>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
