@@ -221,10 +221,6 @@ def currency_calc_new(request: WSGIRequest):
                 extra_tags= 'success'
             )
 
-    print(request.POST)
-    request.POST = QueryDict()
-    print(request.POST)
-
     return render(
         request= request,
         template_name= 'currency_calc/currency_calc_new.html',
