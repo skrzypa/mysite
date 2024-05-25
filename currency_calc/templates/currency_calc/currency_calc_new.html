@@ -22,8 +22,12 @@
                 <label class= "h6">Dane z dnia: {{ selected_data.currencies.effectiveDate }}</label>
             </div>
 
-            <div style="margin-bottom: 2rem;">
+            <div>
                 <label class= "h6"><a href="http://api.nbp.pl/api/exchangerates/tables/a/" target="_blank">Źródło danych</a></label>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label class= "h6"><a href="{% url 'currency_calc:currency_calc_records' %}" target="_blank">Wszystkie recordy</a></label>
             </div>
 
             {% if messages %}

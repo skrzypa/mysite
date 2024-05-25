@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from django.contrib import messages
+from django.http import QueryDict
 
 import requests
 import datetime
@@ -184,8 +185,10 @@ def currency_calc_new(request: WSGIRequest):
 
         # save data if not in db
         if not data_date in [r.currencies['effectiveDate'] for r in records]:
-            NBP_API(currencies = data).save()
+            new_record = NBP_API(currencies = data)
+            new_record.save()
         
+        selected_data = new_record
 
     if 'PLN_to_other' in request.POST or 'other_to_PLN' in request.POST: 
         selected_currency = request.POST['selected_currency']
@@ -218,6 +221,9 @@ def currency_calc_new(request: WSGIRequest):
                 extra_tags= 'success'
             )
 
+    print(request.POST)
+    request.POST = QueryDict()
+    print(request.POST)
 
     return render(
         request= request,
@@ -226,4 +232,15 @@ def currency_calc_new(request: WSGIRequest):
             'records': records,
             'selected_data': selected_data,
         }
+    )
+
+
+def records(request: WSGIRequest):
+
+    return render(
+        request= request,
+        template_name= "currency_calc/currency_calc_records.html",
+        context= {
+            'records': NBP_API.objects.all()
+        },
     )
