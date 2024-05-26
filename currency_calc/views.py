@@ -169,14 +169,12 @@ def currency_calc_new(request: WSGIRequest):
     if not records:
         NBP_API(currencies = CurrencyCalc().currencies).save()
     
-    
     selected_data: NBP_API = NBP_API.objects.get(
         id = request.POST.get(
             key= 'select_data', 
             default= NBP_API.objects.last().id
         )
     )
-
 
     # only admin can dowloand new rates
     if (request.user.is_superuser) and ('download_rates' in request.POST):
@@ -188,7 +186,7 @@ def currency_calc_new(request: WSGIRequest):
             new_record = NBP_API(currencies = data)
             new_record.save()
         
-        selected_data = new_record
+            selected_data = new_record
 
     if 'PLN_to_other' in request.POST or 'other_to_PLN' in request.POST: 
         selected_currency = request.POST['selected_currency']
