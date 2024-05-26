@@ -298,103 +298,54 @@
     </div>
 
     <div class="offcanvas-body">
+        {% for past_future, events in past_future_events.items %}
         <div>
-            {% if past_future_events.future %}
-            <label class="h2">Przyszłe wydarzenia</label>
-            {% endif %}
-            {% for event in past_future_events.future %}
-            <div class="alert alert-success text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Tytuł:</strong>
-                            {{ event.event_title }}
-                        </label>
-                    </div>
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Data i godzina:</strong>
-                            {{ event.event_date}} {{ event.event_time}}
-                        </label>
-                    </div>
-                </div>
+            <label class="h2">{{ past_future }}</label>
                 
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Lokalizacja:</strong>
-                            {{ event.event_location }}
-                        </label>
+            {% for event in events %}
+                <div class="alert alert-success text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
+                    <div class="d-flex flex-wrap flex-row">
+                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                            <label style="margin: 0rem;">
+                                <strong>Tytuł:</strong>
+                                {{ event.event_title }}
+                            </label>
+                        </div>
+                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                            <label style="margin: 0rem;">
+                                <strong>Data i godzina:</strong>
+                                {{ event.event_date}} {{ event.event_time}}
+                            </label>
+                        </div>
                     </div>
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Autor:</strong>
-                            {{ event.owner }}
-                        </label>
+                    
+                    <div class="d-flex flex-wrap flex-row">
+                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                            <label style="margin: 0rem;">
+                                <strong>Lokalizacja:</strong>
+                                {{ event.event_location }}
+                            </label>
+                        </div>
+                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                            <label style="margin: 0rem;">
+                                <strong>Autor:</strong>
+                                {{ event.owner }}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap flex-row">
+                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                            <label style="margin: 0rem;">
+                                <strong>Opis:</strong>
+                                {{ event.event_description }}
+                            </label>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Opis:</strong>
-                            {{ event.event_description }}
-                        </label>
-                    </div>
-                </div>
-            </div>
             {% endfor %}
         </div>
-
-
-        <div>
-            {% if past_future_events.past %}
-            <label class="h2">Przeszłe wydarzenia</label>
-            {% endif %}
-            {% for event in past_future_events.past %}
-            <div class="alert alert-primary text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Tytuł:</strong>
-                            {{ event.event_title }}
-                        </label>
-                    </div>
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Data i godzina:</strong>
-                            {{ event.event_date}} {{ event.event_time}}
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Lokalizacja:</strong>
-                            {{ event.event_location }}
-                        </label>
-                    </div>
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Autor:</strong>
-                            {{ event.owner }}
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="d-flex flex-wrap flex-row">
-                    <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                        <label style="margin: 0rem;">
-                            <strong>Opis:</strong>
-                            {{ event.event_description }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
+        {% endfor %}
     </div>
 </div>
 

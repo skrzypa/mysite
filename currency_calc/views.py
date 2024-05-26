@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from django.contrib import messages
-from django.http import QueryDict
 
 import requests
 import datetime
