@@ -195,6 +195,33 @@ def meetings_homepage(request: WSGIRequest):
     all_events = my_events.union(my_invitations).order_by('event_date', 'event_time')
     all_events_counter = len(all_events)
 
+
+    if request.method == 'POST':
+
+        for m in messages.get_messages(request):
+            del m
+
+        if 'accept_invitation' in request.POST:
+            invitation = InvitedToEventModelNew.objects.get(
+                event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
+            )
+            invitation.accepted_invitation = True
+            invitation.decline_invitation = False
+            invitation.save()
+
+            return redirect(to= 'my_apps:meetings_calendar')
+
+        elif 'decline_invitation' in request.POST:
+            invitation = InvitedToEventModelNew.objects.get(
+                event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
+            )
+            invitation.accepted_invitation = False
+            invitation.decline_invitation = True
+            invitation.save()
+
+            return redirect(to= 'my_apps:meetings_calendar')
+
+
     events = {}
     past_future_events: dict[str, list] = {'Przyszłe wydarzenia': [], 'Przeszłe wydarzenia': [],}
     for event in all_events:
@@ -239,32 +266,6 @@ def meetings_homepage(request: WSGIRequest):
                 message= f"Nadciągające wydarzenie: \"{event.event_title}\" - {key.replace('-', ' ')}",
                 extra_tags= 'info'
             )
-
-
-    if request.method == 'POST':
-
-        for m in messages.get_messages(request):
-            del m
-
-        if 'accept_invitation' in request.POST:
-            invitation = InvitedToEventModelNew.objects.get(
-                event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
-            )
-            invitation.accepted_invitation = True
-            invitation.decline_invitation = False
-            invitation.save()
-
-            return redirect(to= 'my_apps:meetings_calendar')
-
-        elif 'decline_invitation' in request.POST:
-            invitation = InvitedToEventModelNew.objects.get(
-                event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
-            )
-            invitation.accepted_invitation = False
-            invitation.decline_invitation = True
-            invitation.save()
-
-            return redirect(to= 'my_apps:meetings_calendar')
 
 
     return render(
