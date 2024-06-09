@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models.fields.files import ImageFieldFile
+from django.db.models.query import QuerySet
+from django.core.handlers.wsgi import WSGIRequest
 from .models import *
 
 # Register your models here.
@@ -10,21 +13,22 @@ admin.site.register(AvailableApp, AvailableAppAdmin)
 
 
 class AppPhotosAdmin(admin.ModelAdmin):
-    # actions = ['del_entry_and_photo_file']
+    actions = ['del_entry_and_photo_file']
 
-    # @admin.action(description= "Delete entry and photo file")
-    # def del_entry_and_photo_file(self, request, queryset):
-    #     for obj in queryset:
+    @admin.action(description= "Delete entry and photo file")
+    def del_entry_and_photo_file(self, request: WSGIRequest, queryset: QuerySet):
+        for obj in queryset:
+            obj: AppPhotos
             
-    #         image = getattr(obj, 'photo')
-    #         image.delete()
+            image: ImageFieldFile = getattr(obj, 'photo')
+            image.delete()
 
-    #         obj.delete()
+            obj.delete()
             
-    #     self.message_user(
-    #         request,
-    #         f"Deleted entries and photos: {queryset.count()}",
-    #     )
+        self.message_user(
+            request,
+            f"Deleted entries and photos: {queryset.count()}",
+        )
 
 
     list_display = ('id_photo', 'id_app', 'photo')

@@ -256,14 +256,14 @@ def meetings_homepage(request: WSGIRequest):
             events[key]['color'] = 'warning'    
             messages.warning(
                 request= request,
-                message= f"Masz nowe zaproszenie w dniu: {key.replace('-', ' ')}",
+                message= f"Masz nowe zaproszenie w dniu: {' '.join(key.split('-')[::-1])}",
                 extra_tags= 'warning',
             )
         
         if (event.event_date - meetings.date_today.date()).days in list(range(0, 7)):
             messages.info(
                 request= request,
-                message= f"Nadciągające wydarzenie: \"{event.event_title}\" - {key.replace('-', ' ')}",
+                message= f"Nadciągające wydarzenie: \"{event.event_title}\" - {' '.join(key.split('-')[::-1])}",
                 extra_tags= 'info'
             )
 
