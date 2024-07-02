@@ -12,7 +12,7 @@
     </div>
 
 
-    <div class="text-center" style="margin-bottom: 2rem;">
+    <div class="text-center" style="margin-bottom: 2rem; margin-top: 1.5rem;">
         <label class="display-1 text-break word-wrap" id="note_title" style="cursor: pointer;">
             {{ note.title }}
         </label>
@@ -219,7 +219,7 @@
 
         <div style="margin: 0; padding: 0.25rem;">
             {% for element in note.content.elements %}
-                <div style="background-color: #1c1c1c; margin: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 1rem; flex-wrap: wrap; flex-grow: 1;">
+                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 1rem; flex-wrap: wrap; flex-grow: 1;">
                     
 
                     {% if element.1 %}
@@ -315,7 +315,7 @@
 
             {% for group in note.content.groups %}
 
-                <div style="background-color: #1c1c1c; margin: 0.25rem; padding: 0.25rem; border-radius: 5px;">
+                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px;">
                     <label class="h4 text-break word-wrap" style="margin: 0; margin-bottom: 0.5rem; padding: 0; cursor: pointer; width: 100%;" id="subgroup-{{ forloop.counter0 }}">
                         {{ group.0 }}
                     </label>
