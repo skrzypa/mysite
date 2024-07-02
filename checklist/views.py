@@ -58,6 +58,7 @@ def note(request: WSGIRequest, id: int):
 
     is_owner = Note.objects.get(id = id).owner == current_user_obj
     try:
+        note: Note = Note.objects.get(id = id)
         is_invited = current_user_id in [int(id) for id in Note.objects.get(id = id).invited_friends['invited_friends']]
     except KeyError:
         if not is_owner:
@@ -70,12 +71,11 @@ def note(request: WSGIRequest, id: int):
         if note.content == {}:
             note.content = {"elements": [], "groups": [], 'texts': []}
             note.save()
-            
+
     else:
         if not is_owner and not is_invited:
             raise Http404
     
-    note: Note = Note.objects.get(id = id)
 
     friends: Friendship = Friendship.objects.filter(from_friend = current_user_id)
     if friends:
