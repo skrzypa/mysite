@@ -13,7 +13,7 @@
 
 
     <div class="text-center" style="margin-bottom: 2rem;">
-        <label class="display-1" id="note_title" style="cursor: pointer;">
+        <label class="display-1 text-break word-wrap" id="note_title" style="cursor: pointer;">
             {{ note.title }}
         </label>
     </div>
@@ -159,19 +159,19 @@
 
 
     {% if note.content.texts %}
-    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0.25rem; background-color: white; border-radius: 10px;">
+    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0rem; background-color: white; border-radius: 10px;">
 
 
         {% for text in note.content.texts %}
 
             {% if forloop.counter == 1 %}
-            <div class="h1 text-dark" style="margin: 0; padding: 0.5rem;">
+            <div class="h1 text-dark" style="margin: 0; padding: 0.25rem;">
                 Notatki tekstowe
             </div>
             {% endif %}
 
-            <div id="note_container-{{ forloop.counter0 }}" class="border border-dark" style="padding: 0.5rem; margin: 0.5rem; border-radius: 5px; background-color: #1c1c1c;">
-                <div id="note-{{ forloop.counter0 }}" class="text-content" style="color: white; padding: 0.5rem; cursor: pointer;">
+            <div id="note_container-{{ forloop.counter0 }}" class="border border-dark" style="padding: 0.25rem; margin: 0.25rem; border-radius: 5px; background-color: #1c1c1c;">
+                <div id="note-{{ forloop.counter0 }}" class="text-content" style="color: white; padding: 0.25rem; cursor: pointer;">
                     {{ text }}
                 </div>
 
@@ -213,32 +213,30 @@
     {% endif %}
 
     {% if note.content.elements or note.content.groups %}
-    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0.25rem; background-color: white; border-radius: 10px;">
+    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0rem; background-color: white; border-radius: 10px;">
 
 
 
-        <div style="margin: 0; padding: 0.5rem;">
+        <div style="margin: 0; padding: 0.25rem;">
             {% for element in note.content.elements %}
-                <div style="background-color: #1c1c1c; margin: 0.5rem; padding: 0.5rem; border-radius: 5px; display: flex; gap: 1rem; flex-wrap: wrap; flex-grow: 1;">
+                <div style="background-color: #1c1c1c; margin: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 1rem; flex-wrap: wrap; flex-grow: 1;">
                     
 
                     {% if element.1 %}
 
-                        <div style="">
-                            <form method="POST" style="margin: 0; padding: 0;">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-success" type="submit" name="uncheck_element" value="{{ forloop.counter0 }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
-                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
+                        <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-success" type="submit" name="uncheck_element" value="{{ forloop.counter0 }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                </svg>
+                            </button>
+                        </form>
 
-                        <div id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through">
+                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap col-10">
                             {{ element.0 }}
-                        </div>
+                        </label>
 
                         <div id="edit_element-{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
                             <form method="POST" style="margin: 0; padding: 0;">
@@ -268,21 +266,19 @@
                         
                     {% else %}
 
-                        <div style="">
-                            <form method="POST" style="margin: 0; padding: 0;">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-danger" type="submit" name="check_element" value="{{ forloop.counter0 }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
-                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
+                        <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-danger" type="submit" name="check_element" value="{{ forloop.counter0 }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </button>
+                        </form>
 
-                        <div id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;">
+                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap col-10">
                             {{ element.0 }}
-                        </div>
+                        </label>
 
                         <div id="edit_element-{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
                             <form method="POST" style="margin: 0; padding: 0;">
@@ -319,8 +315,8 @@
 
             {% for group in note.content.groups %}
 
-                <div style="background-color: #1c1c1c; margin: 0.5rem; padding: 0.5rem; border-radius: 5px;">
-                    <label class="h4" style="margin: 0; margin-bottom: 0.5rem; padding: 0; cursor: pointer; width: 100%;" id="subgroup-{{ forloop.counter0 }}">
+                <div style="background-color: #1c1c1c; margin: 0.25rem; padding: 0.25rem; border-radius: 5px;">
+                    <label class="h4 text-break word-wrap" style="margin: 0; margin-bottom: 0.5rem; padding: 0; cursor: pointer; width: 100%;" id="subgroup-{{ forloop.counter0 }}">
                         {{ group.0 }}
                     </label>
                     
@@ -353,7 +349,7 @@
                     {% for element in group.1 %}
                         <div style="margin-top: 0.5rem; margin-bottom: 0.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
                             {% if element.1 %}
-                                <form method="POST" style="margin: 0; padding: 0;">
+                                <form method="POST" style="margin: 0; padding: 0;" class="col-1">
                                     {% csrf_token %}
                                     <button class="btn btn-sm btn-success" type="submit" name="uncheck_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
@@ -363,7 +359,7 @@
                                     </button>
                                 </form>
 
-                                <label style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                <label style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap col-10" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
                                     {{ element.0 }}
                                 </label>
 
@@ -393,7 +389,7 @@
                                     {% endif %}
                                 </div>
                             {% else %}
-                                <form method="POST" style="margin: 0; padding: 0;">
+                                <form method="POST" style="margin: 0; padding: 0;" class="col-1">
                                     {% csrf_token %}
                                     <button class="btn btn-sm btn-danger" type="submit" name="check_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
@@ -403,7 +399,7 @@
                                     </button>
                                 </form>
 
-                                <label style="flex-grow: 1; cursor: pointer;" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                <label style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap col-10" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
                                     {{ element.0 }}
                                 </label>
 
