@@ -1,0 +1,60 @@
+{% extends "my_apps/homepage_base.html" %}
+
+{% block content %}
+<div class="col-11 mx-auto justify-content-center" style="min-height: 100%;">
+    
+    <div>
+        <button class="btn btn-md btn-success" style="margin-bottom: 2rem;" data-bs-toggle="modal" data-bs-target="#exampleModal">Nowa notatka</button>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+
+                    <form method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj notatkę</h1>
+                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <div class="modal-body">
+                            {{ title_form.title }}
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-md btn-primary">+ Dodaj notatkę</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div>
+        {% if not all_notes %}
+            <div class="text-center row align-items-center" style="height: 80%;">
+                <label class="display-1 m-0 p-0">Brak notatek</label>
+            </div>
+        {% else %}
+            {% for note in all_notes %}
+                <a href="{% url 'checklist:note' note.id %}" class="btn alert alert-{{ note.color }}" style="padding: 1rem; border-radius: 5px; width: 100%">
+                    <div>
+                        <label class="display-6">
+                            {{ note.title }}
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <strong>Stworzył:</strong> {{ note.owner }}<br><strong>Utworzono:</strong> {{ note.date_added }}
+                        </label>
+                    </div>
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+{% endblock content %}

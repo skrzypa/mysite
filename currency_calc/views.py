@@ -17,7 +17,6 @@ from .currency_calc import CurrencyCalc
 
 # Create your views here.
 
-""" NEW """
 def currency_calc_new(request: WSGIRequest):
 
     records: QuerySet = NBP_API.objects.all().order_by('-currencies__effectiveDate')

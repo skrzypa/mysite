@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'flac_mp3_tag',
     'deploying',
     #'tests',
-    #'checklist',
+    'checklist',
     
     # aplikacje zewnętrzne
     'bootstrap5',
