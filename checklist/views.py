@@ -57,10 +57,23 @@ def note(request: WSGIRequest, id: int):
     current_user_obj = User.objects.get(id = current_user_id)
 
     is_owner = Note.objects.get(id = id).owner == current_user_obj
-    is_invited = current_user_id in [int(id) for id in Note.objects.get(id = id).invited_friends['invited_friends']]
+    try:
+        is_invited = current_user_id in [int(id) for id in Note.objects.get(id = id).invited_friends['invited_friends']]
+    except KeyError:
+        if not is_owner:
+            raise Http404
 
-    if not is_owner and not is_invited:
-        raise Http404
+        if note.invited_friends == {}:
+            note.invited_friends = {"invited_friends": []}
+            note.save()
+        
+        if note.content == {}:
+            note.content = {"elements": [], "groups": [], 'texts': []}
+            note.save()
+            
+    else:
+        if not is_owner and not is_invited:
+            raise Http404
     
     note: Note = Note.objects.get(id = id)
 
@@ -214,16 +227,6 @@ def note(request: WSGIRequest, id: int):
 
 
         return redirect(to= reverse(viewname= "checklist:note", args= [id]))
-
-
-
-    if note.invited_friends == {}:
-        note.invited_friends = {"invited_friends": []}
-        note.save()
-    
-    if note.content == {}:
-        note.content = {"elements": [], "groups": [], 'texts': []}
-        note.save()
     
 
     return render(
