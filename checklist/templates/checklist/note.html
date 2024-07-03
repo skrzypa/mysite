@@ -217,14 +217,14 @@
 
 
 
-        <div style="margin: 0; padding: 0.25rem;">
+        <div style="margin: 0; padding: 0.25rem; padding-bottom: 0;">
             {% for element in note.content.elements %}
-                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 1rem; flex-wrap: wrap; flex-grow: 1;">
+                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 0.5rem; flex-grow: 1;">
                     
 
                     {% if element.1 %}
 
-                        <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                        <form method="POST" style="margin: 0; padding: 0;">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-success" type="submit" name="uncheck_element" value="{{ forloop.counter0 }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
@@ -234,7 +234,7 @@
                             </button>
                         </form>
 
-                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap col-10">
+                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap">
                             {{ element.0 }}
                         </label>
 
@@ -266,7 +266,7 @@
                         
                     {% else %}
 
-                        <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                        <form method="POST" style="margin: 0; padding: 0;">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-danger" type="submit" name="check_element" value="{{ forloop.counter0 }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
@@ -276,7 +276,7 @@
                             </button>
                         </form>
 
-                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap col-10">
+                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap">
                             {{ element.0 }}
                         </label>
 
@@ -347,9 +347,9 @@
                     </div>
 
                     {% for element in group.1 %}
-                        <div style="margin-top: 0.5rem; margin-bottom: 0.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+                        <div style="margin-top: 0.5rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem;">
                             {% if element.1 %}
-                                <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                                <form method="POST" style="margin: 0; padding: 0;">
                                     {% csrf_token %}
                                     <button class="btn btn-sm btn-success" type="submit" name="uncheck_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
@@ -359,7 +359,7 @@
                                     </button>
                                 </form>
 
-                                <label style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap col-10" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                <label style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
                                     {{ element.0 }}
                                 </label>
 
@@ -389,7 +389,7 @@
                                     {% endif %}
                                 </div>
                             {% else %}
-                                <form method="POST" style="margin: 0; padding: 0;" class="col-1">
+                                <form method="POST" style="margin: 0; padding: 0;">
                                     {% csrf_token %}
                                     <button class="btn btn-sm btn-danger" type="submit" name="check_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
@@ -399,7 +399,7 @@
                                     </button>
                                 </form>
 
-                                <label style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap col-10" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
+                                <label style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
                                     {{ element.0 }}
                                 </label>
 
@@ -432,7 +432,7 @@
                         </div>
                     {% endfor %}
                 
-                    <form method="POST" style="margin: 0; padding: 0; margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <form method="POST" style="margin: 0; padding: 0; margin-top: 1rem; display: flex; gap: 0.5rem;">
                         {% csrf_token %}
                         <div style="flex-grow: 1;">
                             <textarea class="form-control" rows="1" style="resize: none;" name="add_subgroup_element" placeholder="Dodaj element"></textarea>

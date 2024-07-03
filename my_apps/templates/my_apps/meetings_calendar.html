@@ -143,7 +143,7 @@
                                                                         {% if current_user_id == event.0.owner.id %}
                                                                         <div class="alert alert-success" style="padding: 0.5rem;">
                                                                         {% else %}
-                                                                        <div class="alert alert-primary" style="padding: 0.5rem;">
+                                                                        <div class="alert alert-danger" style="padding: 0.5rem;">
                                                                         {% endif %}
                                                                             <table class="table text-dark m-0">
                                                                                 <tr>
@@ -240,14 +240,22 @@
                                                                                             <div class="btn-group d-flex flex-wrap text-nowrap" style="gap: 0.5rem; margin-top: 0.5rem;">
                                                                                                 <form method="POST" style="margin: 0;">
                                                                                                     {% csrf_token %}
+                                                                                                    {% if current_user not in event.2 %}
                                                                                                     <button class="btn btn-sm btn-success" type="submit" name='accept_invitation' value={{ event.0.id }}>
-                                                                                                        Przyjmij zaproszenie
-                                                                                                    </button>
+                                                                                                    {% else %}
+                                                                                                    <button class="btn btn-sm btn-success" type="submit" name='accept_invitation' value={{ event.0.id }} disabled>
+                                                                                                    {% endif %}
+                                                                                                    Przyjmij zaproszenie
+                                                                                                </button>
                                                                                                 </form>
 
                                                                                                 <form method="POST" style="margin: 0;">
                                                                                                     {% csrf_token %}
+                                                                                                    {% if current_user not in event.3 %}
                                                                                                     <button class="btn btn-sm btn-danger" type="submit" name='decline_invitation' value={{ event.0.id }}>
+                                                                                                    {% else %}
+                                                                                                    <button class="btn btn-sm btn-danger" type="submit" name='decline_invitation' value={{ event.0.id }} disabled>
+                                                                                                    {% endif %}
                                                                                                         Odrzuć zaproszenie
                                                                                                     </button>
                                                                                                 </form>

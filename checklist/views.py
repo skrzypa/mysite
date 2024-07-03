@@ -34,7 +34,7 @@ def checklist(request: WSGIRequest):
                     'content': note.content,
                     'invited_friends': note.invited_friends,
                     'date_added': note.date_added,
-                    'color': 'success' if current_user_obj == note.owner else 'primary',
+                    'color': 'success' if current_user_obj == note.owner else 'danger',
                 }
             )
         

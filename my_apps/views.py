@@ -204,6 +204,7 @@ def meetings_homepage(request: WSGIRequest):
         if 'accept_invitation' in request.POST:
             invitation = InvitedToEventModelNew.objects.get(
                 event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
+                invited_friend = User.objects.get(id = current_user_id)
             )
             invitation.accepted_invitation = True
             invitation.decline_invitation = False
@@ -214,6 +215,7 @@ def meetings_homepage(request: WSGIRequest):
         elif 'decline_invitation' in request.POST:
             invitation = InvitedToEventModelNew.objects.get(
                 event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
+                invited_friend = User.objects.get(id = current_user_id)
             )
             invitation.accepted_invitation = False
             invitation.decline_invitation = True
@@ -282,6 +284,7 @@ def meetings_homepage(request: WSGIRequest):
             'calendar':             meetings.generate_calendar(int(year_choosen)),
             'days':                 meetings.days,
             'events':               events,
+            'current_user':         current_user,
             'current_user_id':      current_user_id,
             'past_future_events':   past_future_events,
             'all_events_counter':   all_events_counter,
