@@ -444,6 +444,22 @@
                         </div>
                     </form>
 
+                    <div style="padding: 0; margin-top: 1rem; margin-bottom: 0.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <form method="POST" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-success" name="check_all" type="submit" value="{{ forloop.counter0 }}">
+                                Zaznacz wszystko
+                            </button>
+                        </form>
+                        
+                        <form method="POST" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-danger" name="uncheck_all" type="submit" value="{{ forloop.counter0 }}">
+                                Odznacz wszystko
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
 
             {% endfor %}

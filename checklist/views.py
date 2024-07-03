@@ -224,6 +224,26 @@ def note(request: WSGIRequest, id: int):
             note.invited_friends['invited_friends'] = [int(id) for id in dict(request.POST)['selected_friends']]
             note.save()
 
+        
+
+        elif 'check_all' in request.POST: 
+            key = 'groups'
+            index = int(request.POST['check_all'])
+            group = note.content[key][index]
+
+            for element in group[1]:
+                element[1] = True
+            note.save()
+
+        elif 'uncheck_all' in request.POST: 
+            key = 'groups'
+            index = int(request.POST['uncheck_all'])
+            group = note.content[key][index]
+
+            for element in group[1]:
+                element[1] = False
+            note.save()
+
 
 
         return redirect(to= reverse(viewname= "checklist:note", args= [id]))
