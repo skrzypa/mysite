@@ -1,61 +1,67 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 from django.contrib import messages
+from django.http import Http404
 
-import requests
-import datetime
-import pathlib
-import ast
-import re
-import os
-
-import mysite.settings 
 from .models import NBP_API
-from .currency_calc import CurrencyCalc
+from .currency_calc import CurrencyCalc, CurrencyExchangeRatesSince2002
+
+import pprint
+import datetime
+import plotly.express as px
+
 
 # Create your views here.
-
-def currency_calc_new(request: WSGIRequest):
-
-    records: QuerySet = NBP_API.objects.all().order_by('-currencies__effectiveDate')
-    if not records:
-        NBP_API(currencies = CurrencyCalc().currencies).save()
+def currency_calc(request: WSGIRequest, date: str = None):
+    user = request.user
+    context = {
+        'user': request.user,
+        'is_superuser': request.user.is_superuser,
+        'records_len': NBP_API.objects.count(),
+    }
     
-    selected_data: NBP_API = NBP_API.objects.get(
-        id = request.POST.get(
-            key= 'select_data', 
-            default= NBP_API.objects.last().id
-        )
-    )
+    if not NBP_API.objects.all() and not context['is_superuser']:
+        raise Http404
+    
+    else:
+        if date is not None:
+            try: 
+                date = str(datetime.datetime.strptime(date, "%Y-%m-%d").date())
+                context['record'] = NBP_API.objects.get(currencies__effectiveDate = date).currencies
+            except:
+                context['record'] = NBP_API.objects.last().currencies
+        else:
+            context['record'] = NBP_API.objects.last().currencies
 
-    # only admin can dowloand new rates
-    if (request.user.is_superuser) and ('download_rates' in request.POST):
-        data = CurrencyCalc().currencies
-        data_date = data['effectiveDate']
+    context['date'] = context['record']['effectiveDate']
 
-        # save data if not in db
-        if not data_date in [r.currencies['effectiveDate'] for r in records]:
-            new_record = NBP_API(currencies = data)
-            new_record.save()
+    for currency in context['record']['rates']:
+        if 'country' in currency:
+            currency['currency'] = currency['country']
+
+
+    if user.is_superuser:
+        CC2002: CurrencyExchangeRatesSince2002 = CurrencyExchangeRatesSince2002()
+        context['all_links'] = CC2002.links_list()[::-1]
+
+
+    if 'PLN_to_other' in request.POST or 'other_to_PLN' in request.POST:
+        CC: CurrencyCalc = CurrencyCalc()
         
-            selected_data = new_record
-
-    if 'PLN_to_other' in request.POST or 'other_to_PLN' in request.POST: 
-        selected_currency = request.POST['selected_currency']
-        currency: dict = [c for c in selected_data.currencies['rates'] if c['code'] == selected_currency][0]
-        mid: float = float(currency['mid'])
-        code: str = currency['code']
+        code: str = request.POST['selected_currency']
+        mid: list = [c['mid'] for c in context['record']['rates'] if c['code']==code][0]
 
         if 'PLN_to_other' in request.POST:
-            pln = request.POST['PLN'].replace(',', '.')
-            amount = CurrencyCalc().pln_to_other(pln, mid)
+            pln = request.POST['PLN_to_other'].replace(',', '.')
+            amount = CC.pln_to_other(pln, mid)
             mess = f"{pln} PLN = {amount} {code}"
 
         elif 'other_to_PLN' in request.POST:
-            other = request.POST['Other'].replace(',', '.')
-            amount = CurrencyCalc().other_to_pln(other, mid)
+            other = request.POST['other_to_PLN'].replace(',', '.')
+            amount = CC.other_to_pln(other, mid)
             mess = f"{other} {code} = {amount} PLN"
         
 
@@ -73,13 +79,12 @@ def currency_calc_new(request: WSGIRequest):
                 extra_tags= 'success'
             )
 
+
+
     return render(
         request= request,
         template_name= 'currency_calc/currency_calc_new.html',
-        context= {
-            'records': records,
-            'selected_data': selected_data,
-        }
+        context= context,
     )
 
 
@@ -89,6 +94,122 @@ def records(request: WSGIRequest):
         request= request,
         template_name= "currency_calc/currency_calc_records.html",
         context= {
-            'records': NBP_API.objects.all()
+            'records': NBP_API.objects.all().order_by('-currencies__effectiveDate')
         },
+    )
+
+
+def sources(request: WSGIRequest):
+
+    links = CurrencyExchangeRatesSince2002().links_list()
+    dates = [" - ".join(date.split("/")[-2:]) for date in links]
+
+    date_link = {}
+    for date, link in zip(dates, links):
+        date_link[date] = link
+    
+    dates = {}
+    for record in NBP_API.objects.all()[::-1]:
+        year = datetime.datetime.strptime(record.currencies['effectiveDate'], "%Y-%m-%d").year
+        if year not in dates:
+            dates[year] = []
+        dates[year].append(record.currencies['effectiveDate'])
+
+
+    return render(
+        request= request,
+        template_name= "currency_calc/sources.html",
+        context= {
+            'date_link': date_link,
+            'dates': dates,
+        }
+    )
+
+
+def plots(request: WSGIRequest):
+    start_date, end_date = '2002-01-01', datetime.date.today().isoformat()
+    selected_currency = request.POST.get(
+        key = 'selected_currency',
+        default = 'USD'
+    )
+
+    nbp_api: NBP_API = NBP_API
+
+    all_currencies: dict = {c['code']: c['currency'] for c in nbp_api.objects.last().currencies['rates']}
+
+    records: list[dict] = []
+    for record in nbp_api.objects.order_by('currencies__effectiveDate'):
+        for currency in record.currencies['rates']:
+
+            if currency['code'] == selected_currency:
+                mid = currency['mid']
+                code = currency['code']
+                country = currency['currency'] if 'currency' in currency else currency['country']
+
+                records.append(
+                    {
+                        'date': f" {record.currencies['effectiveDate']}",
+                        'currency': country,
+                        'code': code,
+                        'mid': float(mid),
+                        'hover': f" {mid} PLN",
+                    }
+                )
+    
+    plot = px.line(
+        data_frame =    records,
+        x =             'date',
+        y =             'mid',
+        hover_data =    ['hover'],
+        title =         f'Średnie kursy walut dla: {selected_currency} [{all_currencies[selected_currency]}]',
+        markers =       True,
+        labels =        {
+                            'date' : 'data ',
+                            'mid': 'średni kurs ',
+                            'hover': f'1 {selected_currency} '
+                        },
+        range_x =       [start_date, end_date],
+        render_mode =   'webgl',   
+        template =      'seaborn',
+    ) \
+    .update_layout(
+        xaxis = dict(
+            # rangeselector = dict(
+            #     buttons = list(
+            #             [
+            #                 dict(count=(datetime.date.today() - datetime.date(2002, 1, 1)).days, label="all", step="day", stepmode="todate"),
+            #                 dict(count=10, label="10y", step="year", stepmode="backward"),
+            #                 dict(count=5, label="5y", step="year", stepmode="backward"),
+            #                 dict(count=2, label="2y", step="year", stepmode="backward"),
+            #                 dict(count=1, label="1y", step="year", stepmode="backward"),
+            #                 dict(count=6, label="6m", step="month", stepmode="backward"),
+            #                 dict(count=3, label="3m", step="month", stepmode="backward"),
+            #                 dict(count=1, label="1m", step="month", stepmode="backward"),
+            #             ]
+            #         )
+            #     ),
+            rangeslider = dict(
+                visible = True,
+                range = [start_date, end_date],
+                autorange = True,
+            ), 
+            range = [start_date, end_date],
+            type = 'date',
+            #fixedrange = True, # zablokowanie możliwośc przesuwania wykresu w osi X
+        )
+    ).to_html()
+    
+    plot = f"""
+    <div class="text-break word-wrap" style="width: 1000px; height: 700px;">
+        {plot}
+    </div> 
+    """
+
+    return render(
+        request= request,
+        template_name= "currency_calc/plots.html",
+        context= {
+            'plot': plot,
+            'all_currencies': all_currencies,
+        }
     )

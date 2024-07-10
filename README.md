@@ -9,8 +9,10 @@ gunicorn 21.2.0
 django-environ 0.11.2  
 Pillow 9.5.0  
 pytest 8.1.1
+pandas 2.2.2
+plotly 5.22.0
 ```
-pip install django==4.1.7 django-bootstrap-v5==1.0.11 requests==2.30.0 gunicorn==21.2.0 django-environ==0.11.2 Pillow==9.5.0 pytest==8.1.1  
+pip install django==4.1.7 django-bootstrap-v5==1.0.11 requests==2.30.0 gunicorn==21.2.0 django-environ==0.11.2 Pillow==9.5.0 pytest==8.1.1 pandas==2.2.2 plotly==5.22.0
 ```
 or
 ```

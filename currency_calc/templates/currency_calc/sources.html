@@ -1,0 +1,47 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+<div class="col-11 mx-auto justify-content-center" style="min-height: 100%;">
+    <div>
+        <label class="display-1">Źródła danych</label>
+    </div>
+
+    <div style="margin-top: 4rem;">
+        <label class="display-6 mt-4">API: Wybierz zakres danych</label>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
+        {% for date, link in date_link.items %}
+            <button class="btn btn-sm btn-primary">
+                <a href="{{ link }}" target="_blank" class="text-light text-decoration-none">
+                    {{ date }}
+                </a>
+            </button>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 4rem;">
+        <label class="display-6">Kalkulator: Wybierz dane z dnia</label>
+    </div>
+
+    <div>
+        {% for year, dates in dates.items %}
+            <div style="margin-top: 2rem;">
+                <label class="h3">
+                    {{ year }}
+                </label>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                {% for date in dates %}
+                <button class="btn btn-sm btn-primary">
+                    <a href="{% url 'currency_calc:currency_calc' date %}" target="_blank" class="text-light text-decoration-none">
+                        {{ date }}
+                    </a>
+                </button>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

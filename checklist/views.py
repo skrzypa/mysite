@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
@@ -51,15 +52,18 @@ def checklist(request: WSGIRequest):
     )
 
 
+@login_required
 def note(request: WSGIRequest, id: int): 
     current_user = request.user
     current_user_id = current_user.id
     current_user_obj = User.objects.get(id = current_user_id)
 
-    is_owner = Note.objects.get(id = id).owner == current_user_obj
     try:
+        is_owner = Note.objects.get(id = id).owner == current_user_obj
         note: Note = Note.objects.get(id = id)
         is_invited = current_user_id in [int(id) for id in Note.objects.get(id = id).invited_friends['invited_friends']]
+    except ObjectDoesNotExist:
+        raise Http404
     except KeyError:
         if not is_owner:
             raise Http404

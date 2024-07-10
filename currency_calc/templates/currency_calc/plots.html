@@ -1,0 +1,30 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+<div class="col-11 mx-auto justify-content-center" style="min-height: 100%;">
+    <div>
+        <button class="btn btn-primary" style="margin-bottom: 1rem;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Wybierz walutę
+        </button>
+        
+        <div class="collapse" id="collapseExample" style="margin-top: 1rem; margin-bottom: 1rem;">    
+            <div class="card card-body">
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                    {% for key, value in all_currencies.items %}
+                        <form method="POST" style="margin: 0; padding: 0;">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-primary" type="submit" name="selected_currency" value="{{ key }}">
+                                {{ key }} - {{ value }}
+                            </button>
+                        </form>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="plot" style="overflow-x: scroll;">
+        {{ plot|safe }}
+    </div>
+</div>
+{% endblock content %}
