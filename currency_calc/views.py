@@ -41,7 +41,10 @@ def currency_calc(request: WSGIRequest, date: str = None):
         except:
             context['record'] = NBP_API.objects.last().currencies
     else:
-        context['record'] = {"table": "", "no": "", "effectiveDate": "", "rates": []}
+        if not context['records_len']:
+            context['record'] = {"table": "", "no": "", "effectiveDate": "", "rates": []}
+        else:
+            context['record'] = NBP_API.objects.last().currencies
 
     context['date'] = context['record']['effectiveDate']
 
@@ -142,7 +145,7 @@ def plots(request: WSGIRequest):
 
     nbp_api: NBP_API = NBP_API
 
-    all_currencies: dict = {c['code']: c['currency'] for c in nbp_api.objects.last().currencies['rates']}
+    all_currencies: dict = {c['code']: c['currency'] if 'currency' in c else c['country'] for c in nbp_api.objects.last().currencies['rates']}
 
     records: list[dict] = []
     for record in nbp_api.objects.order_by('currencies__effectiveDate'):
