@@ -28,21 +28,20 @@ def currency_calc(request: WSGIRequest, date: str = None):
     context = {
         'user': request.user,
         'is_superuser': request.user.is_superuser,
-        'records_len': NBP_API.objects.count() if NBP_API.objects.all() else False,
+        'records_len': NBP_API.objects.count() if NBP_API.objects.all() else 0,
     }
     
     if not context['records_len'] and not context['is_superuser']:
         raise Http404
-    
-    else:
-        if date is not None:
-            try: 
-                date = str(datetime.datetime.strptime(date, "%Y-%m-%d").date())
-                context['record'] = NBP_API.objects.get(currencies__effectiveDate = date).currencies
-            except:
-                context['record'] = NBP_API.objects.last().currencies
-        else:
+
+    if date is not None:
+        try: 
+            date = str(datetime.datetime.strptime(date, "%Y-%m-%d").date())
+            context['record'] = NBP_API.objects.get(currencies__effectiveDate = date).currencies
+        except:
             context['record'] = NBP_API.objects.last().currencies
+    else:
+        context['record'] = {"table": "", "no": "", "effectiveDate": "", "rates": []}
 
     context['date'] = context['record']['effectiveDate']
 
