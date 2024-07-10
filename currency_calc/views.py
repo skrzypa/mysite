@@ -16,6 +16,14 @@ import plotly.express as px
 
 # Create your views here.
 def currency_calc(request: WSGIRequest, date: str = None):
+    if 'dowloand_from_link' in request.POST and request.user.is_superuser:
+        link = request.POST['dowloand_from_link']
+        all_dates = [c.currencies['effectiveDate'] for c in NBP_API.objects.all()]
+        currencies = CurrencyExchangeRatesSince2002().records(link= link)
+        for currency in currencies:
+            if currency['effectiveDate'] not in all_dates:
+                NBP_API(currencies = currency).save()
+
     user = request.user
     context = {
         'user': request.user,
