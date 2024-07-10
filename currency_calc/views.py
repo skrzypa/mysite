@@ -137,7 +137,6 @@ def sources(request: WSGIRequest):
 
 
 def plots(request: WSGIRequest):
-    start_date, end_date = '2002-01-01', datetime.date.today().isoformat()
     selected_currency = request.POST.get(
         key = 'selected_currency',
         default = 'USD'
@@ -165,6 +164,8 @@ def plots(request: WSGIRequest):
                         'hover': f" {mid} PLN",
                     }
                 )
+    
+    start_date, end_date = records[0]['date'], records[-1]['date']
     
     plot = px.line(
         data_frame =    records,
@@ -202,6 +203,7 @@ def plots(request: WSGIRequest):
                 visible = True,
                 range = [start_date, end_date],
                 autorange = True,
+                thickness = 0.1,
             ), 
             range = [start_date, end_date],
             type = 'date',
@@ -210,7 +212,7 @@ def plots(request: WSGIRequest):
     ).to_html()
     
     plot = f"""
-    <div class="text-break word-wrap" style="width: 1000px; height: 700px;">
+    <div class="text-break word-wrap" style="min-width: 600px; min-height: 300px;">
         {plot}
     </div> 
     """
