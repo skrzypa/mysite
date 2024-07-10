@@ -20,10 +20,10 @@ def currency_calc(request: WSGIRequest, date: str = None):
     context = {
         'user': request.user,
         'is_superuser': request.user.is_superuser,
-        'records_len': NBP_API.objects.count(),
+        'records_len': NBP_API.objects.count() if NBP_API.objects.all() else False,
     }
     
-    if not NBP_API.objects.all() and not context['is_superuser']:
+    if not context['records_len'] and not context['is_superuser']:
         raise Http404
     
     else:
