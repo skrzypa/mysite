@@ -310,8 +310,8 @@
         <div>
             <label class="h2">{{ past_future }}</label>
                 
-            {% for event in events %}
-                <div class="alert alert-success text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
+            {% for event, color in events %}
+                <div class="alert alert-{{ color }} text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
                     <div class="d-flex flex-wrap flex-row">
                         <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
                             <label style="margin: 0rem;">

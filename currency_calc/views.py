@@ -157,11 +157,11 @@ def plots(request: WSGIRequest):
 
                 records.append(
                     {
-                        'date': f" {record.currencies['effectiveDate']}",
+                        'date': f"{record.currencies['effectiveDate']}",
                         'currency': country,
                         'code': code,
                         'mid': float(mid),
-                        'hover': f" {mid} PLN",
+                        'hover': f"{round(1 / mid, 4)} {selected_currency}",
                     }
                 )
     
@@ -175,9 +175,9 @@ def plots(request: WSGIRequest):
         title =         f'Średnie kursy walut dla: {selected_currency} [{all_currencies[selected_currency]}]',
         markers =       True,
         labels =        {
-                            'date' : 'data ',
-                            'mid': 'średni kurs ',
-                            'hover': f'1 {selected_currency} '
+                            'date' : 'data',
+                            'mid': 'średni kurs',
+                            'hover': f'1 PLN'
                         },
         range_x =       [start_date, end_date],
         render_mode =   'webgl',   

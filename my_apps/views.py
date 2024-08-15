@@ -242,20 +242,18 @@ def meetings_homepage(request: WSGIRequest):
             events[key] = {
                 'event': [[event, invited, accepted_the_invitation, not_accept_the_invitation]],
                 'count': 1,
-                'color': 'danger', # default color for counter on calendar
+                'color': 'warning' if new_invitations else 'danger',
             }
         else:
             events[key]['event'].append([event, invited, accepted_the_invitation, not_accept_the_invitation])
             events[key]['count'] += 1
         
         if (event.event_date - meetings.date_today.date()).days < 0:
-            past_future_events['Przeszłe wydarzenia'].append(event)
+            past_future_events['Przeszłe wydarzenia'].append([event, 'danger'])
         else:
-            past_future_events['Przyszłe wydarzenia'].append(event)
+            past_future_events['Przyszłe wydarzenia'].append([event, 'success'])
 
-        # if you have a new invitation (False and False in InvitedToEventModelNew) then show other color
-        if new_invitations:
-            events[key]['color'] = 'warning'    
+        if new_invitations:  
             messages.warning(
                 request= request,
                 message= f"Masz nowe zaproszenie w dniu: {' '.join(key.split('-')[::-1])}",
