@@ -218,14 +218,17 @@ def note(request: WSGIRequest, id: int):
 
 
         elif 'share_note' in request.POST and is_owner:
-            checked_friends = [int(id) for id in dict(request.POST)['selected_friends']]
-
             for f in invited_to_note:
                 f: InvitedToNote
                 f.delete()
-            
-            for f in checked_friends:
-                InvitedToNote(note = note, invited_friend = User.objects.get(id = f)).save()
+
+            try:
+                checked_friends = [int(id) for id in dict(request.POST)['selected_friends']]
+            except KeyError:
+                pass
+            else:
+                for f in checked_friends:
+                    InvitedToNote(note = note, invited_friend = User.objects.get(id = f)).save()
 
         
 
