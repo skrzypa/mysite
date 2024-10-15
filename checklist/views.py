@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
-from .models import Note
+from .models import Note, InvitedToNote
 from .forms import TitleForm, ElementForm, SubgroupForm, SubgroupElementForm, TextNoteForm
 from my_apps.models import Friendship
 
@@ -24,21 +24,18 @@ def checklist(request: WSGIRequest):
         ).save()
 
     all_notes = []
-    for note in Note.objects.all().order_by('-date_added'):
-        note: Note
-        if note.owner == current_user_obj or current_user_id in note.invited_friends['invited_friends']:
-            all_notes.append(
-                {
-                    'id': int(note.id),
-                    'owner': note.owner,
-                    'title': note.title,
-                    'content': note.content,
-                    'invited_friends': note.invited_friends,
-                    'date_added': note.date_added,
-                    'color': 'success' if current_user_obj == note.owner else 'danger',
-                }
-            )
-        
+    for note in Note.objects.filter(owner = current_user_id).union(Note.objects.filter(invitedtonote__invited_friend = current_user_id)).order_by('-edited'):
+        all_notes.append(
+            {
+                'id': int(note.id),
+                'owner': note.owner,
+                'title': note.title,
+                'content': note.content,
+                'edited': note.edited,
+                'color': 'success' if current_user_obj == note.owner else 'danger',
+            }
+        )
+
     return render(
         request= request, 
         template_name= 'checklist/checklist.html', 
@@ -59,18 +56,18 @@ def note(request: WSGIRequest, id: int):
     current_user_obj = User.objects.get(id = current_user_id)
 
     try:
-        is_owner = Note.objects.get(id = id).owner == current_user_obj
         note: Note = Note.objects.get(id = id)
-        is_invited = current_user_id in [int(id) for id in Note.objects.get(id = id).invited_friends['invited_friends']]
+        is_owner = note.owner == current_user_obj
+        invited_to_note: InvitedToNote = InvitedToNote.objects.filter(note = id)
+        invited_friends_to_note: list[int] = [int(friend.invited_friend.id) for friend in invited_to_note]
+        is_invited = current_user_id in invited_friends_to_note
+
     except ObjectDoesNotExist:
         raise Http404
+    
     except KeyError:
         if not is_owner:
             raise Http404
-
-        if note.invited_friends == {}:
-            note.invited_friends = {"invited_friends": []}
-            note.save()
         
         if note.content == {}:
             note.content = {"elements": [], "groups": [], 'texts': []}
@@ -83,12 +80,8 @@ def note(request: WSGIRequest, id: int):
 
     friends: Friendship = Friendship.objects.filter(from_friend = current_user_id)
     if friends:
-        friends: list = [(friend.to_friend.id, friend.to_friend.username) for friend in friends]
-
-    invited_friends_to_note = note.invited_friends['invited_friends']
+        friends: list[int, str] = [(int(friend.to_friend.id), friend.to_friend.username) for friend in friends]
     
-
-
 
     if request.method == "POST":
 
@@ -225,8 +218,14 @@ def note(request: WSGIRequest, id: int):
 
 
         elif 'share_note' in request.POST and is_owner:
-            note.invited_friends['invited_friends'] = [int(id) for id in dict(request.POST)['selected_friends']]
-            note.save()
+            checked_friends = [int(id) for id in dict(request.POST)['selected_friends']]
+
+            for f in invited_to_note:
+                f: InvitedToNote
+                f.delete()
+            
+            for f in checked_friends:
+                InvitedToNote(note = note, invited_friend = User.objects.get(id = f)).save()
 
         
 

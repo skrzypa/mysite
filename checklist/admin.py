@@ -1,7 +1,12 @@
 from django.contrib import admin
-from .models import Note
+from .models import Note, InvitedToNote
 
 # Register your models here.
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'owner', 'title', 'content', 'invited_friends', 'date_added']
+    list_display = ['id', 'owner', 'title', 'content', 'edited']
 admin.site.register(Note, NoteAdmin)
+
+
+class InvitedToNoteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'note', 'invited_friend']
+admin.site.register(InvitedToNote, InvitedToNoteAdmin)
