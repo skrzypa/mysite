@@ -40,6 +40,8 @@ CSRF_COOKIE_SECURE = ast.literal_eval(env(var= 'CSRF_COOKIE_SECURE'))
 
 SESSION_COOKIE_SECURE = ast.literal_eval(env(var= 'SESSION_COOKIE_SECURE'))
 
+FILES_TO_BACKUP = ast.literal_eval(env(var= 'FILES_TO_BACKUP'))
+
 
 
 # Application definition
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
     'deploying',
     #'tests',
     'checklist',
+    'user_data',
     
     # aplikacje zewnętrzne
     'bootstrap5',
@@ -139,6 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pl'
 DATETIME_FORMAT = 'd-m-Y H:i:s'
+DATE_TIME_FORMAT = '%d_%m_%Y_%H_%M_%S'
 
 TIME_ZONE = 'Europe/Warsaw'
 

@@ -1,0 +1,219 @@
+{% extends "my_apps/homepage_base.html" %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.extra_tags }} text-dark col-11 mx-auto text-dark h6" style="padding: 0.5rem 0.5rem;">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="justify-content-center mx-auto shadow-lg" style="max-width: 1000px; min-height: 100%; background-color: #1c1c1c; border-radius: 25px; padding: 1rem;">
+    <div class="justify-content-center mx-auto text-center">
+        <label class="h1">Moje konto</label>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.username }} " disabled>
+            <label for="floatingInputValue">Nazwa użytkownika:</label>
+        </form>
+    </div>
+
+    <div class="col-11 justify-content-center mx-auto text-dark border bg-light mb-3" style="border-radius: .25rem; padding:0.5rem;">
+        <label class="h4 text-dark">Zmień hasło</label>
+        <form class="justify-content-center mx-auto form-floating text-dark" method="POST" style="margin: 0;">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingInputValue" value="" name="old_pass">
+                <label for="floatingInputValue">Stare hasło:</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingInputValue" value="" name="new_password1">
+                <label for="floatingInputValue">Nowe hasło:</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingInputValue" value="" name="new_password2">
+                <label for="floatingInputValue">Powtórz nowe hasło:</label>
+            </div>
+            
+            <button class="btn btn-sm btn-success" type="submit" name="change_pass">Zmień hasło</button>
+        </form>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.id }} " disabled>
+            <label for="floatingInputValue">ID użytkownika:</label>
+        </form>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.date_joined }} " disabled>
+            <label for="floatingInputValue">Data dołączenia:</label>
+        </form>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.first_name }} " disabled>
+            <label for="floatingInputValue">Imie:</label>
+        </form>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.last_name }} " disabled>
+            <label for="floatingInputValue">Nazwisko:</label>
+        </form>
+    </div>
+
+    <div>
+        <form class="form-floating col-11 justify-content-center mx-auto text-dark">
+            <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.email }} " disabled>
+            <label for="floatingInputValue">Email:</label>
+        </form>
+    </div>
+
+    <div class="accordion col-11 justify-content-center mx-auto mb-3" id="accordionNote">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseTwo">
+                    <label class="position-absolute">Utworzone notatki
+                        <span class="badge rounded-pill bg-danger">
+                            {{ my_notes|length }}
+                        </span>
+                    </label> 
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionNote">
+                <div class="accordion-body text-dark button-group" style="padding: .5rem">
+                    {% if not my_notes %}
+                        <label class="h1">Nie utworzyłeś żadnej notatki</label>
+                    {% else %}
+                        {% for note in my_notes %}
+                            <a class="btn btn-sm btn-primary" style="margin: .25rem;" href="{% url 'checklist:note' note.id %}" target="_blank">{{ note.title }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion col-11 justify-content-center mx-auto mb-3" id="accordionMeetings">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <label class="position-absolute">
+                        Utworzone wydarzenia
+                        <span class="badge rounded-pill bg-danger">
+                            {{ my_events|length }}
+                        </span>
+                    </label>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionMeetings">
+                <div class="accordion-body text-dark button-group" style="padding: .5rem">
+                    {% if not my_events %}
+                        <label class="h1">Nie utworzyłeś żadnego wydarzenia</label>
+                    {% else %}
+                        {% for event in my_events %}
+                            <a class="btn btn-sm btn-primary" style="margin: .5rem;" href="{% url 'my_apps:meetings_calendar' %}" target="_blank">
+                                <label class="position-absolute">
+                                    {{ event.event_title }}
+                                </label> 
+                                <span class="badge rounded-pill bg-danger" style="top: -15; left: 15">
+                                    {{ event.event_date }} {{ event.event_time }}
+                                </span>
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion col-11 justify-content-center mx-auto" id="accordionGroups">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+                    <label class="position-absolute">
+                        Utworzone grupy
+                        <span class="badge rounded-pill bg-danger">
+                            {{ my_groups|length }}
+                        </span>
+                    </label> 
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionGroups">
+                <div class="accordion-body text-dark button-group" style="padding: .5rem">
+                    {% if not my_groups %}
+                        <label class="h1">Nie utworzyłeś żadnej grupy</label>
+                    {% else %}
+                        {% for group in my_groups %}
+                            <a class="btn btn-sm btn-primary" style="margin: .25rem;" href="{% url 'my_apps:split_group' group.id %}" target="_blank">
+                                {{ group.expense_title }}
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_superuser %}
+    <div class="col-11 justify-content-center mx-auto text-dark border bg-light mb-3 mt-3" style="border-radius: .25rem; padding:0.5rem;">
+        <label class="h4">Zrób backup danych</label>
+        <form method="POST" style="padding: 0; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" name="make_backup" class="btn btn-md btn-success m-1">Zrób backup danych</button>
+            <button type="submit" name="delete" class="btn btn-md btn-danger m-1">Usuń stare backupy</button>
+
+            <div>
+                {% if not backups %}
+                    <label class="h4">Nie zrobiłeś żadnego backupu</label>
+                {% else %}
+                    <label class="h4">Zrobione backupy</label>
+                    {% for backup in backups %}
+                        <div style="margin: 0.5rem;">
+                            <button type="submit" name="dowloand_backup" class="btn btn-md btn-success" value= "{{ backup }}">
+                                {{ backup }}
+                            </button>
+                            <span>
+                                <button type="submit" name="delete_backup" class="btn btn-md btn-danger" value= "{{ backup }}">
+                                    usuń
+                                </button>
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="col-11 mx-auto mt-3">
+        <div class="justify-content-end d-flex">
+            <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="collapse" data-bs-target="#del_account" aria-expanded="false" aria-controls="del_account">
+                Usuń konto
+            </button>
+        </div>
+
+        <div class="collapse" id="del_account" style="margin-top: 1rem;">
+            <div class="card card-body bg-danger">
+                <form class="form-floating text-dark" method="POST" style="margin: 0;">
+                    {% csrf_token %}
+                    <input style="border: none;" type="password" class="form-control" id="floatingInputValue" value="" name="delete_account">
+                    <label for="floatingInputValue">Aby usunąć konto, podaj hasło:</label>
+
+                    <div class="justify-content-end d-flex mt-3">
+                        <button class="btn btn-sm btn-danger border-light" type="submit">Usuń (´•︵•`)</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

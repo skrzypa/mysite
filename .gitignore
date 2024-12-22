@@ -15,3 +15,4 @@ backups/*
 tests/*
 config_nginx
 .pytest_cache
+db_media_static_backups/*

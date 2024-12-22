@@ -182,7 +182,7 @@ def calc(request: WSGIRequest):
 
 
 # MEETINGS
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def meetings_homepage(request: WSGIRequest):
     meetings = Meetings()
     current_user = request.user
@@ -290,7 +290,7 @@ def meetings_homepage(request: WSGIRequest):
     )
 
 
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def new_event(request: WSGIRequest, year: str):
     form_new_event = NewEventFormNew()
     meetings = Meetings()
@@ -347,7 +347,7 @@ def new_event(request: WSGIRequest, year: str):
     )
 
 
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def edit_event(request: WSGIRequest, id):
     edited_event: NewEventModelNew = NewEventModelNew.objects.get(id = id)
 
@@ -426,6 +426,13 @@ def edit_event(request: WSGIRequest, id):
 
 # USERS
 def log_in(request: WSGIRequest):
+    sites = {
+        '/user_data/': 'user_data:user_data',
+        '/meetings_calendar/': 'my_apps:meetings_calendar',
+        '/split_homepage/': 'my_apps:split_homepage',
+        '/checklist/': 'checklist:checklist',
+        '/users_friends/': 'my_apps:users_friends',
+    }
 
     if request.user.is_authenticated:
         return redirect('my_apps:homepage')
@@ -439,9 +446,9 @@ def log_in(request: WSGIRequest):
 
         if user is not None:
             login(request, user)
-            return redirect('my_apps:homepage')
+            return redirect(request.POST['submit'])
 
-    return render(request, "my_apps/users_log_in.html")
+    return render(request, "my_apps/users_log_in.html", {'next': sites.get(request.GET.get('next'), 'my_apps:homepage')})
 
  
 def register(request: WSGIRequest):
@@ -482,7 +489,7 @@ def register(request: WSGIRequest):
     return render(request, 'my_apps/users_register.html', context)
 
 
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def log_out(request: WSGIRequest):
     logout(request)
     messages.success(
@@ -493,7 +500,7 @@ def log_out(request: WSGIRequest):
     return redirect("my_apps:homepage")
 
 
-@login_required(login_url= "")
+@login_required(login_url= "my_apps:users_log_in")
 def friends(request: WSGIRequest):
     current_user = request.user
 
@@ -533,7 +540,7 @@ def delete_observed_user(request, current_user):
 
 
 # SPLIT THE BILLS
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def add_expense_group(request: WSGIRequest):
     current_user = request.user 
 

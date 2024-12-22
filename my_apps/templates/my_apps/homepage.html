@@ -159,15 +159,15 @@
                         </div>
 
                         <div class="card-footer">
-                            {% if not user.is_authenticated and app.app_log_in %}
+                            {% comment %} {% if not user.is_authenticated and app.app_log_in %}
                             <a href= {% url 'my_apps:users_log_in' %}>
                                 <button class="btn btn-sm btn-success">Zaloguj się</button>
                             </a>
-                            {% else %}
+                            {% else %} {% endcomment %}
                             <a href= {% url app.url %}>
                                 <button class="btn btn-sm btn-primary">Otwórz</button>
                             </a>
-                            {% endif %}
+                            {% comment %} {% endif %} {% endcomment %}
                         </div>
                     </div>
                 </div>

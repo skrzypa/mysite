@@ -11,7 +11,7 @@ from .forms import TitleForm, ElementForm, SubgroupForm, SubgroupElementForm, Te
 from my_apps.models import Friendship
 
 # Create your views here.
-@login_required
+@login_required(login_url= "my_apps:users_log_in")
 def checklist(request: WSGIRequest):
     current_user = request.user
     current_user_id = current_user.id

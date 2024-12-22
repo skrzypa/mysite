@@ -23,8 +23,3 @@ pip install -y -r reqs.txt
 
 #
 ### To do:  
-1. Split the bills:
-    1. ??? Sending an email with a link to the group, if you are invited, and any expenses that apply to you
-1. Calendar:
-    1. ??? Sending an email when an invitation is received
-1. A page with user information and the ability to change your password
