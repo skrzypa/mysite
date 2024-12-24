@@ -4,7 +4,9 @@
 
 {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-{{ message.extra_tags }} text-dark col-11 mx-auto text-dark h6" style="padding: 0.5rem 0.5rem;">{{ message }}</div>
+        <div class="alert alert-{{ message.extra_tags }} text-dark col-xs-11 col-sm-11 col-md-8 col-lg-6 col-xl-4 col-xxl-4 mx-auto text-dark h6" style="padding: 0.5rem 0.5rem;">
+            <marquee>{{ message }}</marquee>
+        </div>
     {% endfor %}
 {% endif %}
 
