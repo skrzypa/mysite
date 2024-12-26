@@ -7,12 +7,19 @@
     {% endfor %}
 {% endif %}
 
+<style>
+    .btn .badge {
+        top: -18px;
+        left: 15px;
+    }
+</style>
+
 <div class="justify-content-center mx-auto shadow-lg" style="max-width: 1000px; min-height: 100%; background-color: #1c1c1c; border-radius: 25px; padding: 1rem;">
     <div class="justify-content-center mx-auto text-center">
         <label class="h1">Moje konto</label>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.username }} " disabled>
             <label for="floatingInputValue">Nazwa użytkownika:</label>
@@ -42,35 +49,35 @@
         </form>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.id }} " disabled>
             <label for="floatingInputValue">ID użytkownika:</label>
         </form>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.date_joined }} " disabled>
             <label for="floatingInputValue">Data dołączenia:</label>
         </form>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.first_name }} " disabled>
             <label for="floatingInputValue">Imie:</label>
         </form>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.last_name }} " disabled>
             <label for="floatingInputValue">Nazwisko:</label>
         </form>
     </div>
 
-    <div>
+    <div class="mb-3" style="border-radius: .25rem;">
         <form class="form-floating col-11 justify-content-center mx-auto text-dark">
             <input style="border: none;" type="text" class="form-control" id="floatingInputValue" value="{{ user.email }} " disabled>
             <label for="floatingInputValue">Email:</label>
@@ -124,7 +131,7 @@
                                 <label class="position-absolute">
                                     {{ event.event_title }}
                                 </label> 
-                                <span class="badge rounded-pill bg-danger" style="top: -15; left: 15">
+                                <span class="badge rounded-pill bg-danger">
                                     {{ event.event_date }} {{ event.event_time }}
                                 </span>
                             </a>
@@ -153,8 +160,8 @@
                         <label class="h1">Nie utworzyłeś żadnej grupy</label>
                     {% else %}
                         {% for group in my_groups %}
-                            <a class="btn btn-sm btn-primary" style="margin: .25rem;" href="{% url 'my_apps:split_group' group.id %}" target="_blank">
-                                {{ group.expense_title }}
+                            <a class="btn btn-sm btn-primary" style="margin: .25rem;" href="{% url 'split_the_bills:split_the_bills_group' group.id %}" target="_blank">
+                                {{ group.title }}
                             </a>
                         {% endfor %}
                     {% endif %}
@@ -175,9 +182,10 @@
                 {% if not backups %}
                     <label class="h4">Nie zrobiłeś żadnego backupu</label>
                 {% else %}
+                    <br>
                     <label class="h4">Zrobione backupy</label>
                     {% for backup in backups %}
-                        <div style="margin: 0.5rem;">
+                        <div style="margin: 0.5rem;" class="text-break word-wrap">
                             <button type="submit" name="dowloand_backup" class="btn btn-md btn-success" value= "{{ backup }}">
                                 {{ backup }}
                             </button>

@@ -1,0 +1,136 @@
+{% extends 'my_apps/homepage_base.html' %}
+
+{% block content %}
+<style>
+    /* Ogólny styl dla alertów */
+.alert {
+    position: relative;
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* Animacja znikania */
+.fade-out {
+    animation: fadeOut 5s linear forwards;
+}
+
+/* Kluczowe ramki dla animacji */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    90% {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+</style>
+<div class="container-fluid col-11" style="margin: auto; min-height: 100vh">
+
+    
+    <div class="col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-4 justify-content-center mx-auto">
+        {% for m in messages %}
+            <div class="alert alert-{{ m.extra_tags }} fade-out" name="mess_{{ forloop.couner }}">
+                {{ m }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-4 justify-content-center mx-auto">
+
+        <div class="text-center">
+            <label class="h1">Dodaj nową grupę</label>
+        </div>
+
+        <form class="form-floating" method="POST">
+            {% csrf_token %}
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="margin-bottom: 1rem;" name="new_group"></textarea>
+            <label for="floatingTextarea" class="text-dark">Podaj nazwę grupy</label>
+        
+            <div class="justify-content-end d-flex">
+                <button type="submit" class="btn btn-sm btn-success">Utwórz</button>
+            </div>
+        </form>
+    </div>
+    <br>
+    <div>
+        {% if not all_groups %}
+
+            <div class="text-center">
+                <label class="h1">Nie masz żadnych grup</label>
+            </div>
+
+        {% else %}
+
+            <div class="text-center">
+                <label class="h1">Twoje grupy</label>
+            </div>
+
+            {% for group in all_groups %}
+
+                {% if group.status is True %} 
+                <div style="width: 100%" class="alert alert-success">
+                {% else %}
+                <div style="width: 100%" class="alert alert-danger"> 
+                {% endif %}
+
+                    <div class="flex-col" style="max-width: 95ch;">
+                        <label class="h3">{{ group.title }}</label><br>
+                        <label class="h5">Stworzył: {{ group.owner }}</label><br>
+                        <label class="h6">Utworzono: {{ group.created }}</label><br>
+                        <label class="h6">
+                            Status: 
+                            {% if group.status is True %}
+                            Spłacona
+                            {% else %}
+                            Niespłacona
+                            {% endif%}
+                        </label>
+                    </div>
+
+                    <div class="flex-col" style="margin-left: auto;">
+                        <div class="flex-row">
+                            <a href="{% url 'split_the_bills:split_the_bills_group' group.id %}">
+                                <button class="btn btn-sm btn-primary">
+                                    Otwórz
+                                </button>
+                            </a>
+                        </div>
+                        {% if user.username == group.owner.username %}
+                        <div class="flex-row" style="padding-top: .5rem">
+                            <form method="POST" style="margin: 0; padding: 0;">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-danger" name="del_group" value="{{ group.id }}">
+                                    Usuń
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const alerts = document.querySelectorAll(".fade-out");
+        alerts.forEach((alert) => {
+            alert.addEventListener("animationend", () => {
+                alert.remove(); // Usuwa element po zakończeniu animacji
+            });
+        });
+    });
+</script>
+{% endblock content %}

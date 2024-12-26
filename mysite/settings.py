@@ -61,9 +61,10 @@ INSTALLED_APPS = [
     #'tests',
     'checklist',
     'user_data',
+    'split_the_bills',
     
     # aplikacje zewnętrzne
-    'bootstrap5',
+    # 'bootstrap5',
 
     # aplikacje domyślne
     'django.contrib.admin',

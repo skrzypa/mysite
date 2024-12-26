@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="col-11 mx-auto" style="min-height: 100%;">
+<div class="col-11 mx-auto" style="min-height: 100vh;">
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.extra_tags }} h6 text-dark" style="padding: 0.5rem 0.5rem;">{{ message }}</div>
@@ -84,7 +84,7 @@
         {% for month_name, month in calendar.items %}
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4" style="margin: 0rem; padding: 0.25rem;">
                 
-                <table class="table table-borderless text-light" style="margin: 0rem; padding: 0rem; table-layout: fixed;">
+                <table class="table table-borderless text-light" style="margin: 0rem; padding: 0rem; table-layout: fixed; --bs-table-bg: rgba(0,0,0,0)">
                     <thead>
                         <div class="h1 text-center">
                             {{ month_name }}
@@ -92,7 +92,7 @@
 
                         <tr class="border-bottom">
                             {% for day in days %}
-                                <th class="flex-fill text-center">{{ day }}</th>
+                                <th class="flex-fill text-center text-light">{{ day }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
@@ -136,7 +136,7 @@
                                                             <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
 
-                                                        <div class="modal-body bg-dark">
+                                                        <div class="modal-body bg-dark text-start">
                                                             {% with date_day=year_choosen|add:'-'|add:month_name|add:'-'|add:day %}
                                                                 {% if date_day in events.keys %}
                                                                     {% for event in events|get_events_values:date_day %}
@@ -145,61 +145,61 @@
                                                                         {% else %}
                                                                         <div class="alert alert-danger" style="padding: 0.5rem;">
                                                                         {% endif %}
-                                                                            <table class="table text-dark m-0">
+                                                                            <table class="table text-dark m-0" style="--bs-table-bg: rgba(0,0,0,0)">
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Tytuł:</h6>
                                                                                     </td>
 
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Data i godzina:</h6>
                                                                                     </td>
                                                                                 </tr>
             
                                                                                 <tr>
-                                                                                    <td class="text-break" style="padding: 0.1rem;">
+                                                                                    <td class="text-break" style="padding: 0.1rem; background-color: rgba(0,0,0,0)">
                                                                                         <label>{{ event.0.event_title }}</label>
                                                                                     </td>
                                                 
-                                                                                    <td class="text-break" style="padding: 0.1rem;">
+                                                                                    <td class="text-break" style="padding: 0.1rem; background-color: rgba(0,0,0,0)">
                                                                                         <label>{{ event.0.event_date}} {{ event.0.event_time}}</label>
                                                                                     </td>
                                                                                 </tr>
             
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Lokalizacja:</h6>
                                                                                     </td>
                                                 
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Autor:</h6>
                                                                                     </td>
                                                                                 </tr>
                                                 
                                                                                 <tr>
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <label>{{ event.0.event_location }}</label>
                                                                                     </td>
                                                 
-                                                                                    <td style="width: 50%; padding: 0.1rem;" class="text-break">
+                                                                                    <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
                                                                                         <label>{{ event.0.owner }}</label>
                                                                                     </td>
                                                                                 </tr>
                 
                                                                                 <tr>
-                                                                                    <td style="width: 100%; padding: 0.1rem;" colspan="2" class="text-break">
+                                                                                    <td style="width: 100%; padding: 0.1rem; background-color: rgba(0,0,0,0)" colspan="2" class="text-break">
                                                                                         <h6 style="margin: 0rem;">Opis:</h6>
                                                                                     </td>
                                                                                 </tr>
                                                 
                                                                                 <tr>
-                                                                                    <td style="width: 100%; padding: 0.1rem;" colspan="2" class="text-break">
+                                                                                    <td style="width: 100%; padding: 0.1rem; background-color: rgba(0,0,0,0)" colspan="2" class="text-break">
                                                                                         <label>{{ event.0.event_description }}</label>
                                                                                     </td>
                                                                                 </tr>
 
                                                                                 <tr>
-                                                                                    <td colspan="2" style="padding: 0;">
+                                                                                    <td colspan="2" style="padding: 0; background-color: rgba(0,0,0,0)">
                                                                                         <div class="btn-group d-flex flex-wrap" style="gap: 0.5rem; margin-top: 1rem;">
                                                                                             <div class="dropdown">
                                                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -301,57 +301,60 @@
 {% comment %} Wszystkie wydarzenia {% endcomment %}
 <div class="offcanvas offcanvas-start bg-dark" data-bs-scroll="true"  tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="width: 600px;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Wszystkie wydarzenia w {{ year_choosen }}</h5>
+        <h5 class="offcanvas-title text-light" id="offcanvasExampleLabel">Wszystkie wydarzenia w {{ year_choosen }}</h5>
         <button type="button" class="btn btn-close bg-light" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
     <div class="offcanvas-body">
         {% for past_future, events in past_future_events.items %}
         <div>
-            <label class="h2">{{ past_future }}</label>
-                
-            {% for event, color in events %}
-                <div class="alert alert-{{ color }} text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
-                    <div class="d-flex flex-wrap flex-row">
-                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                            <label style="margin: 0rem;">
-                                <strong>Tytuł:</strong>
-                                {{ event.event_title }}
-                            </label>
+            <label class="h2 text-light">{{ past_future }}</label>
+            {% if not events %}
+                <br><br>
+            {% else %}    
+                {% for event, color in events %}
+                    <div class="alert alert-{{ color }} text-dark" style="padding: 0.5rem 0rem 0.5rem 0rem;">
+                        <div class="d-flex flex-wrap flex-row">
+                            <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                                <label style="margin: 0rem;">
+                                    <strong>Tytuł:</strong>
+                                    {{ event.event_title }}
+                                </label>
+                            </div>
+                            <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                                <label style="margin: 0rem;">
+                                    <strong>Data i godzina:</strong>
+                                    {{ event.event_date}} {{ event.event_time}}
+                                </label>
+                            </div>
                         </div>
-                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                            <label style="margin: 0rem;">
-                                <strong>Data i godzina:</strong>
-                                {{ event.event_date}} {{ event.event_time}}
-                            </label>
+                        
+                        <div class="d-flex flex-wrap flex-row">
+                            <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                                <label style="margin: 0rem;">
+                                    <strong>Lokalizacja:</strong>
+                                    {{ event.event_location }}
+                                </label>
+                            </div>
+                            <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                                <label style="margin: 0rem;">
+                                    <strong>Autor:</strong>
+                                    {{ event.owner }}
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex flex-wrap flex-row">
+                            <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
+                                <label style="margin: 0rem;">
+                                    <strong>Opis:</strong>
+                                    {{ event.event_description }}
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="d-flex flex-wrap flex-row">
-                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                            <label style="margin: 0rem;">
-                                <strong>Lokalizacja:</strong>
-                                {{ event.event_location }}
-                            </label>
-                        </div>
-                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                            <label style="margin: 0rem;">
-                                <strong>Autor:</strong>
-                                {{ event.owner }}
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex flex-wrap flex-row">
-                        <div class="flex-column" style="padding: 0rem 1rem 0rem 1rem;">
-                            <label style="margin: 0rem;">
-                                <strong>Opis:</strong>
-                                {{ event.event_description }}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
         </div>
         {% endfor %}
     </div>

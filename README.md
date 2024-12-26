@@ -18,8 +18,12 @@ or
 ```
 pip install -y -r reqs.txt 
 ```
-#
-### You can see the site here: <a href="https://www.pskrzynski.pl/" target="_blank">pskrzynski.pl</a>
+# You can see the site here: <a href="https://www.pskrzynski.pl/" target="_blank">pskrzynski.pl</a>
 
-#
-### To do:  
+# CSS and JS file sources  
+1. bootstrap.bundle.min.js   
+    <a>https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js</a>
+1. bootstrap.min.css  
+    <a>https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css</a>
+1. jquery.js  
+    <a>https://code.jquery.com/jquery-3.7.1.js</a> 

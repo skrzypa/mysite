@@ -8,6 +8,7 @@ from django.http import FileResponse, HttpResponse
 
 from my_apps.models import NewEventModelNew, AddExpenseGroup
 from checklist.models import Note
+from split_the_bills.models import SplitTheBills
 from mysite.settings import BASE_DIR, FILES_TO_BACKUP, DATE_TIME_FORMAT
 
 from .password_checker import PasswordChecker
@@ -26,7 +27,7 @@ def user_data(request: WSGIRequest):
 
     my_notes: QuerySet[Note] = Note.objects.filter(owner = request.user)
     my_events: QuerySet[NewEventModelNew] = NewEventModelNew.objects.filter(owner = request.user).order_by('event_date', 'event_time')
-    my_groups: QuerySet[AddExpenseGroup] = AddExpenseGroup.objects.filter(owner = request.user)
+    my_groups: QuerySet[AddExpenseGroup] = SplitTheBills.objects.filter(owner = request.user)
 
     if 'change_pass' in request.POST:
 

@@ -34,5 +34,6 @@ urlpatterns = [
     path('', include('deploying.urls')),        
     #path('', include('tests.urls')),          
     path('', include('checklist.urls')),       
-    path('', include('user_data.urls')),             
+    path('', include('user_data.urls')),       
+    path('', include('split_the_bills.urls')),            
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
