@@ -429,7 +429,7 @@ def log_in(request: WSGIRequest):
     sites = {
         '/user_data/': 'user_data:user_data',
         '/meetings_calendar/': 'my_apps:meetings_calendar',
-        '/split_homepage/': 'my_apps:split_homepage',
+        '/split_the_bills/': 'split_the_bills:split_the_bills',
         '/checklist/': 'checklist:checklist',
         '/users_friends/': 'my_apps:users_friends',
     }
