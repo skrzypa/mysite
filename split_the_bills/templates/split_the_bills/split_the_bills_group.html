@@ -65,7 +65,7 @@
                             <li class="dropdown-item">
                                 <div class="row">
                                     <div class="col d-flex justify-content-start">
-                                        {{ friend.id }}.{{ friend.username }}
+                                        {{ friend.username }}
                                     </div>
                                     
                                     {% if friend.username != group.owner.username %}
@@ -165,11 +165,11 @@
                                         </th>
                                         
                                         <th>
-                                            <label class="h6">{{ amounts.0 }}</label>
+                                            <label class="h6">{{ amounts.0 }} PLN</label>
                                         </th>
                                         
                                         <th>
-                                            <label class="h6">{{ amounts.1 }}</label>
+                                            <label class="h6">{{ amounts.1 }} PLN</label>
                                         </th>
                                     </tr>
                                     {% endfor %}
