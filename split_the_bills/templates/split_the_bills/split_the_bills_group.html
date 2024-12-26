@@ -98,34 +98,36 @@
 
         {% else %}
             
-            <div class="text-center" style="padding-top: 2rem; padding-bottom: 1rem;">
-
+            <div class="text-center">
                 <label class="h1">Podsumowanie</label>
 
-                <table class="table table-hover table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">Kwota</th>
-                            <th scope="col">Kwota spłacona</th>
-                            <th scope="col">Kwota do spłaty</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            <th>
-                                <label class="h6">{{ amount_to_repay }} PLN</label>
-                            </th>
-                            <th>
-                                <label class="h6">{{ amount_diff }} PLN</label>
-                            </th>
-                            <th>
-                                <label class="h6">{{ amount_repaid }} PLN</label>
-                            </th>
-                        </tr>
-                    </tbody>
-
-                </table>
+                <div class="table-responsive" style="padding: 0; margin: 0;">
+                    <table class="table table-hover table-striped text-center" style="padding: 0; margin: 0;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Kwota</th>
+                                <th scope="col">Kwota spłacona</th>
+                                <th scope="col">Kwota do spłaty</th>
+                            </tr>
+                        </thead>
+    
+                        <tbody>
+                            <tr>
+                                <th>
+                                    <label class="h6">{{ amount_to_repay }} PLN</label>
+                                </th>
+                                <th>
+                                    <label class="h6">{{ amount_diff }} PLN</label>
+                                </th>
+                                <th>
+                                    <label class="h6">{{ amount_repaid }} PLN</label>
+                                </th>
+                            </tr>
+                        </tbody>
+    
+                    </table>
+                </div>
+                <br>
             
                 {% if pie_chart is not None %}
                     {{ pie_chart|safe }}
@@ -133,46 +135,48 @@
                 {% endif %}
 
                 {% if summary_table is not None %}
-                <table class="table table-hover table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col">Kto</th>
-                            <th scope="col">Komu</th>
-                            <th scope="col">Łącznie</th>
-                            <th scope="col">Pozostało</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                            {% for to_whom, who in summary_table.items %}
-                                {% for who_user, amounts in who.items %}
-                                {% if to_whom == user.username %}
-                                <tr class="table-success">
-                                {% elif who_user == user.username %}
-                                <tr class="table-danger">
-                                {% else %}
-                                <tr>
-                                {% endif %}
-                                    <th>
-                                        <label class="h6">{{ who_user }}</label>
-                                    </th>
-                                    
-                                    <th>
-                                        <label class="h6">{{ to_whom }}</label>
-                                    </th>
-                                    
-                                    <th>
-                                        <label class="h6">{{ amounts.0 }}</label>
-                                    </th>
-                                    
-                                    <th>
-                                        <label class="h6">{{ amounts.1 }}</label>
-                                    </th>
-                                </tr>
+                <div class="table-responsive" style="padding: 0; margin: 0;">
+                    <table class="table table-hover table-striped text-center" style="padding: 0; margin: 0;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Kto</th>
+                                <th scope="col">Komu</th>
+                                <th scope="col">Łącznie</th>
+                                <th scope="col">Pozostało</th>
+                            </tr>
+                        </thead>
+    
+                        <tbody>
+                                {% for to_whom, who in summary_table.items %}
+                                    {% for who_user, amounts in who.items %}
+                                    {% if to_whom == user.username %}
+                                    <tr class="table-success">
+                                    {% elif who_user == user.username %}
+                                    <tr class="table-danger">
+                                    {% else %}
+                                    <tr>
+                                    {% endif %}
+                                        <th>
+                                            <label class="h6">{{ who_user }}</label>
+                                        </th>
+                                        
+                                        <th>
+                                            <label class="h6">{{ to_whom }}</label>
+                                        </th>
+                                        
+                                        <th>
+                                            <label class="h6">{{ amounts.0 }}</label>
+                                        </th>
+                                        
+                                        <th>
+                                            <label class="h6">{{ amounts.1 }}</label>
+                                        </th>
+                                    </tr>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
                 {% endif %}
 
             </div>
