@@ -96,8 +96,8 @@
                         </label>
                     </div>
 
-                    <div class="flex-col" style="margin-left: auto;">
-                        <div class="flex-row">
+                    <div class="btn-group" style="gap: 1rem;">
+                        <div class="">
                             <a href="{% url 'split_the_bills:split_the_bills_group' group.id %}">
                                 <button class="btn btn-sm btn-primary">
                                     Otwórz
@@ -105,7 +105,7 @@
                             </a>
                         </div>
                         {% if user.username == group.owner.username %}
-                        <div class="flex-row" style="padding-top: .5rem">
+                        <div class="">
                             <form method="POST" style="margin: 0; padding: 0;">
                                 {% csrf_token %}
                                 <button class="btn btn-sm btn-danger" name="del_group" value="{{ group.id }}">
