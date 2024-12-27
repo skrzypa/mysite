@@ -3,7 +3,7 @@
 {% block content %}
 <div class="col-11 mx-auto justify-content-center" style="min-height: 100vh;">
     
-    <div>
+    <div class="col-11">
         <button class="btn btn-md btn-success" style="margin-bottom: 2rem;" data-bs-toggle="modal" data-bs-target="#exampleModal">Nowa notatka</button>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -39,8 +39,9 @@
             </div>
         {% else %}
             {% for note in all_notes %}
+            <div class="justify-content-center mx-auto" style="padding: 1rem;">
                 <a href="{% url 'checklist:note' note.id %}" style="text-decoration: none;">
-                    <button class="btn btn-{{ note.color }}" style="margin: 1rem; border-radius: 5px; width: 100%">
+                    <button class="btn btn-{{ note.color }}" style="width: 100%;" >
                         <div>
                             <label class="display-6">
                                 {{ note.title }}
@@ -54,6 +55,7 @@
                         </div>
                     </button>
                 </a>
+            </div>
             {% endfor %}
         {% endif %}
     </div>

@@ -40,7 +40,7 @@
     <br>
 
     {#} ZAPROŚ / DODAJ / OSOBY W GRUPIE {#}
-    <div class="btn-group justify-content-center d-flex" style="margin-top: 0.5rem; margin-bottom: 0.5rem;" role="group" aria-label="Basic example">
+    <div class="btn-group justify-content-center d-flex mx-auto" style="margin-top: 0.5rem; margin-bottom: 0.5rem; max-width: 400px;" role="group" aria-label="Basic example">
             
         {% if user.username == group.owner.username %}
             <button class="btn btn-success btn-sm" 
@@ -99,7 +99,11 @@
         {% else %}
             
             <div class="text-center">
-                <label class="h1">Podsumowanie</label>
+                <br>
+                <div>
+                    <label class="h1">Podsumowanie</label>
+                </div>
+                <br>
 
                 <div class="table-responsive" style="padding: 0; margin: 0;">
                     <table class="table table-hover table-striped text-center" style="padding: 0; margin: 0;">
@@ -221,7 +225,7 @@
                                     {% for expense in bill.invited_to_expense %}
                                     <tr>
                                         <th scope="col">{{ expense.1 }}</th>
-                                        <th scope="col">{{ expense.2 }}</th>
+                                        <th scope="col">{{ expense.2 }} PLN</th>
 
                                         {% if user.username == expense.1 and expense.3 != 0 %}
                                         <th scope="col">
