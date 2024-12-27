@@ -252,7 +252,7 @@ class SplitTheBillsOperations:
     def add_unequal(self, request: WSGIRequest, group_id: str, expense_title: str, expense_price: str, add_people_to_expense: list, unequal_amount: list):
         group = SplitTheBills.objects.get(id = group_id)
         unequal_amount = [float(a) for a in unequal_amount]
-        expense_price = sum(unequal_amount)
+        expense_price = round(sum(unequal_amount), 2)
         users = [User.objects.get(id = f) for f in add_people_to_expense]
         bills = group.bills['bills']
 
