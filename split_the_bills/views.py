@@ -103,7 +103,6 @@ class SplitTheBillsOperations:
         group.save()
 
 
-    
     def del_bill(self, request: WSGIRequest, bill_index: str, group_id: str) -> None:
         bill_index = int(bill_index)
         group = SplitTheBills.objects.get(id = group_id)
@@ -112,13 +111,12 @@ class SplitTheBillsOperations:
 
         group.save()
     
+
     def pay_off_bill(self, request: WSGIRequest, bill_index: str, group_id: str) -> None:
         bill_index = [int(i) for i in bill_index.split(sep= '.')]
         group = SplitTheBills.objects.get(id = group_id)
 
         group.bills['bills'][bill_index[0]]['invited_to_expense'][bill_index[1]][3] = 0
-
-
 
         group.save()
     
@@ -169,8 +167,6 @@ class SplitTheBillsOperations:
 
         group.save()
 
-
-    
 
     def _user_does_not_exist(self) -> bool: ...
     
@@ -226,22 +222,51 @@ class SplitTheBillsOperations:
                     if user[1] in list(bills_summary[creator].keys()):
                         bills_summary[creator][user[1]][0] += user[2]
                         bills_summary[creator][user[1]][1] += user[3]
+
+                        bills_summary[creator][user[1]][0] = round(bills_summary[creator][user[1]][0], 2)
+                        bills_summary[creator][user[1]][1] = round(bills_summary[creator][user[1]][1], 2)
                 
         return bills_summary
+    
+
+    def pay_off_the_entire_bill(self, request: WSGIRequest, group_id: str, bill_idx: str):
+        group = SplitTheBills.objects.get(id = group_id)
+        users = group.bills['bills'][int(bill_idx)]['invited_to_expense']
+
+        for idx, _ in enumerate(users):
+            users[idx][-1] = 0.0
+
+        group.save()
+
+
+    def mark_again_for_repayment(self, request: WSGIRequest, group_id: str, bill_idx: str):
+        group = SplitTheBills.objects.get(id = group_id)
+        users = group.bills['bills'][int(bill_idx)]['invited_to_expense']
+
+        for idx, _ in enumerate(users):
+            users[idx][-1] = users[idx][-2]
+
+        group.save()
+
+    
+    def add_unequal(self, request: WSGIRequest, group_id: str, expense_title: str, expense_price: str, add_people_to_expense: list, unequal_amount: list):
+        group = SplitTheBills.objects.get(id = group_id)
+        unequal_amount = [float(a) for a in unequal_amount]
+        expense_price = sum(unequal_amount)
+        users = [User.objects.get(id = f) for f in add_people_to_expense]
+        bills = group.bills['bills']
+
+        new_bill = {
+            'title': expense_title,
+            'creator': request.user.username,
+            'expense_price': expense_price,
+            'invited_to_expense': [[user.id, user.username, amount, amount] for user, amount in zip(users, unequal_amount)],
+            'time': datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+        }
+        bills.append(new_bill)
+        group.save()
 
             
-
-        
-
-        
-
-    
-
-    
-
-
-
-
 
 @login_required(login_url= "my_apps:users_log_in")
 def split_the_bills(request: WSGIRequest):
@@ -315,6 +340,15 @@ def split_the_bills_group(request: WSGIRequest, group_id: str):
 
         if 'pay_off_bill' in request.POST:
             stb.pay_off_bill(request, request.POST['pay_off_bill'], group_id)
+
+        if 'pay_off_the_entire_bill' in request.POST:
+            stb.pay_off_the_entire_bill(request, group_id, request.POST['pay_off_the_entire_bill'])
+        
+        if 'mark_again_for_repayment' in request.POST:
+            stb.mark_again_for_repayment(request, group_id, request.POST['mark_again_for_repayment'])
+
+        if 'unequal' in request.POST:
+            stb.add_unequal(request, group_id, request.POST['expense_title'], request.POST['expense_price'], request.POST.getlist('add_people_to_expense'), request.POST.getlist('unequal_amount'))
 
         stb.make_summary(group_id)
         
