@@ -38,8 +38,12 @@
     
     <div class="col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-4 justify-content-center mx-auto">
         {% for m in messages %}
-            <div class="alert alert-{{ m.extra_tags }} fade-out" name="mess_{{ forloop.couner }}">
-                {{ m }}
+            <div class="toast-container position-fixed bottom-0 end-0 alert alert-{{ m.extra_tags }} fade-out" role="alert" aria-live="assertive" aria-atomic="true" style="display: block; margin: 1rem;">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ m }}
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>
