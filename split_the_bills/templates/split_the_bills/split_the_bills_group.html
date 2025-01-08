@@ -192,8 +192,12 @@
             <br>
             {% for bill in group.bills.bills %}
 
-                {% if bill.creator == user.username %}
+                {% if bill.creator == user.username or user.is_superuser %}
+                    {% if bill.creator == user.username %}
                     <div class="alert alert-success">
+                    {% else %}
+                    <div class="alert alert-danger">
+                    {% endif %}
                         <form method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger" name="del_bill" value="{{ forloop.counter0 }}">

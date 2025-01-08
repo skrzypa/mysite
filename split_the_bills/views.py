@@ -84,23 +84,29 @@ class SplitTheBillsOperations:
         except ValueError:
             data['expense_price'] = float(0)
 
-        len_users = len(users)
-        equal = round(data['expense_price'] / len_users, 2)
 
-        if equal * len_users != data['expense_price']:
-            diff = round(data['expense_price'] - equal * len_users, 2)
+
+        if data['expense_price'] <= 0:
+            messages.error(request, "Kwota musi być większa niż 0!", "danger")
+        
         else:
-            diff = 0
+            len_users = len(users)
+            equal = round(data['expense_price'] / len_users, 2)
 
-        for user in data['invited_to_expense']:
-            user.append(equal)
-            user.append(equal)
-            if request.user.username == user[1]:
-                user[2] += diff; user[2] = round(user[2], 2)
-                user[3] += diff; user[3] = round(user[3], 2)
+            if equal * len_users != data['expense_price']:
+                diff = round(data['expense_price'] - equal * len_users, 2)
+            else:
+                diff = 0
 
-        group.bills['bills'].append(data)
-        group.save()
+            for user in data['invited_to_expense']:
+                user.append(equal)
+                user.append(equal)
+                if request.user.username == user[1]:
+                    user[2] += diff; user[2] = round(user[2], 2)
+                    user[3] += diff; user[3] = round(user[3], 2)
+
+            group.bills['bills'].append(data)
+            group.save()
 
 
     def del_bill(self, request: WSGIRequest, bill_index: str, group_id: str) -> None:
@@ -256,15 +262,19 @@ class SplitTheBillsOperations:
         users = [User.objects.get(id = f) for f in add_people_to_expense]
         bills = group.bills['bills']
 
-        new_bill = {
-            'title': expense_title,
-            'creator': request.user.username,
-            'expense_price': expense_price,
-            'invited_to_expense': [[user.id, user.username, amount, amount] for user, amount in zip(users, unequal_amount)],
-            'time': datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-        }
-        bills.append(new_bill)
-        group.save()
+        if any([u <= 0 for u in unequal_amount]):
+            messages.error(request, "Kwota musi być większa niż 0!", "danger")
+        
+        else:
+            new_bill = {
+                'title': expense_title,
+                'creator': request.user.username,
+                'expense_price': expense_price,
+                'invited_to_expense': [[user.id, user.username, amount, amount] for user, amount in zip(users, unequal_amount)],
+                'time': datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+            }
+            bills.append(new_bill)
+            group.save()
 
             
 
