@@ -192,18 +192,8 @@
             <br>
             {% for bill in group.bills.bills %}
 
-                {% if bill.creator == user.username or user.is_superuser %}
-                    {% if bill.creator == user.username %}
+                {% if bill.creator == user.username%}
                     <div class="alert alert-success">
-                    {% else %}
-                    <div class="alert alert-danger">
-                    {% endif %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger" name="del_bill" value="{{ forloop.counter0 }}">
-                                Usuń
-                            </button>
-                        </form>
                 {% else %}
                     <div class="alert alert-danger">
                 {% endif %}
@@ -297,6 +287,14 @@
                             <label class="h6">Data utworzenia: {{ bill.time }}</label>
                         </div>
 
+                        {% if bill.creator == user.username or user.is_superuser %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger" name="del_bill" value="{{ forloop.counter0 }}">
+                                    Usuń
+                                </button>
+                            </form>
+                        {% endif %}
                     </div>
 
             {% endfor %}
@@ -321,6 +319,7 @@
             <form method="post" style="margin-bottom: 0rem;">
                 {% csrf_token %}
                 <div class="modal-body">
+                    
 
                     <div class="input-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem; ">
                         <span class="input-group-text" id="basic-addon1">
@@ -330,8 +329,12 @@
                             </svg>
                         </span>
 
-                        <input type="text" class="form-control" id="expense_title" name="expense_title" style="padding: 0;">
+                        <div class="form-floating">
+                            <input oninput="validateTitle()" type="text" class="form-control" id="expense_title" name="expense_title" placeholder="name@example.com">
+                            <label for="expense_title">Tytuł wydatku</label>
+                        </div>
                     </div>
+
 
                     <div class="input-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem; ">
                         <span class="input-group-text" id="basic-addon1">
@@ -341,7 +344,10 @@
                             </svg>
                         </span>
 
-                        <input type="number" step="0.01" inputmode="numeric" step="0.01" min="0" class="form-control" id="expense_price" name="expense_price" style="padding: 0;">
+                        <div class="form-floating">
+                            <input oninput="validateExpense()" type="number" step="0.01" inputmode="numeric" min="0.01" class="form-control" id="expense_price" name="expense_price">
+                            <label for="expense_price">Kwota do równego podziału</label>
+                        </div>
                     </div>
 
                     <div style="overflow: scroll; max-height: 15rem; margin-top: 2rem; margin-bottom: 2rem;">
@@ -369,9 +375,9 @@
                                     
                                     <td>
                                         {% if friend.username == user.username %}
-                                            <input type="number" step="0.01" name="unequal_amount" id="unequal_amount{{ friend.id }}">
+                                            <input type="number" step="0.01" min="0.01"  name="unequal_amount" id="unequal_amount{{ friend.id }}">
                                         {% else %}
-                                            <input type="number" step="0.01" name="unequal_amount" id="unequal_amount{{ friend.id }}" disabled>
+                                            <input type="number" step="0.01" min="0.01"  name="unequal_amount" id="unequal_amount{{ friend.id }}" disabled>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -478,5 +484,32 @@
             }
         });
     });
+
+    
+    function validateExpense() {
+        const expenseInput = document.getElementById('expense_price');
+        const value = parseFloat(expenseInput.value);
+
+        if (isNaN(value) || value <= 0) {
+            expenseInput.classList.add('is-invalid');
+            expenseInput.classList.remove('is-valid');
+        } else {
+            expenseInput.classList.add('is-valid');
+            expenseInput.classList.remove('is-invalid');
+        }
+    }
+
+    function validateTitle() {
+        const titleInput = document.getElementById('expense_title');
+        const value = titleInput.value.trim();
+
+        if (value === "") {
+            titleInput.classList.add('is-invalid');
+            titleInput.classList.remove('is-valid');
+        } else {
+            titleInput.classList.add('is-valid');
+            titleInput.classList.remove('is-invalid');
+        }
+    }
   </script>
 {% endblock content %}
