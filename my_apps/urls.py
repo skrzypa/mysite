@@ -1,12 +1,13 @@
 from django.urls import path
+from django.contrib import admin
 
 
 from . import views
 
 app_name = 'my_apps'
 urlpatterns = [
-    path('admin/', views.calc, name='admin'),
-    path('beer_calc/', views.calc, name='beer_calc'),
+    path('admin/', admin.site.urls, name='admin'),
+    # path('beer_calc/', views.calc, name='beer_calc'),
     path('', views.index, name='homepage'),
     #path('meetings_calendar/', views.meetings_homepage_old, name='meetings_calendar'),
     path('meetings_calendar/', views.meetings_homepage, name='meetings_calendar'),

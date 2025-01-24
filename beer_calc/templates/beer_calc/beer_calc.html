@@ -1,0 +1,502 @@
+{% extends "my_apps/homepage_base.html" %}
+
+{% block content %}
+<style>
+    .beer-button {
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        color: #1c1c1c;
+        background-color: #fBB117;
+        border: 2px solid #1c1c1c;
+        box-shadow: 5px 5px 0px #1c1c1c;
+        margin: 1.5rem 0.5rem 0.5rem 0rem;
+        border-radius: 10px;
+    }
+
+    .beer-button:hover {
+        background-color: #f28e1c;
+        color: #1c1c1c;
+        border: 2px solid #1c1c1c;
+        animation: shadow-move 0.4s ease-in-out forwards;
+        transform: scale(1.1);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .beer-button:active {
+        background-color: #1c1c1c;
+        background-color: #f28e1c;
+        box-shadow: none;
+    }
+
+    @keyframes shadow-move {
+        0% {
+            box-shadow: 5px 5px 0px #1c1c1c;
+        }
+        50% {
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);
+        }
+        100% {
+            box-shadow: -5px -5px 10px #1c1c1c;
+        }
+</style>
+
+<div class="col-11 mx-auto justify-content-center" style="min-height: 100vh;">
+
+    <div class="col-11 text-center text-break word-wrap justify-content-center mx-auto mb-3">
+        <label class="h1">Oblicz podstawowe parametry swojego domowego piwa</label>
+    </div>
+
+    <div class="justify-content-center mx-auto d-flex flex-wrap">
+
+        {% comment %} BRIX NA BALING {% endcomment %}
+        <div style= "{{ div_style }}" class="flex-col">
+
+            <div class= "{{ title_div }}">
+                <label class="h1">Brix na Baling</label>
+            </div>
+
+            <form id="brix-form" method="POST">
+                {% csrf_token %}
+
+                <div class="form-floating text-dark">
+                    {{ brix_to_blg.brix_to_blg_field }}
+                    <label for="id_brix_to_blg_field">{{ brix_to_blg.brix_to_blg_field.help_text }}</label>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="beer-button">
+                        <img src= "/static/beer.png" style="max-width: 15px; height: auto; vertical-align: sub">
+                        Przelicz
+                    </button>
+                </div>
+
+            </form>
+
+            <div id="brix-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+
+            <div id="brix-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
+                <label>
+                    <span id="brix-input-value"></span> Brix = <span id="result-baling"></span> Baling
+                </label>
+            </div>
+            
+            <script>
+                $(document).ready(function() {
+                    $('#brix-form').submit(function(e) {
+                        e.preventDefault(); // Zapobiega wysłaniu formularza
+                
+                        // Wczytanie wartości z formularza
+                        const brixValue = $('input[name="brix_to_blg_field"]').val();
+                        const errorDiv = $('#brix-error');
+                        const resultDiv = $('#brix-result');
+                        const resultValue = $('#result-baling');
+                
+                        // Ukrywanie komunikatów o błędach i wynikach
+                        errorDiv.hide();
+                        resultDiv.hide();
+                
+                        // Wyślij żądanie AJAX
+                        $.ajax({
+                            url: '{% url "beer_calc:beer_calc" %}', // URL widoku
+                            type: 'POST',
+                            data: JSON.stringify({
+                                brix_to_blg_field: brixValue // Wartość z formularza
+                            }),
+                            contentType: 'application/json', // Typ danych do przesłania
+                            headers: {
+                                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() // Token CSRF
+                            },
+
+                            success: function(data) {
+                                if (data.success) {
+                                    $('#brix-input-value').text(brixValue); // Wstawia wartość Brix
+                                    $('#result-baling').text(data.blg); // Pokazanie wyniku
+                                    $('#brix-result').show();
+                                }
+                            },
+
+                        });
+                    });
+                });
+            </script>
+
+        </div>
+
+        {% comment %} BALING NA BRIX {% endcomment %}
+        <div style= "{{ div_style }}" class="flex-col">
+            
+            <div class= "{{ title_div }}">
+                <label class="h1">Baling na Brix</label>
+            </div>
+
+            <form id="baling-form" method="POST">
+                {% csrf_token %}
+
+                <div class="form-floating text-dark">
+                    {{ baling_to_brix.baling_to_brix_field }}
+                    <label for="id_baling_to_brix_field">{{ baling_to_brix.baling_to_brix_field.help_text }}</label>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="beer-button">
+                        <img src= "/static/beer.png" style="max-width: 15px; height: auto; vertical-align: sub">
+                        Przelicz
+                    </button>
+                </div>
+
+            </form>
+
+            <div id="baling-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+
+            <div id="baling-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
+                <label>
+                    <span id="baling-input-value"></span> Baling = <span id="result-brix"></span> Brix
+                </label>
+            </div>
+            
+            <script>
+                $(document).ready(function() {
+                    $('#baling-form').submit(function(e) {
+                        e.preventDefault(); // Zapobiega wysłaniu formularza
+                
+                        // Wczytanie wartości z formularza
+                        const balingValue = $('input[name="baling_to_brix_field"]').val();
+                        const errorDiv = $('#baling-error');
+                        const resultDiv = $('#baling-result');
+                        const resultValue = $('#result-brix');
+                
+                        // Ukrywanie komunikatów o błędach i wynikach
+                        errorDiv.hide();
+                        resultDiv.hide();
+                
+                        // Wyślij żądanie AJAX
+                        $.ajax({
+                            url: '{% url "beer_calc:beer_calc" %}', // URL widoku
+                            type: 'POST',
+                            data: JSON.stringify({
+                                baling_to_brix_field: balingValue // Wartość z formularza
+                            }),
+                            contentType: 'application/json', // Typ danych do przesłania
+                            headers: {
+                                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() // Token CSRF
+                            },
+
+                            success: function(data) {
+                                if (data.success) {
+                                    $('#baling-input-value').text(balingValue); // Wstawia wartość Brix
+                                    $('#result-brix').text(data.brix); // Pokazanie wyniku
+                                    $('#baling-result').show();
+                                } 
+                            },
+
+                        });
+                    });
+                });
+            </script>
+        </div>
+
+        {% comment %} Brixy na alkohol {% endcomment %}
+        <div style= "{{ div_style }}" class="flex-col">
+            <div class= "{{ title_div }}">
+                <label class="h1">Brix na alkohol</label>
+            </div>
+
+            <form id="brix-alc-form" method="POST">
+                {% csrf_token %}
+
+                <div class="form-floating text-dark mb-3">
+                    {{ brix_alc.brix_start_field }}
+                    <label for="id_brix_start_field">{{ brix_alc.brix_start_field.help_text }}</label>
+                </div>
+                
+                <div class="form-floating text-dark">
+                    {{ brix_alc.brix_end_field }}
+                    <label for="id_brix_end_field">{{ brix_alc.brix_end_field.help_text }}</label>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="beer-button">
+                        <img src= "/static/beer.png" style="max-width: 15px; height: auto; vertical-align: sub">
+                        Przelicz
+                    </button>
+                </div>
+            </form>
+
+            <div id="brix-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+
+            <div id="brix-alc-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
+                <label>
+                    <span id="brix-start-alc-input-value"></span> Bx →
+                    <span id="brix-end-alc-input-value"></span> Bx = 
+                    <span id="result-brix-alc"></span> ±0.5%
+                </label>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#brix-alc-form').submit(function(e) {
+                        e.preventDefault();
+
+                        const brix_start = $('input[name="brix_start_field"]').val();
+                        const brix_end = $('input[name="brix_end_field"]').val();
+                        const alcohol_result = $('#result-brix-alc');
+                        const errorDiv = $('#brix-alc-error');
+                        const resultDiv = $('#brix-alc-result');
+
+                        errorDiv.hide();
+                        resultDiv.hide();
+
+                        $.ajax({
+                            url: '{% url "beer_calc:beer_calc" %}',
+                            type: 'POST',
+                            data: JSON.stringify({
+                                brix_start_field: brix_start,
+                                brix_end_field: brix_end
+                            }),
+                            contentType: 'application/json',
+                            headers: {
+                                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                            },
+
+                            success: function(data) {
+                                $('#brix-start-alc-input-value').text(brix_start);
+                                $('#brix-end-alc-input-value').text(brix_end);
+                                $('#result-brix-alc').text(data.alcohol)
+                                $('#brix-alc-result').show();
+                            }
+                        });
+                    });
+                });
+            </script>
+        </div>
+
+        {% comment %} Balingi na alkohol {% endcomment %}
+        <div style= "{{ div_style }}" class="flex-col">
+            <div class= "{{ title_div }}">
+                <label class="h1">Baling na alkohol</label>
+            </div>
+
+            <form id="baling-alc-form" method="POST">
+                {% csrf_token %}
+
+                <div class="form-floating text-dark mb-3">
+                    {{ baling_alc.baling_start_field }}
+                    <label for="id_baling_start_field">{{ baling_alc.baling_start_field.help_text }}</label>
+                </div>
+                
+                <div class="form-floating text-dark">
+                    {{ baling_alc.baling_end_field }}
+                    <label for="id_baling_end_field">{{ baling_alc.baling_end_field.help_text }}</label>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="beer-button">
+                        <img src= "/static/beer.png" style="max-width: 15px; height: auto; vertical-align: sub">
+                        Przelicz
+                    </button>
+                </div>
+            </form>
+
+            <div id="baling-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+
+            <div id="baling-alc-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
+                <label>
+                    <span id="baling-start-alc-input-value"></span> Blg →
+                    <span id="baling-end-alc-input-value"></span> Blg = 
+                    <span id="result-baling-alc"></span> ±0.5%
+                </label>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#baling-alc-form').submit(function(e) {
+                        e.preventDefault();
+
+                        const baling_start = $('#id_baling_start_field').val();
+                        const baling_end = $('#id_baling_end_field').val();
+                        const alcohol_result = $('#result-baling-alc');
+                        const errorDiv = $('#baling-alc-error');
+                        const resultDiv = $('#baling-alc-result');
+
+                        errorDiv.hide();
+                        resultDiv.hide();
+
+                        $.ajax({
+                            url: '{% url "beer_calc:beer_calc" %}',
+                            type: 'POST',
+                            data: JSON.stringify({
+                                baling_start_field: baling_start,
+                                baling_end_field: baling_end
+                            }),
+                            contentType: 'application/json',
+                            headers: {
+                                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                            },
+
+                            success: function(data) {
+                                $('#baling-start-alc-input-value').text(baling_start);
+                                $('#baling-end-alc-input-value').text(baling_end);
+                                $('#result-baling-alc').text(data.alcohol)
+                                resultDiv.show();
+                            },
+                        });
+                    });
+                });
+            </script>
+        </div>
+
+        {% comment %} Glukoza {% endcomment %}
+        <div style= "{{ div_style }}" class="flex-col">
+            <div class= "{{ title_div }}">
+                <label class="h1">Nagazowanie piwa</label>
+            </div>
+
+            <form id="carbonation-form" method="POST">
+                {% csrf_token %}
+
+                <div class="form-floating text-dark mb-3">
+                    {{ carbonation.co2_field }}
+                    <label for="id_co2_field">{{ carbonation.co2_field.help_text }}</label>
+                </div>
+
+                <div class="form-floating text-dark mb-3">
+                    {{ carbonation.temperature_field }}
+                    <label for="id_temperature_field">{{ carbonation.temperature_field.help_text }}</label>
+                </div>
+
+                <div class="form-floating text-dark mb-3">
+                    {{ carbonation.beer_volume_field }}
+                    <label for="id_beer_volume_field">{{ carbonation.beer_volume_field.help_text }}</label>
+                </div>
+
+                <div class="form-floating text-dark">
+                    {{ carbonation.blg_start_field }}
+                    <label for="id_blg_start_field">{{ carbonation.blg_start_field.help_text }}</label>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="beer-button">
+                        <img src= "/static/beer.png" style="max-width: 15px; height: auto; vertical-align: sub">
+                        Przelicz
+                    </button>
+                </div>
+            </form>
+
+            <div id="glucose-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+            
+            <div id="glucose-success" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
+                <label>
+                    Aby uzyskać nagazowanie na poziomie 
+                    <strong><span id="carbonation-input"></span></strong>
+                    vol, w piwie o temperaturze 
+                    <strong><span id="temperature-input"></span></strong>
+                    °C, objętości 
+                    <strong><span id="volume-input"></span></strong> 
+                    litrów gęstości początkowej 
+                    <strong><span id="blg_start-input"></span></strong> 
+                    blg. Należy rozpuści 
+                    <strong><span id="g-glucose"></span></strong> 
+                    g glukozy w 
+                    <strong><span id="ml-input"></span></strong>
+                    ml wody.
+                </label>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#carbonation-form').submit(function(e) {
+                        e.preventDefault();
+                        
+                        const co2 = $('#id_co2_field').val();
+                        const temperature = $('#id_temperature_field').val();
+                        const volume = $('#id_beer_volume_field').val();
+                        const blg_start = $('#id_blg_start_field').val();
+
+                        const error_div = $('#glucose-error');
+                        const result_div = $('#glucose-success');
+
+                        error_div.hide();
+                        result_div.hide();
+                        
+                        $.ajax({
+                            url: '{% url "beer_calc:beer_calc" %}',
+                            type: 'POST',
+                            data: JSON.stringify({
+                                co2_field: co2,
+                                temperature_field: temperature,
+                                beer_volume_field: volume,
+                                blg_start_field: blg_start,
+                            }),
+                            contentType: 'application/json',
+                            headers: {
+                                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                            },
+
+                            success: function(data) {
+                                if (data.success) {
+                                    $("#carbonation-input").text(co2);
+                                    $("#volume-input").text(volume);
+                                    $("#temperature-input").text(temperature);
+                                    $("#blg_start-input").text(blg_start);
+                                    $("#g-glucose").text(data.glucose);
+                                    $("#ml-input").text(data.glucose_solution);
+                                    result_div.show();
+                                } else {
+                                    error_div.text('Wystąpił problem z obliczeniami.').show();
+                                }
+                            },
+                        });
+                    });
+                });
+            </script>
+        </div>
+    </div>
+            
+    
+    <div class="justify-content-center mx-auto d-flex flex-wrap">
+        <div style="{{ div_style }}" class="flex-col table-responsive text-dark">
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <h2>Poziom nagazowania dla różnych styli</h2>
+                    </tr>
+                    <tr>
+                        <th scope="col">Styl</td>
+                        <th scope="col">Nagazowanie mininalne</td>
+                        <th scope="col">Nagazowanie maksymalne</td>
+                    </tr>
+                    
+                </thead>
+                
+                <tbody>
+                    {% for beer in beer_styles %}
+                        <tr>
+                            {% for data in beer %}
+                                <td>{{ data }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="justify-content-center mx-auto d-flex flex-wrap">
+        <div style="{{ div_style }}" class="flex-col">
+            <div class="{{ title_div }}">
+                <label class="h1">Źródła:</label>
+            </div>
+
+            <div class="text-center">
+                <div><label><a href="https://github.com/Brewtarget/brewtarget/blob/develop/src/PrimingDialog.cpp" target="_blank">github.com/Brewtarget</a></label></div>
+                <div><label><a href="https://piwko.com.pl/kalkulator/ile-cukru-dodac-do-refermentacji" target="_blank">piwko.com.pl</a></label></div>
+                <div><label><a href="https://twojbrowar.pl/pl/blog/jak-zmierzyc-poziom-alkoholu-w-domowym-piwie" target="_blank">twojbrowar.pl</a></label></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+     
+{% endblock content %}

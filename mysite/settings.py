@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'checklist',
     'user_data',
     'split_the_bills',
+    'beer_calc',
     
     # aplikacje zewnętrzne
     # 'bootstrap5',

@@ -95,6 +95,7 @@ def admin(request: WSGIRequest):
 
 
 # BEER CALC
+"""
 def calc(request: WSGIRequest):
     context = {
         'style_piwne': [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerStyles.objects.all()],
@@ -178,7 +179,7 @@ def calc(request: WSGIRequest):
                 template_name= f'my_apps/beer_calc.html', 
                 context= context,
             )
-
+"""
 
 
 # MEETINGS
