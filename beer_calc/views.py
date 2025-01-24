@@ -2,12 +2,10 @@ from django.shortcuts import render
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 
-from mysite.settings import BASE_DIR
-
 
 from .forms import BrixToBlgForm, BlgToBrixForm, BrixToAlcoholForm, BalingToAlcoholForm, CarbonationOfBeerForm
 from .beer_calc import BeerCalc
-from .models import BeerStyles
+from .models import BeerStyles, ButtonIcon
 
 import json
 
@@ -81,6 +79,8 @@ def beer_calc(request: WSGIRequest):
 
             'title_div': 'word-wrap text-break text-center text-dark mb-3',
 
-            'beer_styles': [[beer.style_name, beer.min_carbonation, beer.max_carbonation] for beer in BeerStyles.objects.all()]
+            'beer_styles': [[beer.style_name, beer.min_carbonation, beer.max_carbonation] for beer in BeerStyles.objects.all()],
+
+            'icon': ButtonIcon.objects.last().photo.url,
         }
     )
