@@ -1,5 +1,4 @@
 {% extends "my_apps/homepage_base.html" %}
-{% load static %}
 
 {% block content %}
 <style>
@@ -8,26 +7,25 @@
         text-align: center;
         text-decoration: none;
         color: #1c1c1c;
-        background-color: #fBB117;
+        background-color:rgb(250, 150, 0);
         border: 2px solid #1c1c1c;
         box-shadow: 5px 5px 0px #1c1c1c;
         margin: 1.5rem 0.5rem 0.5rem 0rem;
         border-radius: 10px;
+        transition: all 0.2s ease;
+        animation: shadow-reset 0.4s ease forwards;
     }
 
     .beer-button:hover {
-        background-color: #f28e1c;
+        background-color:rgb(255, 186, 108);
         color: #1c1c1c;
         border: 2px solid #1c1c1c;
-        animation: shadow-move 0.4s ease-in-out forwards;
+        animation: shadow-move 0.4s ease forwards;
         transform: scale(1.1);
-        transition: all 0.2s ease-in-out;
     }
 
     .beer-button:active {
-        background-color: #1c1c1c;
-        background-color: #f28e1c;
-        box-shadow: none;
+        background-color:rgb(206, 120, 22);
     }
 
     @keyframes shadow-move {
@@ -40,6 +38,19 @@
         100% {
             box-shadow: -5px -5px 10px #1c1c1c;
         }
+    }
+
+    @keyframes shadow-reset {
+        0% {
+            box-shadow: -5px -5px 10px #1c1c1c;
+        }
+        50% {
+            box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);
+        }
+        100% {
+            box-shadow: 5px 5px 0px #1c1c1c;
+        }
+    }
 </style>
 
 <div class="col-11 mx-auto justify-content-center" style="min-height: 100vh;">
@@ -224,7 +235,9 @@
                 </div>
             </form>
 
-            <div id="brix-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+            <div id="brix-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger">
+                <span id="start_less_end_brix"></span>
+            </div>
 
             <div id="brix-alc-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
                 <label>
@@ -261,10 +274,16 @@
                             },
 
                             success: function(data) {
-                                $('#brix-start-alc-input-value').text(brix_start);
-                                $('#brix-end-alc-input-value').text(brix_end);
-                                $('#result-brix-alc').text(data.alcohol)
-                                $('#brix-alc-result').show();
+                                if (data.success) {
+                                    $('#brix-start-alc-input-value').text(brix_start);
+                                    $('#brix-end-alc-input-value').text(brix_end);
+                                    $('#result-brix-alc').text(data.alcohol)
+                                    $('#brix-alc-result').show();
+                                }
+                                else {
+                                    $('#start_less_end_brix').text(data.error)
+                                    $('#brix-alc-error').show();
+                                };
                             }
                         });
                     });
@@ -299,7 +318,9 @@
                 </div>
             </form>
 
-            <div id="baling-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger"></div>
+            <div id="baling-alc-error" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-danger">
+                <span id="start_less_end_baling"></span>
+            </div>
 
             <div id="baling-alc-result" style="display: none; margin-top: 0.5rem; margin-bottom: 0rem;" class="alert alert-success">
                 <label>
@@ -336,10 +357,16 @@
                             },
 
                             success: function(data) {
-                                $('#baling-start-alc-input-value').text(baling_start);
-                                $('#baling-end-alc-input-value').text(baling_end);
-                                $('#result-baling-alc').text(data.alcohol)
-                                resultDiv.show();
+                                if (data.success) {
+                                    $('#baling-start-alc-input-value').text(baling_start);
+                                    $('#baling-end-alc-input-value').text(baling_end);
+                                    $('#result-baling-alc').text(data.alcohol)
+                                    resultDiv.show();
+                                }
+                                else {
+                                    $('#start_less_end_baling').text(data.error)
+                                    $('#baling-alc-error').show();
+                                };
                             },
                         });
                     });
@@ -394,9 +421,9 @@
                     <strong><span id="temperature-input"></span></strong>
                     °C, objętości 
                     <strong><span id="volume-input"></span></strong> 
-                    litrów gęstości początkowej 
+                    litrów i gęstości początkowej 
                     <strong><span id="blg_start-input"></span></strong> 
-                    blg. Należy rozpuści 
+                    blg. Należy rozpuścić 
                     <strong><span id="g-glucose"></span></strong> 
                     g glukozy w 
                     <strong><span id="ml-input"></span></strong>
@@ -456,12 +483,10 @@
             
     
     <div class="justify-content-center mx-auto d-flex flex-wrap">
-        <div style="{{ div_style }}" class="flex-col table-responsive text-dark">
+        <div style="{{ div_style }}" class="flex-col table-responsive text-dark text-center">
+            <h2>Poziom nagazowania dla różnych styli</h2> 
             <table class="table text-center">
                 <thead>
-                    <tr>
-                        <h2>Poziom nagazowania dla różnych styli</h2>
-                    </tr>
                     <tr>
                         <th scope="col">Styl</td>
                         <th scope="col">Nagazowanie mininalne</td>

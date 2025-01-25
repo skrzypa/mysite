@@ -119,8 +119,8 @@ class CarbonationOfBeerForm(forms.Form):
                 'placeholder': '',
                 'style': 'resize: none;',
 
-                'step': 0.1,
-                'min': 0,
+                'step': 0.01,
+                'min': 2.0,
                 'max': 3.5,
             }
         )

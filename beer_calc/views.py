@@ -42,6 +42,8 @@ def beer_calc(request: WSGIRequest):
         form_brix_alc = BrixToAlcoholForm(body)
         if form_brix_alc.is_valid():
             start_end = form_brix_alc.cleaned_data['brix_start_field'], form_brix_alc.cleaned_data['brix_end_field']
+            if start_end[0] < start_end[1]:
+                return JsonResponse({'success': False, 'error': 'Brixy początkowe nie mogą być większe od brixów końcowych'}, status=200)
             alcohol = BC.brix_to_percent(start_end[0], start_end[1])
             return JsonResponse({'success': True, 'alcohol': alcohol}, status=200)
         
@@ -49,6 +51,8 @@ def beer_calc(request: WSGIRequest):
         form_baling_alc = BalingToAlcoholForm(body)
         if form_baling_alc.is_valid():
             start_end = form_baling_alc.cleaned_data['baling_start_field'], form_baling_alc.cleaned_data['baling_end_field']
+            if start_end[0] < start_end[1]:
+                return JsonResponse({'success': False, 'error': 'Balingi początkowe nie mogą być większe od balingów końcowych'}, status=200)
             alcohol = BC.baling_to_percent(start_end[0], start_end[1])
             return JsonResponse({'success': True, 'alcohol': alcohol}, status=200)
         
