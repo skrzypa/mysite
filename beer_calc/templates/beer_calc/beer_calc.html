@@ -9,7 +9,6 @@
         color: #1c1c1c;
         background-color:rgb(250, 150, 0);
         border: 2px solid #1c1c1c;
-        box-shadow: 5px 5px 0px #1c1c1c;
         margin: 1.5rem 0.5rem 0.5rem 0rem;
         border-radius: 10px;
         transition: all 0.2s ease;
@@ -18,14 +17,13 @@
 
     .beer-button:hover {
         background-color:rgb(255, 186, 108);
-        color: #1c1c1c;
-        border: 2px solid #1c1c1c;
         animation: shadow-move 0.4s ease forwards;
         transform: scale(1.1);
     }
 
     .beer-button:active {
         background-color:rgb(206, 120, 22);
+        transform: scale(1.05);
     }
 
     @keyframes shadow-move {
@@ -101,12 +99,6 @@
                         // Wczytanie wartości z formularza
                         const brixValue = $('input[name="brix_to_blg_field"]').val();
                         const errorDiv = $('#brix-error');
-                        const resultDiv = $('#brix-result');
-                        const resultValue = $('#result-baling');
-                
-                        // Ukrywanie komunikatów o błędach i wynikach
-                        errorDiv.hide();
-                        resultDiv.hide();
                 
                         // Wyślij żądanie AJAX
                         $.ajax({
@@ -175,12 +167,6 @@
                         // Wczytanie wartości z formularza
                         const balingValue = $('input[name="baling_to_brix_field"]').val();
                         const errorDiv = $('#baling-error');
-                        const resultDiv = $('#baling-result');
-                        const resultValue = $('#result-brix');
-                
-                        // Ukrywanie komunikatów o błędach i wynikach
-                        errorDiv.hide();
-                        resultDiv.hide();
                 
                         // Wyślij żądanie AJAX
                         $.ajax({
@@ -252,14 +238,8 @@
                     $('#brix-alc-form').submit(function(e) {
                         e.preventDefault();
 
-                        const brix_start = $('input[name="brix_start_field"]').val();
-                        const brix_end = $('input[name="brix_end_field"]').val();
-                        const alcohol_result = $('#result-brix-alc');
-                        const errorDiv = $('#brix-alc-error');
-                        const resultDiv = $('#brix-alc-result');
-
-                        errorDiv.hide();
-                        resultDiv.hide();
+                        const brix_start = $('#id_brix_start_field').val();
+                        const brix_end = $('#id_brix_end_field').val();
 
                         $.ajax({
                             url: '{% url "beer_calc:beer_calc" %}',
@@ -279,10 +259,12 @@
                                     $('#brix-end-alc-input-value').text(brix_end);
                                     $('#result-brix-alc').text(data.alcohol)
                                     $('#brix-alc-result').show();
+                                    $('#brix-alc-error').hide();
                                 }
                                 else {
                                     $('#start_less_end_brix').text(data.error)
                                     $('#brix-alc-error').show();
+                                    $('#brix-alc-result').hide();
                                 };
                             }
                         });
@@ -337,12 +319,6 @@
 
                         const baling_start = $('#id_baling_start_field').val();
                         const baling_end = $('#id_baling_end_field').val();
-                        const alcohol_result = $('#result-baling-alc');
-                        const errorDiv = $('#baling-alc-error');
-                        const resultDiv = $('#baling-alc-result');
-
-                        errorDiv.hide();
-                        resultDiv.hide();
 
                         $.ajax({
                             url: '{% url "beer_calc:beer_calc" %}',
@@ -361,11 +337,13 @@
                                     $('#baling-start-alc-input-value').text(baling_start);
                                     $('#baling-end-alc-input-value').text(baling_end);
                                     $('#result-baling-alc').text(data.alcohol)
-                                    resultDiv.show();
+                                    $('#baling-alc-result').show();
+                                    $('#baling-alc-error').hide();
                                 }
                                 else {
                                     $('#start_less_end_baling').text(data.error)
                                     $('#baling-alc-error').show();
+                                    $('#baling-alc-result').hide();
                                 };
                             },
                         });
@@ -470,7 +448,8 @@
                                     $("#g-glucose").text(data.glucose);
                                     $("#ml-input").text(data.glucose_solution);
                                     result_div.show();
-                                } else {
+                                } 
+                                else {
                                     error_div.text('Wystąpił problem z obliczeniami.').show();
                                 }
                             },
@@ -483,16 +462,58 @@
             
     
     <div class="justify-content-center mx-auto d-flex flex-wrap">
-        <div style="{{ div_style }}" class="flex-col table-responsive text-dark text-center">
+        <div style="{{ div_table_style }}" class="flex-col table-responsive text-dark text-center">
             <h2>Poziom nagazowania dla różnych styli</h2> 
-            <table class="table text-center">
+
+            <form id="search-form" method="get">
+                <div class="form-floating text-dark mb-3">
+                    {{ search_form.search_field }}
+                    <label for="id_search_field">{{ search_form.search_field.help_text }}</label>
+                </div>
+            </form>
+
+            <script>
+                function search_function() {
+                    // Pobranie wartości wejściowej
+                    var input = document.getElementById("id_search_field");
+                    var filter = input.value.toUpperCase();
+                
+                    // Pobranie tabeli i jej wierszy
+                    var table = document.getElementById("styles_table");
+                    var tr = table.getElementsByTagName("tr");
+                
+                    // Iteracja przez wszystkie wiersze (z wyjątkiem nagłówka)
+                    for (var i = 1; i < tr.length; i++) {
+                        var matchFound = false;
+                
+                        // Pobranie wszystkich komórek w bieżącym wierszu
+                        var td = tr[i].getElementsByTagName("td");
+                
+                        // Przeszukiwanie komórek wiersza
+                        for (var j = 0; j < td.length; j++) {
+                            if (td[j]) {
+                                var txtValue = td[j].textContent || td[j].innerText;
+                                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                    matchFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                
+                        // Ukrywanie lub pokazywanie wiersza
+                        tr[i].style.display = matchFound ? "" : "none";
+                    }
+                }
+            </script>
+
+            <table class="table text-center" id="styles_table">
                 <thead>
                     <tr>
+                        <th scope="col"></td>
                         <th scope="col">Styl</td>
                         <th scope="col">Nagazowanie mininalne</td>
                         <th scope="col">Nagazowanie maksymalne</td>
                     </tr>
-                    
                 </thead>
                 
                 <tbody>
@@ -511,15 +532,21 @@
 
     <div class="justify-content-center mx-auto d-flex flex-wrap">
         <div style="{{ div_style }}" class="flex-col">
-            <div class="{{ title_div }}">
+            <div class="word-wrap text-break text-center text-dark">
                 <label class="h1">Źródła:</label>
             </div>
 
-            <div class="text-center">
-                <div><label><a href="https://github.com/Brewtarget/brewtarget/blob/develop/src/PrimingDialog.cpp" target="_blank">github.com/Brewtarget</a></label></div>
-                <div><label><a href="https://piwko.com.pl/kalkulator/ile-cukru-dodac-do-refermentacji" target="_blank">piwko.com.pl</a></label></div>
-                <div><label><a href="https://twojbrowar.pl/pl/blog/jak-zmierzyc-poziom-alkoholu-w-domowym-piwie" target="_blank">twojbrowar.pl</a></label></div>
-            </div>
+            <ol class="list-group list-group-numbered" class="text-start">
+                <li class="list-group-item border-0 p-0">
+                    <a href="https://github.com/Brewtarget/brewtarget/blob/develop/src/PrimingDialog.cpp" target="_blank">github.com/Brewtarget</a>
+                </li>
+                <li class="list-group-item border-0 p-0">
+                    <a href="https://piwko.com.pl/kalkulator/ile-cukru-dodac-do-refermentacji" target="_blank">piwko.com.pl/ile-cukru-dodac-do-refermentacji</a>
+                </li>
+                <li class="list-group-item border-0 p-0">
+                    <a href="https://twojbrowar.pl/pl/blog/jak-zmierzyc-poziom-alkoholu-w-domowym-piwie" target="_blank">twojbrowar.pl/jak-zmierzyc-poziom-alkoholu-w-domowym-piwie</a>
+                </li>
+            </ol>
         </div>
     </div>
 

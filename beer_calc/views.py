@@ -3,7 +3,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 
 
-from .forms import BrixToBlgForm, BlgToBrixForm, BrixToAlcoholForm, BalingToAlcoholForm, CarbonationOfBeerForm
+from .forms import BrixToBlgForm, BlgToBrixForm, BrixToAlcoholForm, BalingToAlcoholForm, CarbonationOfBeerForm, SearchForm
 from .beer_calc import BeerCalc
 from .models import BeerStyles, ButtonIcon
 
@@ -68,7 +68,6 @@ def beer_calc(request: WSGIRequest):
             glucose_solution = BC.sugar_solution(blg_start, glucose)
             return JsonResponse({'success': True, 'glucose': glucose, 'glucose_solution': glucose_solution}, status=200)
 
-
     return render(
         request,
         'beer_calc/beer_calc.html',
@@ -81,10 +80,16 @@ def beer_calc(request: WSGIRequest):
 
             'div_style': "max-width: 500px; background-color: rgb(255, 255, 255); margin: 1rem; padding: 15px; border-radius: 20px; width: 100vh;",
 
+            'div_table_style': "max-width: 750px; background-color: rgb(255, 255, 255); margin: 1rem; padding: 15px; border-radius: 20px; width: 100vh;",
+
             'title_div': 'word-wrap text-break text-center text-dark mb-3',
 
-            'beer_styles': [[beer.style_name, beer.min_carbonation, beer.max_carbonation] for beer in BeerStyles.objects.all()],
+            'beer_styles': [[nr, beer.style_name, beer.min_carbonation, beer.max_carbonation] for nr, beer in enumerate(BeerStyles.objects.all(), start= 1)],
 
             'icon': ButtonIcon.objects.last().photo.url,
+
+            'search_form': SearchForm(),
+
+            'site_name': 'Pskrzynski | BeerCalc'
         }
     )

@@ -9,7 +9,14 @@
     <head>
         <meta charset= "utf-8">
         <meta name= "viewport" content= "width= device-width, initial-scale= 1, shrink-to-fit= no">
-        <title>PSkrzynski</title>
+        <title>
+            {% if site_name %}
+                {{ site_name }}
+            {% else %}
+                PSkrzynski
+            {% endif %}
+
+        </title>
         <link rel="icon" type="image/x-icon" href="/media/favicon/favicon.png">
         <link href="{% static 'css_js/bootstrap.css' %}" rel="stylesheet" crossorigin="anonymous">
         <script src="{% static 'css_js/bootstrap.bundle.js' %}" crossorigin="anonymous"></script>

@@ -173,3 +173,21 @@ class CarbonationOfBeerForm(forms.Form):
             }
         )
     )
+
+
+
+class SearchForm(forms.Form):
+    search_field = forms.CharField(
+        help_text= "Szukaj",
+        widget= forms.TextInput(
+            attrs= {
+                'rows': 1,
+                'class': 'form-control',
+                'placeholder': '',
+                'style': 'resize: none;',
+
+                'type': 'search',
+                'onkeyup': "search_function()",
+            }
+        )
+    )
