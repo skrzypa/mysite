@@ -462,7 +462,7 @@
             
     
     <div class="justify-content-center mx-auto d-flex flex-wrap">
-        <div style="{{ div_table_style }}" class="flex-col table-responsive text-dark text-center">
+        <div style="{{ div_table_style }}" class="flex-col text-dark text-center">
             <h2>Poziom nagazowania dla różnych styli</h2> 
 
             <form id="search-form" method="get">
@@ -491,8 +491,10 @@
                 
                         // Przeszukiwanie komórek wiersza
                         for (var j = 0; j < td.length; j++) {
-                            if (td[j]) {
-                                var txtValue = td[j].textContent || td[j].innerText;
+                            //if (td[j]) {
+                            if (td[1]) {
+                                //var txtValue = td[j].textContent || td[j].innerText;
+                                var txtValue = td[1].textContent || td[j].innerText;
                                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
                                     matchFound = true;
                                     break;
@@ -506,26 +508,28 @@
                 }
             </script>
 
-            <table class="table text-center" id="styles_table">
-                <thead>
-                    <tr>
-                        <th scope="col"></td>
-                        <th scope="col">Styl</td>
-                        <th scope="col">Nagazowanie mininalne</td>
-                        <th scope="col">Nagazowanie maksymalne</td>
-                    </tr>
-                </thead>
-                
-                <tbody>
-                    {% for beer in beer_styles %}
+            <div class="table-responsive">
+                <table class="table text-center" id="styles_table">
+                    <thead>
                         <tr>
-                            {% for data in beer %}
-                                <td>{{ data }}</td>
-                            {% endfor %}
+                            <th scope="col"></td>
+                            <th scope="col">Styl</td>
+                            <th scope="col">Nagazowanie mininalne</td>
+                            <th scope="col">Nagazowanie maksymalne</td>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    
+                    <tbody>
+                        {% for beer in beer_styles %}
+                            <tr>
+                                {% for data in beer %}
+                                    <td>{{ data }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
