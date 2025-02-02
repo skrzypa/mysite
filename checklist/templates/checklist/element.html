@@ -102,10 +102,12 @@
                             },
                         });
                     });
-                    {% endif %}
 
                     var input_field = $("#change_element-{{ index }}")
                     input_field.removeAttr('readonly');
+                    
+                    {% endif %}
+
                     {% if checked %}
                     input_field.addClass("text-decoration-line-through");
                     input_field.removeClass("text-decoration-none");
