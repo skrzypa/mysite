@@ -1,7 +1,43 @@
 {% extends "my_apps/homepage_base.html" %}
 
 {% block content %}
+<style>
+    .not_onwer_style {
+        margin-top: 1rem; 
+        padding: 0.5rem; 
+        border: 2px solid white; 
+        border-radius: 10px;
+    }
+</style>
 <div class="col-11 mx-auto" style="min-height: 100vh; max-width: 1000px;">
+    <div id="error-div" class="alert alert-danger bottom-0 end-0" style="display: none; z-index: 9999; margin: 1rem; position: fixed;">
+        <style>
+            #error-div {
+                position: fixed;  
+                bottom: 20px;     
+                right: 20px;      
+                z-index: 9999;   
+                opacity: 1;
+                transform: scale(1);  
+                transition: all 1s ease-out;  /
+                display: none; 
+            }
+        
+            #error-div.fade-out {
+                opacity: 0;   
+                transform: scale(0.5); 
+            }
+        </style>
+        <label id="error-content"></label>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.extra_tags }} text-center" style="padding: 0.5rem 0.5rem;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <div>
         <a href="{% url 'checklist:checklist' %}" style="text-decoration: none;">
@@ -11,463 +47,228 @@
         </a>
     </div>
 
-
-    <div class="text-center" style="margin-bottom: 2rem; margin-top: 1.5rem;">
-        <label class="display-1 text-break word-wrap" id="note_title" style="cursor: pointer;">
-            {{ note.title }}
-        </label>
-    </div>
-    
-    <div id="edit_note_title" style="display: none; margin-bottom: 1rem;">
-        <form method="POST" style="margin: 0; padding: 0;">
-            {% csrf_token %}
-            <textarea class="form-control" rows="1" style="resize: none;" name="edited_note_title">{{ note.title }}</textarea>
-            <div class="d-flex justify-content-start" style="gap: 1rem; margin-top: 1rem;">
-                <button class="btn btn-sm btn-success" type="submit" name="edit_note_title">Edytuj</button>
-                <button class="btn btn-sm btn-primary" type="button" id="cancel_edit_note_title">Anuluj</button>
-            </div>
-        </form>
-    </div>
-
-
-    <div class="d-flex flex-wrap justify-content-center" style="width: 100%; gap: 0.5rem;" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#AddElement" aria-expanded="false" aria-controls="AddElement">
-            Dodaj element
-        </button>
-
-        <button type="button" class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#AddSubgroup" aria-expanded="false" aria-controls="AddSubgroup">
-            Dodaj podgrupę
-        </button>
-
-        <button type="button" class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#AddTextNote" aria-expanded="false" aria-controls="AddTextNote">
-            Dodaj notatkę
-        </button>
-
-        <button type="button" class="btn btn-danger" data-bs-toggle="collapse" data-bs-target="#share" aria-expanded="false" aria-controls="share">
-            {% if is_owner %}
-            Udostępnij
+    <div class="text-break word-wrap">
+        <div class="justify-content-center mx-auto">
+            {% if not is_owner %}
+                <div class="text-center not_onwer_style">
+                    <label>{{ note.title }}</label>
+                </div>
             {% else %}
-            Udostępniono
+
+                <form method="POST" id="change-title-form">
+                    {% csrf_token %}
+                    {{ change_title_form.change_title_field }}
+                </form>
+
+                <script>
+                    $(document).ready(function() {
+                        var input_field = $("#id_change_title_field");
+                        input_field.val("{{ note.title }}");
+                
+                        input_field.on('blur', function() {
+                            change_title(input_field.val());
+                        });
+                
+                        input_field.on('keypress', function(event) {
+                            if (event.which === 13) {  // 13 = Enter
+                                event.preventDefault();  // Zapobiegamy domyślnej akcji formularza
+                                change_title(input_field.val());
+                            }
+                        });
+                
+                        function change_title(new_title) {
+                            $.ajax({
+                                url: "{% url 'checklist:note' note.id %}",
+                                type: "POST",
+                                headers: {
+                                    'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() 
+                                },
+                                data: {
+                                    change_title_field: new_title
+                                },
+                                success: function(response) {
+
+                                    if (response.blank) {
+                                        $(input_field).addClass("is-invalid bg-danger");
+                                        $('#error-content').text(response.error);
+                                        $("#error-div").show();
+
+                                        setTimeout(function() {
+                                            $('#error-div').addClass('fade-out');  
+                                        }, 1000); 
+                                    
+                                        
+                                        setTimeout(function() {
+                                            $('#error-div').hide();  
+                                            $('#error-div').removeClass('fade-out');
+                                        }, 2000); 
+                                    }
+                                    else {
+                                        $(input_field).removeClass("is-invalid bg-danger");
+                                    }
+                                },
+                            });
+                        }
+                    });
+                </script>
             {% endif %}
-        </button>
+        </div>
     </div>
 
-    {% if is_owner %}
-    <div class="collapse" id="share" style="margin-top: 1rem;">
-        <form method="POST" style="margin: 0; padding: 0;">
-            {% csrf_token %}
-            <div style="background-color: #1c1c1c; border-radius: 10px; padding: 1rem;">
-                <div style="margin-bottom: 0.5rem;">
-                    <label class="h4">
-                        Zaproś znajomego
-                    </label>
+    <div style="margin-top: 1rem;">
+        <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Invited" aria-expanded="false" aria-controls="Invited">
+            {% if is_owner %}Zaproś znajomych ▾{% else %}Zaproszeni ▾{% endif %}
+        </button>
+        
+        <div class="collapse" id="Invited" style="margin-top: 0.5rem;">
+            <div class="card card-body bg-dark">
+
+                {% if added_to_note %}
+                <div class="mb-2">
+                    <label class="h3">{% if is_owner %}Usuń znajomego{% else %}Zaproszeni{% endif %}</label>
                 </div>
-    
-                <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                    {% for friend in friends %}
-                        <div class="border border-dark bg-success" style="border-radius: 5px; padding: 0.5rem; font-size: 0.875rem;">
-                            {% if friend.0 in invited_friends_to_note %}
-                            <input class="form-check-input" type="checkbox" name="selected_friends" value="{{ friend.0 }}" id="friend-{{ friend.0 }}" checked>
-                            {% else %}
-                            <input class="form-check-input" type="checkbox" name="selected_friends" value="{{ friend.0 }}" id="friend-{{ friend.0 }}">
+
+                    <div>
+                        {% if is_owner %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;">
+                                    {% for f in added_to_note %}
+                                        <input type="checkbox" name="del_friends" class="btn-check" id="{{ f.id }}" autocomplete="off" value="{{ f.id }}">
+                                        <label class="btn btn-sm btn-outline-danger" for="{{ f.id }}">
+                                            {{ f.username }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+
+                                {% if is_owner %}
+                                    <div class="justify-content-end mx-auto d-flex">
+                                        <button class="btn btn-sm btn-warning" type="submit">Usuń</button>
+                                    </div>
+                                {% endif %}
+                            </form>
+
+                        {% else %}
+                            {% for f in added_to_note %}
+                                <label class="btn btn-sm btn-success" for="{{ f.id }}">
+                                    {{ f.username }}
+                                </label>
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
+                {% else %}
+                    <label class="h3">Brak zaproszonych osób</label>
+                {% endif %}
+
+
+
+                {% if non_added_to_note and is_owner %}
+                    <hr>
+                    <div class="mb-2">
+                        <label class="h3">Dodaj znajomego</label>
+                    </div>
+
+                    <div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;">
+                                {% for f in non_added_to_note %}
+                                    <input type="checkbox" name="add_friends" class="btn-check" id="{{ f.id }}" autocomplete="off" value="{{ f.id }}" {% if not is_owner %}disabled{% endif %}>
+                                    <label class="btn btn-sm btn-outline-success" for="{{ f.id }}">
+                                        {{ f.username }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+
+                            {% if is_owner %}
+                                <div class="justify-content-end mx-auto d-flex">
+                                    <button class="btn btn-sm btn-primary" type="submit">Dodaj</button>
+                                </div>
                             {% endif %}
-                            <label class="form-check-label" for="friend-{{ friend.0 }}">
-                                {{ friend.1 }}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-    
-                <div style="margin-top: 1rem;" class="d-flex justify-content-end">
-                    <button class="btn btn-sm btn-primary" type="submit" name="share_note">Zaktualizuj listę znajomych</button>
+                        </form>
+                    </div>
+                {% else %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 1rem; padding: 1rem; border-radius: 10px;" class="bg-dark">
+        <form method="POST" id="new-note-form">
+            {% csrf_token %}
+            <div class="mb-2">
+                {{ new_element_form.type_of_element_field.help_text }}
+            </div>
+            
+            <div class="input-group mb-2 d-flex">
+                <div>
+                    {{ new_element_form.type_of_element_field }}
                 </div>
             </div>
 
+            <div class="form-floating text-dark mb-3">
+                {{ new_element_form.element_field }}
+                <label for="id_element_field">{{ new_element_form.element_field.help_text }}</label>
+            </div>
+
+            <div class="justify-content-end d-flex">
+                <button class="btn btn-sm btn-success" type="submit" name="add_element">Dodaj</button>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    $('#new-note-form').on('submit', function(e) {
+                        e.preventDefault(); 
+    
+                        $.ajax({
+                            url: "{% url 'checklist:note' note.id %}",
+                            type: "POST",
+                            data: {
+                                type_of_element_field: $('#id_type_of_element_field').val(),
+                                element_field: $('#id_element_field').val(),
+                                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            },
+                            success: function(response) {
+                                //console.log(response.success_notes);
+                                //console.log(response.html);
+                                if (response.success_notes) {
+                                    $('#text-notes-div').empty();
+                                    $('#text-notes-div').html(response.html);
+                                    $('#id_element_field').text("");
+                                }
+
+                                if (response.success_elements) {
+                                    $('#elements-div').empty();
+                                    $('#elements-div').html(response.html);
+                                    $('#id_element_field').html("");
+                                }
+                            },
+                        });
+                    });
+                });
+            </script>
         </form>
     </div>
-    {% else %}
-    <div class="collapse" id="share" style="margin-top: 1rem;">
-        <div style="background-color: #1c1c1c; border-radius: 10px; padding: 1rem;">
-            <div style="margin-bottom: 0.5rem;">
-                <label class="h4">
-                    Zaproszone osoby
-                </label>
-            </div>
 
-            <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                {% for friend in friends %}
-                    {% if friend.0 in invited_friends_to_note %}
-                    <div class="border border-dark bg-success" style="border-radius: 5px; padding: 0.5rem; font-size: 0.875rem;">
-                        <label class="form-check-label">
-                            {{ friend.1 }}
-                        </label>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="collapse" id="AddElement">
-        <div class="card card-body bg-dark text-light mx-auto justify-content-center" style="margin-top: 1rem; max-width: 600px;">
-            <form method="POST" style="margin: 0; padding: 0;">
-                {% csrf_token %}
-                <div>
-                    {{ element_form.add_element_field }}
-                </div>
-                <div class="d-flex justify-content-end" style="margin-top: 1rem;">
-                    <button class="btn btn-md btn-success" type="submit" name="add_element">
-                        Dodaj
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="collapse" id="AddSubgroup">
-        <div class="card card-body bg-dark text-light mx-auto justify-content-center" style="margin-top: 1rem; max-width: 600px;">
-            <form method="POST" style="margin: 0; padding: 0;">
-                {% csrf_token %}
-                <div>
-                    {{ subgroup_form.add_subgroup_field }}
-                </div>
-                <div class="d-flex justify-content-end" style="margin-top: 1rem;">
-                    <button class="btn btn-md btn-success" type="submit" name="add_subgroup">
-                        Dodaj
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="collapse" id="AddTextNote">
-        <div class="card card-body bg-dark text-light mx-auto justify-content-center" style="margin-top: 1rem; max-width: 600px;">
-            <form method="POST" style="margin: 0; padding: 0;">
-                {% csrf_token %}
-                <div>
-                    {{ text_note_form.add_text_note_field }}
-                </div>
-                <div class="d-flex justify-content-end" style="margin-top: 1rem;">
-                    <button class="btn btn-md btn-success" type="submit" name="add_text_note">
-                        Dodaj
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    {% if note.content.texts %}
-    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0rem; background-color: white; border-radius: 10px;">
-
-
-        {% for text in note.content.texts %}
-
-            {% if forloop.counter == 1 %}
-            <div class="h1 text-dark" style="margin: 0; padding: 0.25rem;">
-                Notatki tekstowe
-            </div>
-            {% endif %}
-
-            <div id="note_container-{{ forloop.counter0 }}" class="border border-dark" style="padding: 0.25rem; margin: 0.25rem; border-radius: 5px; background-color: #1c1c1c;">
-                <div id="note-{{ forloop.counter0 }}" class="text-content" style="color: white; padding: 0.25rem; cursor: pointer;">
-                    {{ text }}
-                </div>
-
-                <div id="note_edit-{{ forloop.counter0 }}" style="display: none;">
-                    <form method="POST" style="margin: 0; padding: 0;">
-                        {% csrf_token %}
-                        <label class="form-label">Edytuj notatkę</label>
-                        <textarea class="form-control" rows="4" style="resize: none;" name="edited_note">{{ text }}</textarea>
-
-                        <div style="display: flex; justify-content: start; gap: 1rem; flex-wrap: wrap;">
-                            <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_note_index" value="{{ forloop.counter0 }}">
-                                Edytuj
-                            </button>
     
-                            <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_edit_text_note-{{ forloop.counter0 }}">
-                                Anuluj
-                            </button>
-                        </div>
-                    </form>
+    <div class="bg-dark" style="margin-top: 1rem; margin-bottom: 1rem; border-radius: 10px; padding: 0.5rem;">
+        <label class="h1">Notatki tekstowe</label>
 
-                    
-                    {% if is_owner %}
-                    <div style="display: flex; justify-content: end; gap: 1rem; flex-wrap: wrap;">
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-sm btn-danger" style="margin-top: 1rem;" type="submit" name="del_text_note" value="{{ forloop.counter0 }}">
-                                    Usuń
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    {% endif %}
-
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if note.content.elements or note.content.groups %}
-    <div class="border" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0rem; background-color: white; border-radius: 10px;">
-
-
-
-        <div style="margin: 0; padding: 0.25rem; padding-bottom: 0;">
-            {% for element in note.content.elements %}
-                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px; display: flex; gap: 0.5rem; flex-grow: 1;">
-                    
-
-                    {% if element.1 %}
-
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <button class="btn btn-sm btn-success" type="submit" name="uncheck_element" value="{{ forloop.counter0 }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
-                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                                </svg>
-                            </button>
-                        </form>
-
-                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap">
-                            {{ element.0 }}
-                        </label>
-
-                        <div id="edit_element-{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
-                            <form method="POST" style="margin: 0; padding: 0;">
-                                {% csrf_token %}
-                                <textarea class="form-control" rows="1" style="resize: none;" name="edited_element">{{ element.0 }}</textarea>
-                                <div class="d-flex justify-content-start" style="gap: 1rem;">
-                                    <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_element_index" value="{{ forloop.counter0 }}">
-                                        Edytuj
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_element-{{ forloop.counter0 }}">
-                                        Anuluj
-                                    </button>
-                                </div>
-                            </form>
-
-                            {% if is_owner %}
-                            <div style="justify-content: end; display: flex; margin-top: 1rem;">
-                                <form method="POST" style="margin: 0; padding: 0;">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-danger" type="submit" name="del_element" value="{{ forloop.counter0 }}">
-                                        Usuń
-                                    </button>
-                                </form>
-                            </div>
-                            {% endif %}
-                        </div>
-                        
-                    {% else %}
-
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <button class="btn btn-sm btn-danger" type="submit" name="check_element" value="{{ forloop.counter0 }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
-                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                </svg>
-                            </button>
-                        </form>
-
-                        <label id="element-{{ forloop.counter0 }}" style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap">
-                            {{ element.0 }}
-                        </label>
-
-                        <div id="edit_element-{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
-                            <form method="POST" style="margin: 0; padding: 0;">
-                                {% csrf_token %}
-                                <textarea class="form-control" rows="1" style="resize: none;" name="edited_element">{{ element.0 }}</textarea>
-                                <div class="d-flex justify-content-start" style="gap: 1rem;">
-                                    <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_element_index" value="{{ forloop.counter0 }}">
-                                        Edytuj
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_element-{{ forloop.counter0 }}">
-                                        Anuluj
-                                    </button>
-                                </div>
-                            </form>
-
-                            {% if is_owner %}
-                            <div style="justify-content: end; display: flex; margin-top: 1rem;">
-                                <form method="POST" style="margin: 0; padding: 0;">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-danger" type="submit" name="del_element" value="{{ forloop.counter0 }}">
-                                        Usuń
-                                    </button>
-                                </form>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                    {% endif %}
-
-                </div>
-            {% endfor %}
-    
-
-
-            {% for group in note.content.groups %}
-
-                <div style="background-color: #1c1c1c; margin-bottom: 0.25rem; padding: 0.25rem; border-radius: 5px;">
-                    <label class="h4 text-break word-wrap" style="margin: 0; margin-bottom: 0.5rem; padding: 0; cursor: pointer; width: 100%;" id="subgroup-{{ forloop.counter0 }}">
-                        {{ group.0 }}
-                    </label>
-                    
-                    <div id="edit_subgroup-{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <textarea class="form-control" rows="1" style="resize: none;" name="edited_subgroup">{{ group.0 }}</textarea>
-                            <div class="d-flex justify-content-start" style="gap: 1rem;">
-                                <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_subgroup_index" value="{{ forloop.counter0 }}">
-                                    Edytuj
-                                </button>
-                                <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_subgroup-{{ forloop.counter0 }}">
-                                    Anuluj
-                                </button>
-                            </div>
-                        </form>
-
-                        {% if is_owner %}
-                        <div style="justify-content: end; display: flex; margin-top: 1rem;">
-                            <form method="POST" style="margin: 0; padding: 0;">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-danger" type="submit" name="del_subgroup" value="{{ forloop.counter0 }}">
-                                    Usuń
-                                </button>
-                            </form>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    {% for element in group.1 %}
-                        <div style="margin-top: 0.5rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem;">
-                            {% if element.1 %}
-                                <form method="POST" style="margin: 0; padding: 0;">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-success" type="submit" name="uncheck_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
-                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                            <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                                        </svg>
-                                    </button>
-                                </form>
-
-                                <label style="flex-grow: 1; cursor: pointer;" class="text-decoration-line-through text-break word-wrap" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
-                                    {{ element.0 }}
-                                </label>
-
-                                <div id="edit_subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
-                                    <form method="POST" style="margin: 0; padding: 0;">
-                                        {% csrf_token %}
-                                        <textarea class="form-control" rows="1" style="resize: none;" name="edited_subgroup">{{ element.0 }}</textarea>
-                                        <div class="d-flex justify-content-start" style="gap: 1rem;">
-                                            <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_subgroup_element_index" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">
-                                                Edytuj
-                                            </button>
-                                            <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
-                                                Anuluj
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                    {% if is_owner %}
-                                    <div style="justify-content: end; display: flex; margin-top: 1rem;">
-                                        <form method="POST" style="margin: 0; padding: 0;">
-                                            {% csrf_token %}
-                                            <button class="btn btn-sm btn-danger" type="submit" name="del_subgroup_element" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">
-                                                Usuń
-                                            </button>
-                                        </form>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            {% else %}
-                                <form method="POST" style="margin: 0; padding: 0;">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-danger" type="submit" name="check_subgroup_element" value="{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
-                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                        </svg>
-                                    </button>
-                                </form>
-
-                                <label style="flex-grow: 1; cursor: pointer;" class="text-break word-wrap" id="subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
-                                    {{ element.0 }}
-                                </label>
-
-                                <div id="edit_subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}" style="display: none; flex-grow: 1;">
-                                    <form method="POST" style="margin: 0; padding: 0;">
-                                        {% csrf_token %}
-                                        <textarea class="form-control" rows="1" style="resize: none;" name="edited_subgroup">{{ element.0 }}</textarea>
-                                        <div class="d-flex justify-content-start" style="gap: 1rem;">
-                                            <button class="btn btn-sm btn-success" style="margin-top: 1rem;" type="submit" name="edited_subgroup_element_index" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">
-                                                Edytuj
-                                            </button>
-                                            <button class="btn btn-sm btn-primary" style="margin-top: 1rem;" type="button" id="cancel_subgroup_element-{{ forloop.parentloop.counter0 }}{{ forloop.counter0 }}">
-                                                Anuluj
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                    {% if is_owner %}
-                                    <div style="justify-content: end; display: flex; margin-top: 1rem;">
-                                        <form method="POST" style="margin: 0; padding: 0;">
-                                            {% csrf_token %}
-                                            <button class="btn btn-sm btn-danger" type="submit" name="del_subgroup_element" value="{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">
-                                                Usuń
-                                            </button>
-                                        </form>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                
-                    <form method="POST" style="margin: 0; padding: 0; margin-top: 1rem; display: flex; gap: 0.5rem;">
-                        {% csrf_token %}
-                        <div style="flex-grow: 1;">
-                            <textarea class="form-control" rows="1" style="resize: none;" name="add_subgroup_element" placeholder="Dodaj element"></textarea>
-                        </div>
-                        <div class="d-flex justify-content-end" style="gap: 1rem;">
-                            <button class="btn btn-sm btn-success" type="submit" name="add_subgroup_element_index" value="{{ forloop.counter0 }}">
-                                Dodaj
-                            </button>
-                        </div>
-                    </form>
-
-                    <div style="padding: 0; margin-top: 1rem; margin-bottom: 0.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <button class="btn btn-sm btn-success" name="check_all" type="submit" value="{{ forloop.counter0 }}">
-                                Zaznacz wszystko
-                            </button>
-                        </form>
-                        
-                        <form method="POST" style="margin: 0; padding: 0;">
-                            {% csrf_token %}
-                            <button class="btn btn-sm btn-danger" name="uncheck_all" type="submit" value="{{ forloop.counter0 }}">
-                                Odznacz wszystko
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-
-            {% endfor %}
+        <div id="text-notes-div">
+            {{ text_notes|safe }}
         </div>
 
-    </div>
-    {% endif %}
+        <hr>
+        <label class="h1">Checklista</label>
 
+        <div id="elements-div">
+            {{ elements|safe }}
+        </div>
+
+
+    </div>
 
 
     {% if is_owner %}
@@ -480,124 +281,19 @@
     </div>
     
     <div class="collapse" id="DeleteNote">
-        <div class="card card-body bg-dark text-light" style="margin-top: 1rem;">
-            <label>Chcesz usunąć tę notatkę?</label>
-
-            <form method="POST" class="d-flex justify-content-end" style="margin: 0; margin-top: 1rem;">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-danger" type="submit" name="delete">
-                    Usuń
-                </button>
-            </form>
+        <div class="justify-content-end mx-auto d-flex">
+            <div style="margin-top: 1rem; padding: 1rem; background-color: #1c1c1c;border-radius: 10px;">
+                <label>Chcesz usunąć tę notatkę?</label>
+    
+                <form method="POST" class="d-flex justify-content-end" style="margin: 0; margin-top: 1rem;">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger" type="submit" name="delete">
+                        Usuń
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     {% endif %}
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var notes = document.querySelectorAll('[id^=note-]');
-        
-        notes.forEach(function(note) {
-            var noteId = note.id;
-            var noteIndex = noteId.split('-')[1];
-
-            var noteEdit = document.getElementById('note_edit-' + noteIndex);
-            var cancelBtn = document.getElementById('cancel_edit_text_note-' + noteIndex);
-            
-            note.addEventListener('click', function() {
-                note.style.display = 'none';
-                noteEdit.style.display = 'block';
-            });
-        
-            cancelBtn.addEventListener('click', function() {
-                note.style.display = 'block';
-                noteEdit.style.display = 'none';
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var elements = document.querySelectorAll('[id^=element-]');
-        
-        elements.forEach(function(element) {
-            var elementId = element.id;
-            var elementIndex = elementId.split('-')[1];
-            var editElement = document.getElementById('edit_element-' + elementIndex);
-            var cancelBtn = document.getElementById('cancel_element-' + elementIndex);
-            
-            element.addEventListener('click', function() {
-                element.style.display = 'none';
-                editElement.style.display = 'block';
-            });
-            
-            cancelBtn.addEventListener('click', function() {
-                element.style.display = 'block';
-                editElement.style.display = 'none';
-            });
-        });
-    }); 
-    
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        var subgroups = document.querySelectorAll('[id^=subgroup-]');
-    
-        subgroups.forEach(function(subgroup) {
-            var subgroupId = subgroup.id;
-            var subgroupIndex = subgroupId.split('-')[1];
-            var editSubgroup = document.getElementById('edit_subgroup-' + subgroupIndex);
-            var cancelEditSubgroup = document.getElementById('cancel_subgroup-' + subgroupIndex);
-    
-            subgroup.addEventListener('click', function() {
-                subgroup.style.display = 'none';
-                editSubgroup.style.display = 'block';
-            });
-    
-            cancelEditSubgroup.addEventListener('click', function() {
-                subgroup.style.display = 'block';
-                editSubgroup.style.display = 'none';
-            });
-        });
-    });
-    
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var subgroup_elements = document.querySelectorAll('[id^=subgroup_element-]');
-    
-        subgroup_elements.forEach(function(subgroup_element) {
-            var subgroup_elementId = subgroup_element.id;
-            var subgroup_elementIndex = subgroup_elementId.split('-')[1];
-            var editSubgroupElement = document.getElementById('edit_subgroup_element-' + subgroup_elementIndex);
-            var cancelEditSubgroupElement = document.getElementById('cancel_subgroup_element-' + subgroup_elementIndex);
-    
-            subgroup_element.addEventListener('click', function() {
-                subgroup_element.style.display = 'none';
-                editSubgroupElement.style.display = 'block';
-            });
-    
-            cancelEditSubgroupElement.addEventListener('click', function() {
-                subgroup_element.style.display = 'block';
-                editSubgroupElement.style.display = 'none';
-            });
-        });
-    });
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        var noteTitle = document.getElementById('note_title');
-        var editNoteTitle = document.getElementById('edit_note_title');
-        var cancelEditNoteTitle = document.getElementById('cancel_edit_note_title');
-
-        noteTitle.addEventListener('click', function() {
-            noteTitle.style.display = 'none';
-            editNoteTitle.style.display = 'block';
-        });
-
-        cancelEditNoteTitle.addEventListener('click', function() {
-            noteTitle.style.display = 'block';
-            editNoteTitle.style.display = 'none';
-        });
-    });
-    
-</script>
-
 {% endblock content %}

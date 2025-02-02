@@ -1,45 +1,68 @@
 {% extends "my_apps/homepage_base.html" %}
 
+            
+{% comment %} 
+<div class="form-floating text-dark mb-3">
+    {{  }}
+    <label for="id_search_field">{{ ..help_text }}</label>
+</div> 
+
+<script>
+    $(document).ready(function() {
+        $('#').submit(function(e) {
+            e.preventDefault();
+            
+            const co2 = $('#').val();
+            
+            $.ajax({
+                url: '{% url "checklist:checklist" %}',
+                type: 'POST',
+                data: JSON.stringify(
+                    {
+
+                    }
+                ),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+
+                success: function(data) {
+                    if (data.success) {
+                    } 
+                },
+            });
+        });
+    });
+</script>
+{% endcomment %}
+
 {% block content %}
 <div class="col-11 mx-auto justify-content-center" style="min-height: 100vh;">
-    
-    <div class="col-11">
-        <button class="btn btn-md btn-success" style="margin-bottom: 2rem;" data-bs-toggle="modal" data-bs-target="#exampleModal">Nowa notatka</button>
-
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-dark">
-
-                    <form method="POST" style="margin: 0;">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj notatkę</h1>
-                            <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-    
-                        <div class="modal-body">
-                            {{ title_form.title }}
-                        </div>
-    
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-md btn-primary">+ Dodaj notatkę</button>
-                        </div>
-                    </form>
-
-                </div>
+        
+    <div style="border-radius: 10px; padding: 10px; border: solid 2px; max-width: 500px;" class="justify-content-center mx-auto mb-4">
+        <form id="new-note-form" method="POST">
+            <div class="form-floating text-dark mb-3">
+                {% csrf_token %}
+                {{ new_note_form.new_note_field }}
+                <label for="id_new_note_field">{{ new_note_form.new_note_field.help_text }}</label>
             </div>
-        </div>
-
+            <div class="justify-content-end d-flex">
+                <button type="submit" class="btn btn-md btn-primary">Dodaj</button>
+            </div>
+        </form>
     </div>
-
-    <div>
-        {% if not all_notes %}
-            <div class="text-center row align-items-center" style="height: 80%;">
-                <label class="display-1 m-0 p-0">Brak notatek</label>
-            </div>
-        {% else %}
-            {% for note in all_notes %}
-            <div class="justify-content-center mx-auto" style="padding: 1rem;">
+    
+    {% if all_notes %}
+    <div class="text-center mb-4">
+        <label class="h1">
+            Twoje notatki
+        </label>
+    </div>
+    {% endif %}
+    <div id="all-notes" style="gap: 1rem;" class="justify-content-center mx-auto d-flex flex-wrap">
+        {% for note in all_notes %}
+            <div class="{{ note_class }}" style="{{ note_style }}">
                 <a href="{% url 'checklist:note' note.id %}" style="text-decoration: none;">
                     <button class="btn btn-{{ note.color }}" style="width: 100%;" >
                         <div>
@@ -50,14 +73,15 @@
 
                         <div>
                             <label>
-                                <strong>Stworzył:</strong> {{ note.owner }}<br><strong>Edytowano:</strong> {{ note.edited }}
+                                <strong>Stworzył:</strong> {{ note.owner }}<br><strong>Stworzono:</strong> {{ note.created }}
                             </label>
                         </div>
                     </button>
                 </a>
             </div>
-            {% endfor %}
-        {% endif %}
+        {% empty %}
+            <label class="h1">Brak utworzonych notatek</label>
+        {% endfor %}
     </div>
 
 </div>

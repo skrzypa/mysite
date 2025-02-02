@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Note(models.Model):
@@ -7,7 +8,7 @@ class Note(models.Model):
     owner = models.ForeignKey(to= User, on_delete= models.CASCADE)
     title = models.TextField(blank= False, max_length= 50)
     content = models.JSONField(default= dict)
-    edited = models.DateTimeField(auto_now= True)
+    created = models.DateTimeField(default= timezone.now)
 
 
     class Meta:

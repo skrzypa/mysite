@@ -90,6 +90,6 @@ def beer_calc(request: WSGIRequest):
 
             'search_form': SearchForm(),
 
-            'site_name': 'Pskrzynski | BeerCalc'
+            'site_name': 'PS | BeerCalc'
         }
     )

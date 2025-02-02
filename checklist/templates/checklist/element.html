@@ -1,0 +1,162 @@
+<div id="element-{{ index }}">
+    <div class="d-flex gap-1">
+
+        
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" id="check_uncheck_{{ index }}" value="{{ index }}" 
+                class="btn btn-{% if checked %}success{% else %}danger{% endif %}" 
+                style="margin-top: 1rem; border: 2px solid white; width: 40px; height: 40px;">
+                    <label>
+                        {% if checked %}
+                            X
+                        {% else %}
+                            ✓
+                        {% endif %}
+                    </label>
+                </button>
+            </form>
+        
+        {{ form.change_element_field }}
+
+        {% if is_owner %}
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" id="delete_element_{{ index }}" value="{{ index }}" class="btn btn-dark" style="margin-top: 1rem; border: 2px solid white; width: 40px; height: 40px;">
+                    <label>X</label>
+                </button>
+            </form>
+        {% endif %}
+
+            <script>
+                {% if is_owner %}
+                $(document).ready(function() {
+
+                    var delete_button = $('#delete_element_{{ index }}');
+                    delete_button.on('click', function(e) {
+                            e.preventDefault();
+                            var note_index = delete_button.val();
+
+                            $.ajax(
+                                {
+                                    url: "{% url 'checklist:note' note_id %}",
+                                    type: "POST",
+                                    data: {
+                                        delete_element: element_idx,
+                                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                                    },
+                                    success: function(response) {
+                                        if (response.success) {
+                                            $("elements-div").empty();
+                                            $("elements-div").html(response.html);
+                                        }
+                                    }
+                                }
+                            );
+                        }
+                    );
+
+                    $(document).on('blur', '#change_element-{{ index }}', function() {
+                        save_element($(this).val(), "{{ index }}");
+                    });
+
+                    $(document).on('keypress', '#change_element-{{ index }}', function(event) {
+                        if (event.which === 13 && !event.shiftKey) {  // 13 = Enter
+                            event.preventDefault();
+                            save_element($(this).val(), "{{ index }}");
+                        }
+                    });
+
+                    function save_element(new_text, text_id) {
+                        $.ajax({
+                            url: "{% url 'checklist:note' note_id %}",
+                            type: "POST",
+                            data: {
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                                change_element_field: new_text,
+                                text_id: text_id,
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    
+                                }
+                                if (response.blank) {
+                                    $(input_field).addClass("is-invalid bg-danger");
+                                    $('#error-content').text(response.error);
+                                    $("#error-div").show();
+
+                                    setTimeout(function() {
+                                        $('#error-div').addClass('fade-out');  
+                                    }, 1000); 
+                                
+                                    
+                                    setTimeout(function() {
+                                        $('#error-div').hide();  
+                                        $('#error-div').removeClass('fade-out');
+                                    }, 2000); 
+                                }
+                                else {
+                                    $(input_field).removeClass("is-invalid bg-danger");
+                                }
+                            },
+                        });
+                    }
+
+                    // usuwanie elementu
+                    var delete_button = $('#delete_element_{{ index }}');
+                    delete_button.on('click', function(e) {
+                        e.preventDefault();  
+                        
+                        var element_index = delete_button.val(); 
+
+                        $.ajax({
+                            url: "{% url 'checklist:note' note_id %}",
+                            type: "POST",
+                            data: {
+                                delete_element: element_index,
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    $('#elements-div').empty();
+                                    $('#elements-div').html(response.html);
+                                }
+                            },
+                        });
+                    });
+                {% endif %}
+
+                    var input_field = $("#change_element-{{ index }}")
+                    input_field.removeAttr('readonly');
+                    {% if checked %}
+                    input_field.addClass("text-decoration-line-through");
+                    input_field.removeClass("text-decoration-none");
+                    {% else %}
+                    input_field.addClass("text-decoration-none");
+                    input_field.removeClass("text-decoration-line-through");
+                    {% endif %}
+        
+                    // check i uncheck
+                    var check_uncheck_button = $("#check_uncheck_{{ index }}");
+                    check_uncheck_button.on('click', function(e){
+                        e.preventDefault();
+                        $.ajax({
+                            url: "{% url 'checklist:note' note_id %}",
+                            type: "POST",
+                            data: {
+                                check_uncheck_element_note: "{{ index }}",
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    $('#elements-div').empty();
+                                    $('#elements-div').html(response.html);
+                                }
+                            },
+                        });
+                    });
+                });
+            </script>
+
+    </div>
+</div>
