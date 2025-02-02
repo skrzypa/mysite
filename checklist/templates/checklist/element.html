@@ -29,8 +29,8 @@
         {% endif %}
 
             <script>
-                {% if is_owner %}
                 $(document).ready(function() {
+                    {% if is_owner %}
 
                     var delete_button = $('#delete_element_{{ index }}');
                     delete_button.on('click', function(e) {
@@ -124,7 +124,7 @@
                             },
                         });
                     });
-                {% endif %}
+                    {% endif %}
 
                     var input_field = $("#change_element-{{ index }}")
                     input_field.removeAttr('readonly');
