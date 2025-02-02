@@ -31,38 +31,15 @@
             <script>
                 $(document).ready(function() {
                     {% if is_owner %}
-
-                    var delete_button = $('#delete_element_{{ index }}');
-                    delete_button.on('click', function(e) {
-                            e.preventDefault();
-                            var element_idx = delete_button.val();
-
-                            $.ajax(
-                                {
-                                    url: "{% url 'checklist:note' note_id %}",
-                                    type: "POST",
-                                    data: {
-                                        delete_element: element_idx,
-                                        csrfmiddlewaretoken: "{{ csrf_token }}",
-                                    },
-                                    success: function(response) {
-                                        if (response.success) {
-                                            $("elements-div").empty();
-                                            $("elements-div").html(response.html);
-                                        }
-                                    }
-                                }
-                            );
-                        }
-                    );
-
-                    $(document).on('blur', '#change_element-{{ index }}', function() {
+                    $(document).on('blur', '#change_element-{{ index }}', function(e) {
+                        e.stopPropagation();
                         save_element($(this).val(), "{{ index }}");
                     });
 
-                    $(document).on('keypress', '#change_element-{{ index }}', function(event) {
+                    $(document).on('keypress', '#change_element-{{ index }}', function(e) {
                         if (event.which === 13 && !event.shiftKey) {  // 13 = Enter
-                            event.preventDefault();
+                            e.preventDefault();
+                            e.stopPropagation();
                             save_element($(this).val(), "{{ index }}");
                         }
                     });
@@ -106,6 +83,7 @@
                     var delete_button = $('#delete_element_{{ index }}');
                     delete_button.on('click', function(e) {
                         e.preventDefault();  
+                        e.stopPropagation();
                         
                         var element_index = delete_button.val(); 
 
