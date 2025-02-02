@@ -284,7 +284,6 @@ def note(request: WSGIRequest, id: int):
 
         if ('delete_text_note' in request.POST) and (NC.current_user == current_note.owner):
             NC.del_text_note(current_note, request.POST['delete_text_note'])
-            print(request.POST['delete_text_note'])
             return JsonResponse({'success': True, 'html': NC.create_list_of_text_notes(current_note, request)})
         
 
@@ -314,7 +313,6 @@ def note(request: WSGIRequest, id: int):
 
         if ('change_element_field' in request.POST) and ('text_id' in request.POST) and (NC.current_user == current_note.owner):
             change_element_form = ChangeElementForm(request.POST)
-            print(request.POST['change_element_field'])
             idx, new_content = request.POST['text_id'], request.POST['change_element_field']
             if change_element_form.is_valid():
                 JsonResponse(data= NC.change_element_content(current_note, idx, new_content, request))
@@ -324,7 +322,6 @@ def note(request: WSGIRequest, id: int):
 
         if ('delete_element' in request.POST) and (NC.current_user == current_note.owner):
             NC.delete_element(current_note, request.POST['delete_element'])
-            print(request.POST['delete_element'])
             return JsonResponse(data= {'success': True, 'html': NC.create_list_of_elements(current_note, request)})
 
 
