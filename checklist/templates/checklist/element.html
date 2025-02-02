@@ -35,7 +35,7 @@
                     var delete_button = $('#delete_element_{{ index }}');
                     delete_button.on('click', function(e) {
                             e.preventDefault();
-                            var note_index = delete_button.val();
+                            var element_idx = delete_button.val();
 
                             $.ajax(
                                 {

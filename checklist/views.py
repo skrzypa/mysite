@@ -269,6 +269,9 @@ def note(request: WSGIRequest, id: int):
     
 
     if request.method == "POST":
+        if ('delete' in request.POST) and (NC.current_user == current_note.owner):
+            Note.objects.get(id= request.POST['delete']).delete()
+            return redirect(to= reverse(viewname= "checklist:checklist"))
 
         if ('change_title_field' in request.POST) and (NC.current_user == current_note.owner):
             change_title_form = ChangeTitleForm(request.POST)
