@@ -105,8 +105,10 @@
 
                     var input_field = $("#change_element-{{ index }}")
                     input_field.removeAttr('readonly');
-                    
+
                     {% endif %}
+
+                    var input_field = $("#change_element-{{ index }}")
 
                     {% if checked %}
                     input_field.addClass("text-decoration-line-through");
