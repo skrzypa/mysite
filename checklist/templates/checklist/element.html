@@ -30,7 +30,6 @@
 
             <script>
                 $(document).ready(function() {
-                    {% if is_owner %}
                     $(document).on('blur', '#change_element-{{ index }}', function(e) {
                         e.stopPropagation();
                         save_element($(this).val(), "{{ index }}");
@@ -79,6 +78,7 @@
                         });
                     }
 
+                    {% if is_owner %}
                     // usuwanie elementu
                     var delete_button = $('#delete_element_{{ index }}');
                     delete_button.on('click', function(e) {
@@ -103,12 +103,10 @@
                         });
                     });
 
-                    var input_field = $("#change_element-{{ index }}")
-                    input_field.removeAttr('readonly');
-
                     {% endif %}
 
                     var input_field = $("#change_element-{{ index }}")
+                    input_field.removeAttr('readonly');
 
                     {% if checked %}
                     input_field.addClass("text-decoration-line-through");

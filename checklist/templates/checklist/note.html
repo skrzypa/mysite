@@ -123,47 +123,59 @@
         <div class="collapse" id="Invited" style="margin-top: 0.5rem;">
             <div class="card card-body bg-dark">
 
-                {% if added_to_note %}
-                <div class="mb-2">
-                    <label class="h3">{% if is_owner %}Usuń znajomego{% else %}Zaproszeni{% endif %}</label>
-                </div>
+                    <div class="mb-2">
+                        <label class="h3">{% if is_owner %}Usuń znajomego{% else %}Zaproszeni{% endif %}</label>
+                    </div>
 
                     <div>
                         {% if is_owner %}
-                            <form method="POST">
+                            <form method="POST" id="delete_from_note">
                                 {% csrf_token %}
-                                <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;">
-                                    {% for f in added_to_note %}
-                                        <input type="checkbox" name="del_friends" class="btn-check" id="{{ f.id }}" autocomplete="off" value="{{ f.id }}">
-                                        <label class="btn btn-sm btn-outline-danger" for="{{ f.id }}">
-                                            {{ f.username }}
-                                        </label>
-                                    {% endfor %}
+                                <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;" id="friends_added_to_note">
+                                    {{ friends.added|safe }}
                                 </div>
-
-                                {% if is_owner %}
-                                    <div class="justify-content-end mx-auto d-flex">
-                                        <button class="btn btn-sm btn-warning" type="submit">Usuń</button>
-                                    </div>
-                                {% endif %}
                             </form>
+                            <script>
+                                $(document).on('click', '.del', function () {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+                                    let del_friend = $(this).val();
+
+                                    $.ajax({
+                                        url: "{% url 'checklist:note' note.id %}",
+                                        type: "POST",
+                                        data: {
+                                            del_friend: del_friend,
+                                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                                        },
+                                        success: function (response) {
+                                            if (response.success) {
+                                                $("#friends_added_to_note").empty();
+                                                $("#friends_not_added_to_note").empty();
+                                                $("#friends_added_to_note").html(response.added_friends);
+                                                $("#friends_not_added_to_note").html(response.not_added_friends);
+                                            }
+                                        },
+                                    });
+                                });
+                            </script>
+
 
                         {% else %}
-                            {% for f in added_to_note %}
-                                <label class="btn btn-sm btn-success" for="{{ f.id }}">
-                                    {{ f.username }}
-                                </label>
-                            {% endfor %}
+                            <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;" id="friends_added_to_note">
+                                {{ friends.added|safe }}
+                            </div>
                         {% endif %}
 
                     </div>
-                {% else %}
-                    <label class="h3">Brak zaproszonych osób</label>
-                {% endif %}
+                    {% comment %} <div id="empty_added">
+                        <label class="h3">Brak zaproszonych osób</label>
+                    </div> {% endcomment %}
 
 
 
-                {% if non_added_to_note and is_owner %}
+                {% if is_owner %}
                     <hr>
                     <div class="mb-2">
                         <label class="h3">Dodaj znajomego</label>
@@ -172,23 +184,36 @@
                     <div>
                         <form method="POST">
                             {% csrf_token %}
-                            <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;">
-                                {% for f in non_added_to_note %}
-                                    <input type="checkbox" name="add_friends" class="btn-check" id="{{ f.id }}" autocomplete="off" value="{{ f.id }}" {% if not is_owner %}disabled{% endif %}>
-                                    <label class="btn btn-sm btn-outline-success" for="{{ f.id }}">
-                                        {{ f.username }}
-                                    </label>
-                                {% endfor %}
+                            <div class="mb-2 d-flex flex-wrap flex-row form-check" style="gap: 0.5rem; padding: 0;" id="friends_not_added_to_note">
+                                {{ friends.not_added|safe }}
                             </div>
-
-                            {% if is_owner %}
-                                <div class="justify-content-end mx-auto d-flex">
-                                    <button class="btn btn-sm btn-primary" type="submit">Dodaj</button>
-                                </div>
-                            {% endif %}
                         </form>
+                        <script>
+                            $(document).on('click', '.add',function () {
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                let add_friend = $(this).val();
+
+                                $.ajax({
+                                    url: "{% url 'checklist:note' note.id %}",
+                                    type: "POST",
+                                    data: {
+                                        add_friend: add_friend,
+                                        csrfmiddlewaretoken: "{{ csrf_token }}",
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            $("#friends_added_to_note").empty();
+                                            $("#friends_not_added_to_note").empty();
+                                            $("#friends_added_to_note").html(response.added_friends);
+                                            $("#friends_not_added_to_note").html(response.not_added_friends);
+                                        }
+                                    },
+                                });
+                            });
+                        </script>
                     </div>
-                {% else %}
                 {% endif %}
 
             </div>

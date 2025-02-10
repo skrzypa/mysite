@@ -12,9 +12,6 @@ from .models import Note, InvitedToNote
 from .forms import NewNoteForm, ChangeTitleForm, NewElementForm, ChangeTextForm, ChangeElementForm, ChangeGroupForm #TitleForm, ElementForm, SubgroupForm, SubgroupElementForm, TextNoteForm
 from my_apps.models import Friendship
 
-import json
-import copy
-
 
 class NoteClass:
     def __init__(self, current_user: WSGIRequest):
@@ -26,6 +23,7 @@ class NoteClass:
         self.content = {"texts": [], "elements": [], "groups": []}
         self.note_style = "width: 500px; "
         self.note_class = "text-break word-wrap"
+        self.friends = [f.to_friend for f in Friendship.objects.filter(from_friend = current_user)]
     
 
     def add_note(self, title) -> Note:
@@ -48,22 +46,40 @@ class NoteClass:
         note.delete()
         # print(note.id is None) # True
 
-    
-    def add_friends(self, added_friends: list[str], note: Note) -> None:
-        if self.current_user == note.owner:
-            added_friends = [User.objects.get(id = f) for f in added_friends]
-            for f in added_friends:
-                InvitedToNote(
-                    note = note,
-                    invited_friend = f,
-                ).save()
+
+    def added_and_not_added_to_note(self, note: Note) -> dict:
+        added = [f.invited_friend for f in InvitedToNote.objects.filter(note = note)]
+        not_added = [f for f in self.friends if f not in added]
+        return {
+            'added': added,
+            'not_added': not_added,
+        }
     
 
-    def del_friends(self, friends_to_del: list[str], note: Note) -> None:
+    # def add_friends(self, added_friends: list[str], note: Note) -> None:
+    #     if self.current_user == note.owner:
+    #         added_friends = [User.objects.get(id = f) for f in added_friends]
+    #         for f in added_friends:
+    #             InvitedToNote(
+    #                 note = note,
+    #                 invited_friend = f,
+    #             ).save()
+
+    def add_friend(self, id: str, note: Note) -> None:
         if self.current_user == note.owner:
-            friends_to_del = [User.objects.get(id = f) for f in friends_to_del]
-            for f in friends_to_del:
-                InvitedToNote.objects.get(note = note, invited_friend = f).delete()
+            InvitedToNote(note= note, invited_friend= User.objects.get(id= id)).save()
+    
+
+    # def del_friends(self, friends_to_del: list[str], note: Note) -> None:
+    #     if self.current_user == note.owner:
+    #         friends_to_del = [User.objects.get(id = f) for f in friends_to_del]
+    #         for f in friends_to_del:
+    #             InvitedToNote.objects.get(note = note, invited_friend = f).delete()
+    
+
+    def delete_friend(self, id: str, note: Note) -> None:
+        if self.current_user == note.owner:
+            InvitedToNote.objects.get(note= note, invited_friend= User.objects.get(id= id)).delete()
     
 
     def add_element(self, note: Note, form: NewElementForm, request: WSGIRequest) -> dict:
@@ -108,6 +124,27 @@ class NoteClass:
         element = note.content['elements'][int(element_idx)]
         element[1] = bool(element[1] ^ 1)
         note.save()
+
+
+    def create_list_of_friends(self, request: WSGIRequest, note: Note) -> dict:
+        added_not_added = self.added_and_not_added_to_note(note)
+        return {
+            'added': "".join([
+                render(
+                    request, 
+                    'checklist/friend_button.html', 
+                    {'friend': user, 'del_add': 'del_friend', 'color': 'danger', 'class': 'del'}
+                ).content.decode("utf-8") for user in added_not_added['added']
+            ]),
+
+            'not_added': "".join([
+                render(
+                    request, 
+                    'checklist/friend_button.html', 
+                    {'friend': user, 'del_add': 'add_friend', 'color': 'success', 'class': 'add'}
+                ).content.decode("utf-8") for user in added_not_added['not_added']
+            ]),
+        }
     
 
     def create_list_of_text_notes(self, note: Note, request: WSGIRequest) -> str:
@@ -257,14 +294,14 @@ def note(request: WSGIRequest, id: int):
     try:
         current_note: Note = Note.objects.get(id= id)
         NC: NoteClass = NoteClass(current_user= request.user)
-        friends: QuerySet[User] = [f.to_friend for f in Friendship.objects.filter(from_friend = NC.current_user)]
-        added_to_note: QuerySet[User] = [f.invited_friend for f in InvitedToNote.objects.filter(note = current_note)]
-        non_added_to_note: QuerySet[User] = [f for f in friends if f not in added_to_note]
+
+        added_not_added = NC.added_and_not_added_to_note(current_note)
+        friends = NC.create_list_of_friends(request, current_note)
     except ObjectDoesNotExist:
         raise Http404
     
 
-    if request.user != current_note.owner and request.user not in added_to_note:
+    if request.user != current_note.owner and request.user not in added_not_added['added']:
         raise Http404
     
 
@@ -287,15 +324,22 @@ def note(request: WSGIRequest, id: int):
             return JsonResponse({'success': True, 'html': NC.create_list_of_text_notes(current_note, request)})
         
 
-        if ("add_friends" in request.POST) and (NC.current_user == current_note.owner):
-            NC.add_friends(request.POST.getlist(key= "add_friends"), current_note)
+        if ("add_friend" in request.POST or "del_friend" in request.POST) and (NC.current_user == current_note.owner):
+            if "add_friend" in request.POST:
+                NC.add_friend(request.POST['add_friend'], current_note)
+            elif "del_friend" in request.POST:
+                NC.delete_friend(request.POST['del_friend'], current_note)
 
-        
-        if ("del_friends" in request.POST) and (NC.current_user == current_note.owner):
-            NC.del_friends(request.POST.getlist(key= "del_friends"), current_note)
-        
+            friends_lists = NC.create_list_of_friends(request, current_note)
+            return JsonResponse(data= {
+                'success': True, 
+                'added_friends': friends_lists['added'],
+                'not_added_friends': friends_lists['not_added'],
+                }
+            )
 
-        if ('change_text_field' in request.POST) and (NC.current_user == current_note.owner):
+
+        if ('change_text_field' in request.POST) and (NC.current_user == current_note.owner or NC.current_user in added_not_added['added']):
             change_text_form = ChangeTextForm(request.POST)
             idx, new_content = change_text_form.data['text_id'], change_text_form.data['change_text_field']
             
@@ -311,7 +355,7 @@ def note(request: WSGIRequest, id: int):
                 return JsonResponse(data= NC.add_element(current_note, element_form, request))
 
 
-        if ('change_element_field' in request.POST) and ('text_id' in request.POST) and (NC.current_user == current_note.owner):
+        if ('change_element_field' in request.POST) and ('text_id' in request.POST) and (NC.current_user == current_note.owner or NC.current_user in added_not_added['added']):
             change_element_form = ChangeElementForm(request.POST)
             idx, new_content = request.POST['text_id'], request.POST['change_element_field']
             if change_element_form.is_valid():
@@ -344,8 +388,9 @@ def note(request: WSGIRequest, id: int):
             'note': current_note,
             'is_owner': current_note.owner == NC.current_user,
 
-            'added_to_note': added_to_note,
-            'non_added_to_note': non_added_to_note,
+            # 'added_to_note': added_to_note,
+            # 'non_added_to_note': non_added_to_note,
+            'friends': friends,
 
             'text_notes': NC.create_list_of_text_notes(current_note, request),
             'elements': NC.create_list_of_elements(current_note, request),
