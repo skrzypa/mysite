@@ -425,8 +425,7 @@ def note(request: WSGIRequest, id: int):
                 new_title = change_title_form.data['change_title_field']
                 NC.change_title(note= current_note, new_title= new_title)
                 return JsonResponse({})
-            elif change_title_form.data['change_title_field'] == '':
-                return JsonResponse(data= {'blank': True, 'error': change_title_form.errors['change_title_field']})
+            return JsonResponse(data= {'blank': True, 'error': change_title_form.errors['change_title_field'].as_text()})
 
 
         if ('delete_text_note' in request.POST) and (NC.current_user == current_note.owner):

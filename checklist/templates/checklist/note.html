@@ -331,6 +331,8 @@
 <script>
     $(document).ready(function() {
         {% if is_owner %}
+        $("input[id^='id_change_title_field'][readonly]").removeAttr('readonly');
+
         // zmiana zawartości elementu
         $(document).on('blur', "[id^='change_element-']", function(e) {
             e.stopPropagation();
