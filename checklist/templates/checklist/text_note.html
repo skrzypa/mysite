@@ -1,96 +1,21 @@
 <div id="note-{{ index }}">
-    
     <div class="d-flex gap-1">
+
         {{ form.change_text_field }}
         
         {% if is_owner %}
         <form method="POST">
             {% csrf_token %}
-            <button type="submit" id="delete_text_note_{{ index }}" value="{{ index }}" class="btn btn-dark" style="margin-top: 1rem; border: 2px solid white; width: 40px; height: 40px;">
+            <button type="submit" id="delete_text_note_{{ index }}" name="delete_text_note" value="{{ index }}" class="btn btn-dark" style="margin-top: 1rem; border: 2px solid white; width: 40px; height: 40px;">
                 <label>X</label>
             </button>
         </form>
         {% endif %}
 
-        <script>
-            $(document).ready(function() {
-                
-                {% if is_owner %}
-                // usuwanie notatek tekstowych
-                var delete_button = $('#delete_text_note_{{ index }}');
-                delete_button.on('click', function(e) {
-                    e.preventDefault();  
-                    
-                    var note_index = delete_button.val(); 
-
-                    $.ajax({
-                        url: "{% url 'checklist:note' note_id %}",
-                        type: "POST",
-                        data: {
-                            delete_text_note: note_index,
-                            csrfmiddlewaretoken: "{{ csrf_token }}",
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                $('#text-notes-div').empty();
-                                $('#text-notes-div').html(response.html);
-                            }
-                        },
-                    });
-                });
-                {% endif %}
-
-
-                // zmiana notatek tekstowych
-                var input_field = $("#change_text_note-{{ index }}");
-                input_field.removeAttr('readonly');
-
-                $(document).on('blur', '#change_text_note-{{ index }}', function() {
-                    save_note($(this).val(), "{{ index }}");
-                });
-
-                $(document).on('keypress', '#change_text_note-{{ index }}', function(event) {
-                    if (event.which === 13 && !event.shiftKey) {  // 13 = Enter
-                        event.preventDefault();
-                        save_note($(this).val(), "{{ index }}");
-                    }
-                });
-
-                function save_note(new_text, text_id) {
-                    $.ajax({
-                        url: "{% url 'checklist:note' note_id %}",
-                        type: "POST",
-                        data: {
-                            csrfmiddlewaretoken: "{{ csrf_token }}",
-                            change_text_field: new_text,
-                            text_id: text_id,
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                
-                            }
-                            if (response.blank) {
-                                $(input_field).addClass("is-invalid bg-danger");
-                                $('#error-content').text(response.error);
-                                $("#error-div").show();
-
-                                setTimeout(function() {
-                                    $('#error-div').addClass('fade-out');  
-                                }, 1000); 
-                            
-                                
-                                setTimeout(function() {
-                                    $('#error-div').hide();  
-                                    $('#error-div').removeClass('fade-out');
-                                }, 2000); 
-                            }
-                            else {
-                                $(input_field).removeClass("is-invalid bg-danger");
-                            }
-                        },
-                    });
-                }
-            });
-        </script>
     </div>
 </div>
+<script>      
+    {% if is_owner %}
+    $("textarea[id^='change_text_note-'][readonly]").removeAttr('readonly');
+    {% endif %}
+</script>

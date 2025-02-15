@@ -21,14 +21,13 @@ class NewNoteForm(forms.Form):
 class ChangeTitleForm(forms.Form):
 
     change_title_field = forms.CharField(
-        label = 'gsdgsdgsd',
         widget = forms.TextInput(
             attrs= {
-                'label': "gsdgsdgsd",
                 'rows': 1,
                 'class': 'form-control text-break word-wrap text-light h1 text-center',
                 'placeholder': '',
                 'style': 'resize: none; background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid;',
+                "readonly": "readonly",
             }
         )
     )
@@ -43,7 +42,7 @@ class NewElementForm(forms.Form):
             ('', '---- Wybierz ----'), 
             ('1', 'Notatka tekstowa'), 
             ('2', 'Element'), 
-            # ('3', 'Grupa')
+            ('3', 'Grupa')
         ),
         widget=forms.Select(
             attrs={'class': 'form-select'}
@@ -51,7 +50,7 @@ class NewElementForm(forms.Form):
     )
 
     element_field = forms.CharField(
-        help_text = "Treść elementu:",
+        help_text = "Treść notatki:",
         widget = forms.TextInput(
             attrs= {
                 'rows': 1,
@@ -94,7 +93,7 @@ class ChangeElementForm(forms.Form):
             attrs= {
                 'class': 'form-control text-break word-wrap text-light',
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; font-size: 13px; height: 40px',
+                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
                 "readonly": "readonly",
             }
         )
@@ -116,7 +115,7 @@ class ChangeGroupForm(forms.Form):
             attrs= {
                 'class': 'form-control text-break word-wrap text-light',
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; font-size: 13px; height: 40px',
+                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
                 "readonly": "readonly",
             }
         )
@@ -129,6 +128,46 @@ class ChangeGroupForm(forms.Form):
         if auto_id:
             self.fields["change_group_field"].widget.attrs["id"] = auto_id
 
+
+class ChangeElementInGroupForm(forms.Form):
+
+    change_element_in_group_field = forms.CharField(
+        widget= forms.TextInput(
+            attrs= {
+                'class': 'form-control text-break word-wrap text-light',
+                'placeholder': '',
+                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
+                "readonly": "readonly",
+            }
+        )
+    )
+
+
+    def __init__(self, *args, **kwargs):
+        auto_id = kwargs.pop("auto_id", None)
+        super().__init__(*args, **kwargs)
+        if auto_id:
+            self.fields["change_element_in_group_field"].widget.attrs["id"] = auto_id
+
+
+
+class AddToGroupForm(forms.Form):
+    add_to_group_field = forms.CharField(
+        widget= forms.TextInput(
+            attrs= {
+                'class': 'form-control text-dark add-form',
+                'placeholder': 'Dodaj element do grupy',
+                'style': 'margin-top: 1rem; border: 2px solid white; font-size: 13px; height: 40px',
+            }
+        )
+    )
+
+
+    def __init__(self, *args, **kwargs):
+        auto_id = kwargs.pop("auto_id", None)
+        super().__init__(*args, **kwargs)
+        if auto_id:
+            self.fields["add_to_group_field"].widget.attrs["id"] = auto_id
 
 
 """

@@ -261,13 +261,16 @@
                                 if (response.success_notes) {
                                     $('#text-notes-div').empty();
                                     $('#text-notes-div').html(response.html);
-                                    $('#id_element_field').text("");
                                 }
 
                                 if (response.success_elements) {
                                     $('#elements-div').empty();
                                     $('#elements-div').html(response.html);
-                                    $('#id_element_field').html("");
+                                }
+
+                                if (response.success_groups) {
+                                    $("#groups-div").empty();
+                                    $("#groups-div").html(response.html);
                                 }
                             },
                         });
@@ -292,6 +295,9 @@
             {{ elements|safe }}
         </div>
 
+        <div id="groups-div">
+            {{ groups|safe }}
+        </div>
 
     </div>
 
@@ -321,4 +327,431 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    $(document).ready(function() {
+        {% if is_owner %}
+        // zmiana zawartości elementu
+        $(document).on('blur', "[id^='change_element-']", function(e) {
+            e.stopPropagation();
+            save_element($(this));
+        });
+
+        $(document).on('keypress', "[id^='change_element-']", function(e) {
+            if (e.which === 13 && !e.shiftKey) {  // 13 = Enter
+                e.preventDefault();
+                e.stopPropagation();
+                save_element($(this));
+            }
+        });
+
+        function save_element(form) {
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    change_element_field: form.val(),
+                    text_id: form.attr('id').match(/\d+/)[0],
+                },
+                success: function(response) {
+                    if (response.success_change_element) {
+                        
+                    }
+                    if (response.blank) {
+                        $(form).addClass("is-invalid bg-danger");
+                        $('#error-content').text(response.error);
+                        $("#error-div").show();
+
+                        setTimeout(function() {
+                            $('#error-div').addClass('fade-out');  
+                        }, 1000); 
+                    
+                        
+                        setTimeout(function() {
+                            $('#error-div').hide();  
+                            $('#error-div').removeClass('fade-out');
+                        }, 2000); 
+                    }
+                    else {
+                        $(form).removeClass("is-invalid bg-danger");
+                    }
+                },
+            });
+        }
+
+        // usuwanie elementu
+        $(document).on('click', "[id^='delete_element-']", function(e) {
+            e.preventDefault();  
+            e.stopPropagation(); 
+
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    delete_element: $(this).val(),
+                },
+                success: function(response) {
+                    if (response.success_del_element) {
+                        $('#elements-div').empty();
+                        $('#elements-div').html(response.html);
+                    }
+                },
+            });
+        });
+        {% endif %}
+
+        // check i uncheck elementu
+        $(document).on('click', "[id^='check_uncheck_element_note_']", function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    check_uncheck_element_note: $(this).attr('id').match(/\d+/)[0],
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(response) {
+                    if (response.success_element) {
+                        $('#elements-div').empty();
+                        $('#elements-div').html(response.html);
+                    }
+                },
+            });
+        });
+
+
+        // GRUPY
+
+        {% if is_owner %}
+        // usuń grupę
+        $(document).on('click', '#delete_group', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    delete_group: $(this).val(),
+                },
+                success: function(response) {
+                    if (response.delete_success) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+                },
+            });
+        });
+        {% endif %}
+
+        // check i uncheck elementu w grupie
+        $(document).on('click', "[id^='check_uncheck_element_in_group-']", function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    check_uncheck_element_in_group: $(this).attr('id').match(/\d+_\d+/)[0],
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(response) {
+                    if (response.check_element_in_group) {
+                        $('#groups-div').empty();
+                        $('#groups-div').html(response.html);
+                    }
+                },
+            });
+        });
+
+        {% if is_owner %}
+        // zmiana nazwy grupy
+        $(document).on('blur', "[id^='change_group-']", function(e) {
+            e.stopPropagation();
+            
+            save_new_group_name($(this));
+        });
+
+        $(document).on('keypress', "[id^='change_group-']", function(e) {
+
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                save_new_group_name($(this));
+            }
+        });
+
+        function save_new_group_name(input_form) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    change_group_field: input_form.val(),
+                    group_id: input_form.attr('id').match(/\d+/)[0],
+                },
+                success: function(response) {
+                    if (response.change_group_name) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+
+                    if (response.blank) {
+                        $(input_form).addClass("is-invalid bg-danger");
+                        $('#error-content').text(response.error);
+                        $("#error-div").show();
+
+                        setTimeout(function() {
+                            $('#error-div').addClass('fade-out');  
+                        }, 1000); 
+                    
+                        
+                        setTimeout(function() {
+                            $('#error-div').hide();  
+                            $('#error-div').removeClass('fade-out');
+                        }, 2000); 
+                    }
+                    else {
+                        $(input_form).removeClass("is-invalid bg-danger");
+                    }
+                }
+            });
+        };
+        {% endif %}
+
+        // dodaj element do grupy
+        $(document).on('submit', "[id^='add_to_group-']", function(e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    add_to_group_field: form.find("[id^='add_to_group_field-']").val(),
+                    group_id: form.find("[id^='add_to_group_button-']").attr('id').match(/\d+/)[0],
+                },
+                success: function(response) {
+                    if (response.add_element_in_group) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+
+                    if (response.blank) {
+                        form.find("[id^='add_to_group_field-']").addClass("is-invalid bg-danger");
+                        $('#error-content').text(response.error);
+                        $("#error-div").show();
+
+                        setTimeout(function() {
+                            $('#error-div').addClass('fade-out');  
+                        }, 1000); 
+                        
+                        setTimeout(function() {
+                            $('#error-div').hide();  
+                            $('#error-div').removeClass('fade-out');
+                        }, 2000); 
+                    }
+                    else {
+                        form.find("[id^='add_to_group_field-']").removeClass("is-invalid bg-danger");
+                    }
+                },
+            });
+        });
+
+        {% if is_owner %}
+        // zmień treść elementu w grupie 
+        $(document).on('keypress', "[id^='change_element_in_group-']", function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                save_element_in_group($(this));
+            }
+        });
+
+
+        $(document).on('blur', "[id^='change_element_in_group-']", function(e) {
+            e.stopPropagation();
+            save_element_in_group($(this));
+
+        });
+
+        function save_element_in_group(form) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    change_element_in_group_field: form.val(),
+                    element_id: form.attr('id').match(/\d+_\d+/)[0],
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(response) {
+                    if (response.change_element_in_group) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+
+                    if (response.blank) {
+                        $(form).addClass("is-invalid bg-danger");
+                        $('#error-content').text(response.error);
+                        $("#error-div").show();
+
+                        setTimeout(function() {
+                            $('#error-div').addClass('fade-out');  
+                        }, 1000); 
+                        
+                        setTimeout(function() {
+                            $('#error-div').hide();  
+                            $('#error-div').removeClass('fade-out');
+                        }, 2000); 
+                    }
+                    else {
+                        $(form).removeClass("is-invalid bg-danger");
+                    }
+                }
+            })
+        };
+
+        // usuwanie elementu w grupie
+        $(document).on('click', "[id^='delete_element_in_group-']", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    delete_element_in_group: $(this).attr('id').match(/\d+_\d+/)[0],
+                },
+                success: function(response) {
+                    if (response.del_element_in_group) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+                }
+            });
+        });
+        {% endif %}
+
+        // check uncheck wszystkie elementy w grupie
+        $(document).on('click', "[id^='uncheck_all_group']", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    uncheck_all_group: $(this).val(),
+                },
+                success: function(response) {
+                    if (response.check_all) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+                }
+
+            });
+        });
+
+        $(document).on('click', "[id^='check_all_group']", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'checklist:note' note.id %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    check_all_group: $(this).val(),
+                },
+                success: function(response) {
+                    if (response.check_all) {
+                        $("#groups-div").empty();
+                        $("#groups-div").html(response.html);
+                    }
+                }
+
+            });
+        });
+
+
+
+        // NOTATKI TEKSTOWE
+        {% if is_owner %} 
+        // usuwanie notatek tekstowych
+        $(document).on('click', "[id^='delete_text_note_']", function(e) {
+            e.preventDefault();  
+
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    delete_text_note: $(this).val(),
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#text-notes-div').empty();
+                        $('#text-notes-div').html(response.html);
+                    }
+                },
+            });
+        });
+
+
+        // zmiana notatek tekstowych
+        $(document).on('blur', "[id^='change_text_note-']", function(e) {
+            e.stopPropagation();
+            save_note($(this));
+        });
+
+        $(document).on('keypress', "[id^='change_text_note-']", function(e) {
+            if (e.which === 13 && !e.shiftKey) {  // 13 = Enter
+                e.preventDefault();
+                e.stopPropagation();
+                save_note($(this));
+            }
+        });
+
+        function save_note(form) {
+            $.ajax({
+                url: "{% url 'checklist:note' note.id %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    change_text_field: form.val(),
+                    text_id: form.attr('id').match(/\d+/)[0],
+                },
+                success: function(response) {
+                    if (response.success) {
+                        
+                    }
+                    if (response.blank) {
+                        $(form).addClass("is-invalid bg-danger");
+                        $('#error-content').text(response.error);
+                        $("#error-div").show();
+
+                        setTimeout(function() {
+                            $('#error-div').addClass('fade-out');  
+                        }, 1000); 
+                    
+                        
+                        setTimeout(function() {
+                            $('#error-div').hide();  
+                            $('#error-div').removeClass('fade-out');
+                        }, 2000); 
+                    }
+                    else {
+                        $(form).removeClass("is-invalid bg-danger");
+                    }
+                },
+            });
+        };
+        {% endif %}
+
+    });
+</script>
 {% endblock content %}

@@ -9,8 +9,9 @@ from django.http import Http404, HttpResponseRedirect, JsonResponse, QueryDict
 from django.urls import reverse
 
 from .models import Note, InvitedToNote
-from .forms import NewNoteForm, ChangeTitleForm, NewElementForm, ChangeTextForm, ChangeElementForm, ChangeGroupForm #TitleForm, ElementForm, SubgroupForm, SubgroupElementForm, TextNoteForm
+from .forms import NewNoteForm, ChangeTitleForm, NewElementForm, ChangeTextForm, ChangeElementForm, ChangeGroupForm, AddToGroupForm, ChangeElementInGroupForm #TitleForm, ElementForm, SubgroupForm, SubgroupElementForm, TextNoteForm
 from my_apps.models import Friendship
+from mysite.settings import DEBUG
 
 
 class NoteClass:
@@ -82,32 +83,44 @@ class NoteClass:
             InvitedToNote.objects.get(note= note, invited_friend= User.objects.get(id= id)).delete()
     
 
-    def add_element(self, note: Note, form: NewElementForm, request: WSGIRequest) -> dict:
-        form: dict = form.cleaned_data
-        type_of_element, field_content = form['type_of_element_field'], form['element_field']
+    def add_element(self, note: Note, request: WSGIRequest) -> dict:
+        element_form = NewElementForm(request.POST)
+        if element_form.is_valid(): 
+            form: dict = element_form.cleaned_data
+            type_of_element, field_content = form['type_of_element_field'], form['element_field']
 
-        if type_of_element == '1':
-            return self._add_text_note(note, field_content, request)
+            if type_of_element == '1':
+                return self._add_text_note(note, field_content, request)
 
-        elif type_of_element == '2': 
-            return self._add_element(note, field_content, request)
+            elif type_of_element == '2': 
+                return self._add_element(note, field_content, request)
 
-        elif type_of_element == '3': 
-            return self._add_group(note, field_content, request)
-
-    
-    def change_text_note_content(self, note: Note, note_idx: str, new_content: str, request: WSGIRequest) -> dict:
-        note.content['texts'][int(note_idx)] = new_content
-        note.save()
-        html = self.create_list_of_text_notes(note, request)
-        return {'success': True, 'html': html}
+            elif type_of_element == '3': 
+                return self._add_group(note, field_content, request)
 
     
-    def change_element_content(self, note: Note, note_idx: str, new_content: str, request: WSGIRequest) -> dict:
-        note.content['elements'][int(note_idx)][0] = new_content
-        note.save()
-        html = self.create_list_of_elements(note, request)
-        return {'success': True, 'html': html}
+    def change_text_note_content(self, note: Note, request: WSGIRequest) -> dict:
+    
+        change_text_form = ChangeTextForm(request.POST)
+        note_idx, new_content = change_text_form.data['text_id'], change_text_form.data['change_text_field']
+        
+        if change_text_form.is_valid():
+            note.content['texts'][int(note_idx)] = new_content
+            note.save()
+            html = self.create_list_of_text_notes(note, request)
+            return {'success': True, 'html': html}
+        
+        return {'blank': True, 'error': change_text_form.errors['change_text_field']}
+
+    
+    def change_element_content(self, note: Note, request: WSGIRequest) -> dict:
+        change_element_form = ChangeElementForm(request.POST)
+        note_idx, new_content = request.POST['text_id'], request.POST['change_element_field']
+        if change_element_form.is_valid():
+            note.content['elements'][int(note_idx)][0] = new_content
+            note.save()
+            return {'success_change_element': True, 'html': self.create_list_of_elements(note, request)}
+        return {'blank': True, 'error': change_element_form.errors['change_element_field']}
     
     
     def del_text_note(self, note: Note, text_index: str) -> None:
@@ -115,15 +128,17 @@ class NoteClass:
         note.save()
 
     
-    def delete_element(self, note: Note, element_idx: str) -> None:
-        del note.content['elements'][int(element_idx)]
+    def delete_element(self, note: Note, request: WSGIRequest) -> dict:
+        del note.content['elements'][int(request.POST['delete_element'])]
         note.save()
+        return {'success_del_element': True, 'html': self.create_list_of_elements(note, request)}
 
     
-    def check_uncheck_element(self, note: Note, element_idx: str) -> None:
+    def check_uncheck_element(self, note: Note, element_idx: str, request: WSGIRequest) -> dict:
         element = note.content['elements'][int(element_idx)]
         element[1] = bool(element[1] ^ 1)
         note.save()
+        return {'success_element': True, 'html': self.create_list_of_elements(note, request)}
 
 
     def create_list_of_friends(self, request: WSGIRequest, note: Note) -> dict:
@@ -198,27 +213,67 @@ class NoteClass:
     
 
     def create_list_of_groups(self, note: Note, request: WSGIRequest) -> str:
-        forms: list[ChangeGroupForm, list[ChangeGroupForm, bool]] = []
+        html: list[ChangeGroupForm, list[ChangeGroupForm, bool]] = []
         for idx_g, group in enumerate(note.content['groups'], start= 0):
-            forms.append(
-                [
-                    ChangeGroupForm(
-                        initial = group[0],
-                        auto_id = f"change_group-{idx_g}"
-                    ), 
-                    []
-                ]
-            )
-            for idx_e, element in enumerate(group[1], start= 0):
-                forms[idx_g][1].append(
-                    [
-                        ChangeGroupForm(
-                            initial = element,
-                            auto_id = f"change_group-{idx_g}_{idx_e}"
+
+            html.append(
+                render(
+                    request, "checklist/group.html", {
+                        'group_form': ChangeGroupForm(
+                            initial= {"change_group_field": group[0]},
+                            auto_id= f"change_group-{idx_g}",
                         ),
-                        False
-                    ]
+                        "is_owner": note.owner == self.current_user,
+                        "idx_g": idx_g,
+                        "note_id": note.id, 
+                    }
+                ).content.decode("utf-8")
+            )
+
+            for idx_e, element in enumerate(group[1], start= 0):
+                html.append(
+                    render(
+                        request, "checklist/element_in_group.html", {
+                            "element_in_group_form": ChangeElementInGroupForm(
+                                initial= {"change_element_in_group_field": element[0]},
+                                auto_id= f"change_element_in_group-{idx_g}_{idx_e}"
+                            ),
+                            "checked": element[1],
+                            "idx_g": idx_g,
+                            "idx_e": idx_e,
+                            "is_owner": note.owner == self.current_user,
+                            "note_id": note.id, 
+                        }
+                    ).content.decode("utf-8")
                 )
+
+            html.append(
+                render(
+                    request, "checklist/add_element_form.html", {
+                        'form_field': AddToGroupForm(auto_id= f"add_to_group_field-{idx_g}")['add_to_group_field'],
+                        'idx_g': f"{idx_g}",
+                    }
+                ).content.decode("utf-8")
+            )
+        
+        return "".join(html)
+    
+
+    def delete_group(self, note: Note, request: WSGIRequest, id_group: str) -> dict:
+        del note.content['groups'][int(id_group)]
+        note.save()
+        return {'delete_success': True, 'html': self.create_list_of_groups(note, request)}
+    
+
+    def change_group_name(self, note: Note, request: WSGIRequest, id_group: str, new_name: str) -> dict:
+        form = ChangeGroupForm(request.POST)
+        if form.is_valid():
+            note.content['groups'][int(id_group)][0] = new_name
+            note.save()
+            return {'change_group_name': True, 'html': self.create_list_of_groups(note, request)}
+        else:
+            return {'blank': True, 'error': form.errors['change_group_field'].as_text()}
+
 
 
     def _add_text_note(self, note: Note, field_content: str, request: WSGIRequest) -> dict:
@@ -242,8 +297,58 @@ class NoteClass:
         return {'success_groups': True, 'html': self.create_list_of_groups(note, request)}
 
 
-    def _add_element_in_group(self, group_name: str, field_content: str, request: WSGIRequest): 
-        ...
+    def add_element_in_group(self, note: Note, field_content: str, group_id: str, request: WSGIRequest) -> dict:
+        form = AddToGroupForm(request.POST)
+        if form.is_valid():
+            note.content['groups'][int(group_id)][1].append([field_content, False])
+            note.save()
+            return {'add_element_in_group': True, 'html': self.create_list_of_groups(note, request)}
+        
+        return {'blank': True, 'error': form.errors['add_to_group_field'].as_text()}
+
+
+    def delete_element_in_group(self, note: Note, request: WSGIRequest) -> dict:
+        element_id = [int(e) for e in request.POST['delete_element_in_group'].split("_")]
+        del note.content['groups'][element_id[0]][1][element_id[1]]
+        note.save()
+        return {'del_element_in_group': True, 'html': self.create_list_of_groups(note, request)}
+
+
+    def check_uncheck_all_group(self, note: Note, request: WSGIRequest) -> dict:
+        if 'check_all_group' in request.POST:
+            b = True
+            group_id = int(request.POST['check_all_group'])
+        elif 'uncheck_all_group' in request.POST:
+            b = False
+            group_id = int(request.POST['uncheck_all_group'])
+        
+        group = note.content['groups'][group_id][1]
+        
+        for g, _ in enumerate(group):
+            group[g][1] = b
+        note.save()
+
+        return {'check_all': True, 'html': self.create_list_of_groups(note, request)}
+    
+
+    def check_uncheck_in_group(self, note: Note, request: WSGIRequest) -> dict:
+        element_id = [int(i) for i in request.POST['check_uncheck_element_in_group'].split('_')]
+        note.content['groups'][element_id[0]][1][element_id[1]][1] = bool(note.content['groups'][element_id[0]][1][element_id[1]][1] ^ 1)
+        note.save()
+        return {'check_element_in_group': True, 'html': self.create_list_of_groups(note, request)}
+    
+
+    def change_element_in_group(self, note: Note, request: WSGIRequest) -> dict:
+        form = ChangeElementInGroupForm(request.POST)
+        if form.is_valid():
+            new_content = request.POST['change_element_in_group_field']
+            element_id = [int(i) for i in request.POST['element_id'].split('_')]
+
+            note.content['groups'][element_id[0]][1][element_id[1]][0] = new_content
+            note.save()
+
+            return {'change_element_in_group': True, 'html': self.create_list_of_groups(note, request)}
+        return {'blank': True, 'error': form.errors['change_element_in_group_field'].as_text()}
 
 
 
@@ -306,9 +411,13 @@ def note(request: WSGIRequest, id: int):
     
 
     if request.method == "POST":
+        if DEBUG: print(request.POST)
+
+
         if ('delete' in request.POST) and (NC.current_user == current_note.owner):
             Note.objects.get(id= request.POST['delete']).delete()
             return redirect(to= reverse(viewname= "checklist:checklist"))
+
 
         if ('change_title_field' in request.POST) and (NC.current_user == current_note.owner):
             change_title_form = ChangeTitleForm(request.POST)
@@ -318,6 +427,7 @@ def note(request: WSGIRequest, id: int):
                 return JsonResponse({})
             elif change_title_form.data['change_title_field'] == '':
                 return JsonResponse(data= {'blank': True, 'error': change_title_form.errors['change_title_field']})
+
 
         if ('delete_text_note' in request.POST) and (NC.current_user == current_note.owner):
             NC.del_text_note(current_note, request.POST['delete_text_note'])
@@ -339,39 +449,52 @@ def note(request: WSGIRequest, id: int):
             )
 
 
-        if ('change_text_field' in request.POST) and (NC.current_user == current_note.owner or NC.current_user in added_not_added['added']):
-            change_text_form = ChangeTextForm(request.POST)
-            idx, new_content = change_text_form.data['text_id'], change_text_form.data['change_text_field']
-            
-            if change_text_form.is_valid():
-                return JsonResponse(data= NC.change_text_note_content(current_note, idx, new_content, request))
-            elif new_content == "":
-                return JsonResponse(data= {'blank': True, 'error': change_text_form.errors['change_text_field']})
+        if ('change_text_field' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.change_text_note_content(current_note, request))
         
 
         if ('type_of_element_field' in request.POST) and ('element_field' in request.POST):
-            element_form = NewElementForm(request.POST)
-            if element_form.is_valid(): 
-                return JsonResponse(data= NC.add_element(current_note, element_form, request))
+            return JsonResponse(data= NC.add_element(current_note, request))
 
 
-        if ('change_element_field' in request.POST) and ('text_id' in request.POST) and (NC.current_user == current_note.owner or NC.current_user in added_not_added['added']):
-            change_element_form = ChangeElementForm(request.POST)
-            idx, new_content = request.POST['text_id'], request.POST['change_element_field']
-            if change_element_form.is_valid():
-                JsonResponse(data= NC.change_element_content(current_note, idx, new_content, request))
-            elif new_content == "":
-                return JsonResponse(data= {'blank': True, 'error': change_element_form.errors['change_element_field']})
+        if ('change_element_field' in request.POST) and ('text_id' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.change_element_content(current_note, request))
                 
 
         if ('delete_element' in request.POST) and (NC.current_user == current_note.owner):
-            NC.delete_element(current_note, request.POST['delete_element'])
-            return JsonResponse(data= {'success': True, 'html': NC.create_list_of_elements(current_note, request)})
+            return JsonResponse(data= NC.delete_element(current_note, request))
 
 
         if ('check_uncheck_element_note' in request.POST):
-            NC.check_uncheck_element(current_note, request.POST['check_uncheck_element_note'])
-            return JsonResponse(data= {'success': True, 'html': NC.create_list_of_elements(current_note, request)})
+            return JsonResponse(data= NC.check_uncheck_element(current_note, request.POST['check_uncheck_element_note'], request))
+        
+
+        if ('delete_group' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.delete_group(current_note, request, request.POST['delete_group']))
+        
+
+        if ('change_group_field' in request.POST and 'group_id' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.change_group_name(current_note, request, request.POST['group_id'][0], request.POST['change_group_field']))
+
+
+        if ('add_to_group_field' in request.POST and 'group_id' in request.POST):
+            return JsonResponse(data= NC.add_element_in_group(current_note, request.POST['add_to_group_field'], request.POST['group_id'][0], request))
+
+
+        if ('delete_element_in_group' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.delete_element_in_group(current_note, request))
+
+
+        if ("uncheck_all_group" in request.POST) or ("check_all_group" in request.POST):
+            return JsonResponse(data= NC.check_uncheck_all_group(current_note, request))
+
+
+        if ('check_uncheck_element_in_group' in request.POST):
+            return JsonResponse(data= NC.check_uncheck_in_group(current_note, request))
+        
+
+        if ('change_element_in_group_field' in request.POST) and ('element_id' in request.POST) and (NC.current_user == current_note.owner):
+            return JsonResponse(data= NC.change_element_in_group(current_note, request))
 
 
         return redirect(to= reverse(viewname= "checklist:note", args= [current_note.id]))
@@ -394,6 +517,7 @@ def note(request: WSGIRequest, id: int):
 
             'text_notes': NC.create_list_of_text_notes(current_note, request),
             'elements': NC.create_list_of_elements(current_note, request),
+            'groups': NC.create_list_of_groups(current_note, request),
 
             'change_title_form': ChangeTitleForm,
             'new_element_form': NewElementForm,

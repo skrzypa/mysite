@@ -1,0 +1,9 @@
+<form method="post" id="add_to_group-{{ idx_g }}">
+    {% csrf_token %}
+    <div class="d-flex gap-1">
+        {{ form_field }}
+        <button type="submit" id="add_to_group_button-{{ idx_g }}" name="group_id" value="{{ idx_g }}" class="btn btn-success btn-sm mt-3" style="width: 40px; height: 40px;">
+            +
+        </button>
+    </div>
+</form>
