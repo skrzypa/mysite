@@ -256,8 +256,6 @@
                                 csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
                             },
                             success: function(response) {
-                                //console.log(response.success_notes);
-                                //console.log(response.html);
                                 if (response.success_notes) {
                                     $('#text-notes-div').empty();
                                     $('#text-notes-div').html(response.html);
@@ -271,6 +269,25 @@
                                 if (response.success_groups) {
                                     $("#groups-div").empty();
                                     $("#groups-div").html(response.html);
+                                }
+
+                                if (response.blank) {
+                                    $("#id_element_field").addClass("is-invalid bg-danger");
+                                    $('#error-content').text(response.error);
+                                    $("#error-div").show();
+            
+                                    setTimeout(function() {
+                                        $('#error-div').addClass('fade-out');  
+                                    }, 1000); 
+                                
+                                    
+                                    setTimeout(function() {
+                                        $('#error-div').hide();  
+                                        $('#error-div').removeClass('fade-out');
+                                    }, 2000); 
+                                }
+                                else {
+                                    $("#id_element_field").removeClass("is-invalid bg-danger");
                                 }
                             },
                         });

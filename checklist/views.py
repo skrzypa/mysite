@@ -37,9 +37,14 @@ class NoteClass:
         return new_note
 
 
-    def change_title(self, note: Note, new_title: str) -> None:
-        note.title = new_title
-        note.save()
+    def change_title(self, note: Note, request: WSGIRequest) -> dict:
+        form = ChangeTitleForm(request.POST)
+        if form.is_valid():
+            note.title = request.POST['change_title_field']
+            note.save()
+            return {}
+        return {'blank': True, 'error': form.errors['change_title_field'].as_text()}
+
     
 
     def delete_note(self, note: Note) -> None:
@@ -97,6 +102,8 @@ class NoteClass:
 
             elif type_of_element == '3': 
                 return self._add_group(note, field_content, request)
+
+        return {'blank': True, 'error': "Uzupełnij to pole prawidłowo"}
 
     
     def change_text_note_content(self, note: Note, request: WSGIRequest) -> dict:
@@ -420,12 +427,7 @@ def note(request: WSGIRequest, id: int):
 
 
         if ('change_title_field' in request.POST) and (NC.current_user == current_note.owner):
-            change_title_form = ChangeTitleForm(request.POST)
-            if change_title_form.is_valid():
-                new_title = change_title_form.data['change_title_field']
-                NC.change_title(note= current_note, new_title= new_title)
-                return JsonResponse({})
-            return JsonResponse(data= {'blank': True, 'error': change_title_form.errors['change_title_field'].as_text()})
+            return JsonResponse(data= NC.change_title(current_note, request))
 
 
         if ('delete_text_note' in request.POST) and (NC.current_user == current_note.owner):
