@@ -30,8 +30,8 @@ class NewEventModelNew(models.Model):
     """ Wydarzenie tworzone przez użytkownika """
     owner = models.ForeignKey(User, on_delete= models.CASCADE) # powiążemy wpis z danym użytkownikiem
 
-    event_title = models.CharField(max_length= 20, default= "")
-    event_location = models.CharField(max_length= 20, default= "", blank= True)
+    event_title = models.CharField(max_length= 40, default= "")
+    event_location = models.CharField(max_length= 40, default= "", blank= True)
     event_description = models.CharField(max_length= 200, default= "", blank= True)
 
     event_date = models.DateField()
@@ -43,7 +43,7 @@ class NewEventModelNew(models.Model):
         verbose_name_plural = "Events"
 
     def __str__(self):
-        return self.event_title
+        return f"{self.id}: {self.event_title}"
 
 
 

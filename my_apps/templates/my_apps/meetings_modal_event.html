@@ -1,0 +1,40 @@
+<div class="modal fade" id="{{ id }}" tabindex="-1" aria-labelledby="{{ id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-dark">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ id }}</h1>
+                <button type="button" class="btn btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="d-flex justify-content-end mt-3 mb-3">
+                    <button class="btn btn-sm btn-success">
+                        <a class="link-light text-decoration-none" href="{% url 'my_apps:meetings_new_event' date=id %}">
+                            + Dodaj wydarzenie
+                        </a>
+                    </button>
+                </div>
+                
+                <div>
+                    {% if events %}
+                        {% for event in events %}
+                            {{ event|safe }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end bg-dark text-light" tabindex="-1" id="add-new_event" aria-labelledby="add-new_eventLabel" style="width: 100%">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="add-new_eventLabel">Dodaj nowe wydarzenie</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Zamknij"></button>
+    </div>
+
+    <div class="offcanvas-body">
+    </div>
+</div>

@@ -8,18 +8,40 @@ class NewEventFormNew(forms.ModelForm):
         model = NewEventModelNew
         fields = ['event_title', 'event_location', 'event_description', 'event_date', 'event_time']
 
-        labels = {  'event_title':          'Tytuł',  
-                    'event_location':       'Lokalizacja (opcjonalnie)', 
-                    'event_description':    'Opis (opcjonalnie)',
-                    'event_date':           'Data',
-                    'event_time':           'Godzina',
-        }
-
-        widgets = { 'event_title':              forms.Textarea(attrs= {'rows': 1, 'class': 'h1'}),
-                    'event_location':           forms.Textarea(attrs= {'rows': 1}),
-                    'event_description':        forms.Textarea(attrs= {'rows': 3}),
-                    'event_date':               forms.DateInput(attrs= {'readonly': 'readonly'}),
-                    'event_time':               forms.TimeInput(attrs= {'readonly': 'readonly'}),
+        widgets = { 'event_title':              forms.Textarea(
+                                                    attrs= {
+                                                        'rows': 1, 
+                                                        'style': 'resize: none;',
+                                                        'placeholder': 'Tytuł wydarzenia',
+                                                    }
+                                                ),
+                    'event_location':           forms.Textarea(
+                                                    attrs= {
+                                                        'rows': 1,
+                                                        'style': 'resize: none;',
+                                                        'placeholder': 'Lokalizacja (opcjonalnie)',
+                                                    }
+                                                ),
+                    'event_description':        forms.Textarea(
+                                                    attrs= {
+                                                        'rows': 2,
+                                                        'style': 'resize: none;',
+                                                        'placeholder': 'Opis (opcjonalnie)',
+                                                    }
+                                                ),
+                    'event_date':               forms.DateInput(
+                                                    attrs={
+                                                        'type': 'date',
+                                                        'class': 'form-control',
+                                                    }
+                                                ),
+                    'event_time':               forms.TimeInput(
+                                                    attrs= {
+                                                        'type': 'time',
+                                                        'class': 'form-control',
+                                                        'step': '60',
+                                                    }
+                                                ),
         }
 
     def __init__(self, *args, **kwargs):

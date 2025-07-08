@@ -1,0 +1,138 @@
+{% extends 'my_apps/homepage_base.html' %}
+{% block content %}
+
+
+<div class="col-11 mx-auto" style="min-height: 100vh;">
+
+    <div class="mb-2">
+        <label class="h1">{{ title }}</label>
+    </div>
+
+    <form method="POST" class="bg-dark m-0" style="border-radius: 10px; padding: 1rem;">
+        {% csrf_token %}
+        <div class="mb-2">
+            <small id="title-counter" class="text-muted bg-light p-1" style="border-radius: 10px;">0 / 40</small>
+        </div>
+        {{ form_event.event_title }}
+
+        <div class="mb-2">
+            <small id="location-counter" class="text-muted bg-light p-1" style="border-radius: 10px;">0 / 40</small>
+        </div>
+        {{ form_event.event_location }}
+
+        <div class="mb-2">
+            <small id="description-counter" class="text-muted bg-light p-1" style="border-radius: 10px;">0 / 200</small>
+        </div>
+        {{ form_event.event_description }}
+
+        <div class="d-flex gap-3 mb-3">
+            <div>
+                {{ form_event.event_date }}
+            </div>
+            <div>
+                {{ form_event.event_time }}
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            {% if not edit %}
+                <label class="h1">Zaproś znajomego</label>
+                <br>
+
+                {% for friend in friends %}
+                    <div class="form-check form-check-inline p-0 mt-2">
+                        <input class="btn-check" type="checkbox" id="{{ friend.id }}" name="invited_friends" value="{{ friend.id }}">
+                        <label class="btn btn-md btn-outline-success" for="{{ friend.id }}">{{ friend.username }}</label>
+                    </div>
+                {% endfor %}
+
+            {% else %}
+                <label class="h1">Dodaj lub usuń znajomego</label>
+                <br>
+                
+                {{ friend_div|safe }}
+
+                <script>
+                    $(document).ready(function() {
+                        $(document).on("click", "input[name='del_friend'], input[name='add_friend']", function(e) {
+                            e.preventDefault();
+
+                            const input = $(this);
+                            const data = {};
+                            data[input.attr("name")] = input.val();
+                            data["csrfmiddlewaretoken"] = "{{ csrf_token }}";
+
+                            $.ajax({
+                                url: "{% url 'my_apps:meetings_edit_event' event_id %}",
+                                type: "POST",
+                                data: data,
+                                success: function(response) {
+                                    if (response.success) {
+                                        $("#friend_div").empty();
+                                        $("#friend_div").html(response.friend_div);
+                                    }
+                                },
+                            });
+                        });
+                    });
+                </script>
+
+            {% endif %}
+        </div>
+
+        <div class="d-flex justify-content-end mx-auto gap-4" style="margin-top: 4rem;">
+            {% if edit %}
+                <button type="submit" class="btn btn-lg btn-primary" name="edit_event" value="{{ event_id }}">Zapisz</button>
+            {% else %}
+                <button type="submit" class="btn btn-lg btn-primary" name="new_event">Zapisz</button>
+            {% endif %}
+
+
+            <a href="{% url 'my_apps:meetings_calendar' %}">
+                <button type="button" class="btn btn-lg btn-success">Wróć</button>
+            </a>
+
+            {% if edit %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-lg btn-danger" name="del_event" value="{{ event_id }}">
+                        Usuń
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function setupCounter(inputId, counterId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+
+            if (!input || !counter) return;
+
+            function updateCounter() {
+                const length = input.value.length;
+                counter.textContent = `${length} / ${maxLength}`;
+                if (length > maxLength) {
+                    counter.classList.add('text-danger');
+                } else {
+                    counter.classList.remove('text-danger');
+                }
+            }
+
+            input.addEventListener('input', updateCounter);
+            updateCounter(); // Inicjalne zliczanie
+        }
+
+        setupCounter('id_event_title', 'title-counter', 40);
+        setupCounter('id_event_location', 'location-counter', 40);
+        setupCounter('id_event_description', 'description-counter', 200);
+    });
+</script>
+
+
+{% endblock content %}

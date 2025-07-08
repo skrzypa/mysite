@@ -1,0 +1,106 @@
+<div class="alert alert-{{ color }} event-card" style="padding: 0.5rem;" data-event-id="{{ id }}">  
+    <table class="table table-borderless text-dark m-0" style="--bs-table-bg: rgba(0,0,0,0)">
+        <tr>
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <h6 style="margin: 0rem;">Tytuł:</h6>
+            </td>
+
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <h6 style="margin: 0rem;">Data i godzina:</h6>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-break" style="padding: 0.1rem; background-color: rgba(0,0,0,0)">
+                <label>{{ event.event_title }}</label>
+            </td>
+
+            <td class="text-break" style="padding: 0.1rem; background-color: rgba(0,0,0,0)">
+                <label>{{ event.event_date }} {{ event.event_time }}</label>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <h6 style="margin: 0rem;">Lokalizacja:</h6>
+            </td>
+
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <h6 style="margin: 0rem;">Autor:</h6>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <label>{{ event.event_location }}</label>
+            </td>
+
+            <td style="width: 50%; padding: 0.1rem; background-color: rgba(0,0,0,0)" class="text-break">
+                <label>{{ event.owner }}</label>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 100%; padding: 0.1rem; background-color: rgba(0,0,0,0)" colspan="2" class="text-break">
+                <h6 style="margin: 0rem;">Opis:</h6>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="width: 100%; padding: 0.1rem; background-color: rgba(0,0,0,0)" colspan="2" class="text-break">
+                <label>{{ event.event_description }}</label>
+            </td>
+        </tr>
+    </table>
+
+    {% if not is_owner %}
+        <form method="POST" class="m-0 p-0">
+            {% csrf_token %}
+            <div class="mt-2">
+                <button type="submit" class="btn btn-md btn-success" name="accept" value="{{ id }}">Przyjmij</button>
+
+                <button type="submit" class="btn btn-md btn-danger" name="decline" value="{{ id }}">Odrzuć</button>
+            </div>
+        </form>
+    {% endif %}
+
+    <div class="mt-2">
+
+        <button class="btn btn-sm btn-primary dropdown-toggle mt-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Zaproszeni <span class="badge rounded-pill text-bg-warning">{{ invited|length }}</span>
+        </button>
+        <ul class="dropdown-menu">
+            {% for f in invited %}
+                <li class="dropdown-item">{{ f.invited_friend }}</li>
+            {% endfor %}
+        </ul>
+
+        <button class="btn btn-sm btn-success dropdown-toggle mt-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Zaakceptowali <span class="badge rounded-pill text-bg-warning">{{ accepted|length }}</span>
+        </button>
+        <ul class="dropdown-menu">
+            {% for f in accepted %}
+                <li class="dropdown-item">{{ f.invited_friend }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <button class="btn btn-sm btn-danger dropdown-toggle mt-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Odrzucili <span class="badge rounded-pill text-bg-warning">{{ declined|length }}</span>
+    </button>
+    <ul class="dropdown-menu">
+        {% for f in declined %}
+            <li class="dropdown-item">{{ f.invited_friend }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if is_owner %}
+        <div class="d-flex justify-content-end mt-3">
+            <a href="{% url 'my_apps:meetings_edit_event' event_id=event.id %}">
+                <button type="submit" class="btn btn-sm btn-success">
+                    Edytuj
+                </button>
+            </a>
+        </div>
+    {% endif %}
+</div>

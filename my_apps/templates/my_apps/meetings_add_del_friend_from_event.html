@@ -1,0 +1,19 @@
+<div id="friend_div">
+{% for friend in friends %}
+    <div class="form-check form-check-inline p-0 mt-2">
+        {% if friend in friends_in_event %}
+            <input class="btn-check" type="submit" id="{{ friend.id }}" name="del_friend" value="{{ friend.id }}">
+            <label class="btn btn-md btn-danger" for="{{ friend.id }}">
+                {{ friend.username }} <span class="badge rounded-pill text-bg-warning">X</span>
+            </label>
+        {% endif %}
+
+        {% if friend in friends_not_in_event %}
+            <input class="btn-check" type="submit" id="{{ friend.id }}" name="add_friend" value="{{ friend.id }}">
+            <label class="btn btn-md btn-success" for="{{ friend.id }}">
+                {{ friend.username }} <span class="badge rounded-pill text-bg-warning">✓</span>
+            </label>
+        {% endif %}
+    </div>
+{% endfor %}
+</div>
