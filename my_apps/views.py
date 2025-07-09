@@ -226,9 +226,15 @@ class MeetingsCalendar:
 
     def generate_day(self, request: WSGIRequest, day: str, month: str, year_choosen: str, all_events: dict) -> str:
         events = False
+        color = 'danger text-light'#'warning text-dark'
         if not int(day) == 0:
             date = datetime.date(int(year_choosen), self.months.index(month)+1, int(day))
             events = all_events.get(str(date), False)
+            
+            new_invitations_this_day = InvitedToEventModelNew.objects.filter(invited_friend= request.user, accepted_invitation = False, decline_invitation = False, event__event_date = str(date))
+            if new_invitations_this_day:
+                color = 'warning text-dark'
+
         
         day_id = f"{day}.{str((self.months.index(month)+1)).zfill(2)}.{year_choosen}"
 
@@ -244,6 +250,7 @@ class MeetingsCalendar:
                     self.date_today_formatted[2] == day]
                 ) else 'primary',
                 "event_counter": False if not events else len(events) if len(events) > 0 else False,
+                "color": color,
             }
         ).content.decode('utf-8')
 
@@ -261,7 +268,7 @@ class MeetingsCalendar:
         
 
     
-    def generate_full_calendar(self, request: WSGIRequest, year_choosen: int, all_events: dict) -> str:
+    def generate_full_calendar(self, request: WSGIRequest, year_choosen: int, all_events: dict) -> tuple[str]:
         calendar_choosen = self.generate_calendar(year_choosen).items()
 
         generate_calendar = [self.generate_month(request, month, weeks, str(year_choosen), all_events) for month, weeks in calendar_choosen]
@@ -311,12 +318,22 @@ class MeetingsCalendar:
         ).content.decode('utf-8')
     
 
-    def generate_events(self, request: WSGIRequest, all_events: QuerySet[NewEventModelNew]) -> list[str]:
+    def generate_events(self, request: WSGIRequest, all_events: QuerySet[NewEventModelNew]) -> tuple[dict, list]:
         generate_events = {}
+        upcoming_events = []
         for e in all_events:
             e: NewEventModelNew
 
             time_delta = (e.event_date - self.date_today.date()).days
+
+            if time_delta <= 7 and time_delta >= 0:
+                upcoming_events.append(
+                    [
+                        e, 
+                        'success' if time_delta==0 else 'primary'
+                    ]
+                )
+                
             color = 'danger' if time_delta < 0 else 'success' if time_delta == 0 else 'primary'
             date = str(e.event_date)
 
@@ -325,18 +342,18 @@ class MeetingsCalendar:
             
             generate_events[date].append(self.generate_event(request, e, color))
         
-        return generate_events
+        return generate_events, upcoming_events
     
 
-    def accept_invitation(self, request: WSGIRequest, event_id: str) -> JsonResponse:
+    def accept_decline_invitation(self, request: WSGIRequest, event_id: str, accept: bool, decline: bool) -> JsonResponse:
         event: NewEventModelNew = NewEventModelNew.objects.get(id= event_id)
 
         invite: InvitedToEventModelNew = InvitedToEventModelNew.objects.get(
             event= event,
             invited_friend= User.objects.get(id= request.user.id)
         )
-        invite.accepted_invitation = True
-        invite.decline_invitation = False
+        invite.accepted_invitation = accept
+        invite.decline_invitation = decline
         invite.save()
 
         time_delta = (event.event_date - self.date_today.date()).days
@@ -349,25 +366,49 @@ class MeetingsCalendar:
         return JsonResponse(data= {'accept_decline': True,'event': update_event, 'event_id': int(event_id)})
 
 
-    def decline_invitation(self, request: WSGIRequest, event_id: NewEventModelNew) -> JsonResponse:
-        event: NewEventModelNew = NewEventModelNew.objects.get(id= event_id)
+    def add_new_event(self, request: WSGIRequest) -> HttpResponseRedirect:
+        form_new_event = NewEventFormNew(request.POST).save(commit= False)
+        form_new_event.owner = request.user
+        form_new_event.save()
 
-        invite: InvitedToEventModelNew = InvitedToEventModelNew.objects.get(
-            event= event,
-            invited_friend= User.objects.get(id= request.user.id)
+        [
+            InvitedToEventModelNew(
+                event= form_new_event,
+                invited_friend = User.objects.get(id= friend_id),
+                accepted_invitation= False,
+                decline_invitation= False,
+                ).save() 
+            for friend_id in request.POST.getlist('invited_friends')
+        ]
+
+        return redirect(to= 'my_apps:meetings_calendar')
+    
+
+    def del_add_friend_to_event(self, request: WSGIRequest, edited_event: NewEventModelNew, friends: list[User], add: bool) -> JsonResponse:
+        event_id = edited_event.id
+
+        if add:
+            InvitedToEventModelNew(event= edited_event, invited_friend= User.objects.get(id= request.POST['add_friend'])).save()
+        else:
+            InvitedToEventModelNew.objects.get(event= edited_event, invited_friend= User.objects.get(id= request.POST['del_friend'])).delete()
+
+        friends_in_event = [f.invited_friend for f in InvitedToEventModelNew.objects.filter(event= edited_event)]
+        friends_not_in_event = [f for f in friends if f not in friends_in_event]
+        return JsonResponse(
+            data= {
+                'success': True,
+                'friend_div': render(
+                    request= request, 
+                    template_name='my_apps/meetings_add_del_friend_from_event.html',
+                    context= {
+                        'friends':                  friends, 
+                        'friends_in_event':         friends_in_event,
+                        'friends_not_in_event':     friends_not_in_event,
+                        'event_id':                 event_id,      
+                    }
+                ).content.decode('utf-8')
+            }
         )
-        invite.accepted_invitation = False
-        invite.decline_invitation = True
-        invite.save()
-
-        time_delta = (event.event_date - self.date_today.date()).days
-        update_event = self.generate_event(
-            request= request, 
-            event= NewEventModelNew.objects.get(id= event_id), 
-            color= 'danger' if time_delta < 0 else 'success' if time_delta == 0 else 'primary'
-        )
-
-        return JsonResponse(data= {'accept_decline': True,'event': update_event, 'event_id': int(event_id)})
 
 
         
@@ -384,101 +425,24 @@ def meetings_homepage(request: WSGIRequest):
     all_events = [e for e in my_events.union(my_invitations).order_by('-event_date', '-event_time')]
     all_events_counter = len(all_events)
 
-    events = meetings.generate_events(request, all_events)
+    generate_events = meetings.generate_events(request, all_events)
+    events, upcoming_events = generate_events[0], generate_events[1]
 
     if request.method == 'POST':
         if 'accept' in request.POST:
-            return meetings.accept_invitation(request, request.POST['accept'])
+            return meetings.accept_decline_invitation(request, request.POST['accept'], True, False)
 
         if 'decline' in request.POST:
-            return meetings.decline_invitation(request, request.POST['decline'])
+            return meetings.accept_decline_invitation(request, request.POST['decline'], False, True)
 
     if mysite.settings.DEBUG:
         print(request.POST)
-
-
-    # if request.method == 'POST':
-
-    #     for m in messages.get_messages(request):
-    #         del m
-
-    #     if 'accept_invitation' in request.POST:
-    #         invitation = InvitedToEventModelNew.objects.get(
-    #             event = NewEventModelNew.objects.get(id = request.POST['accept_invitation']),
-    #             invited_friend = User.objects.get(id = current_user_id)
-    #         )
-    #         invitation.accepted_invitation = True
-    #         invitation.decline_invitation = False
-    #         invitation.save()
-
-    #         return redirect(to= 'my_apps:meetings_calendar')
-
-    #     elif 'decline_invitation' in request.POST:
-    #         invitation = InvitedToEventModelNew.objects.get(
-    #             event = NewEventModelNew.objects.get(id = request.POST['decline_invitation']),
-    #             invited_friend = User.objects.get(id = current_user_id)
-    #         )
-    #         invitation.accepted_invitation = False
-    #         invitation.decline_invitation = True
-    #         invitation.save()
-
-    #         return redirect(to= 'my_apps:meetings_calendar')
-
-
-    # events = {}
-    # past_future_events: dict[str, list] = {'Przyszłe wydarzenia': [], 'Przeszłe wydarzenia': [],}
-    # for event in all_events:
-    #     event: NewEventModelNew
-    #     key = f"{str(event.event_date.year)}-{meetings.months[event.event_date.month - 1]}-{str(event.event_date.day).zfill(2)}"
-
-    #     invited = [User.objects.get(id = f.invited_friend.id) for f in InvitedToEventModelNew.objects.filter(event = event)]
-    #     accepted_the_invitation = [User.objects.get(id = f.invited_friend.id) for f in InvitedToEventModelNew.objects.filter(event = event, accepted_invitation = True, decline_invitation = False)]
-    #     not_accept_the_invitation = [User.objects.get(id = f.invited_friend.id) for f in InvitedToEventModelNew.objects.filter(event = event, accepted_invitation = False, decline_invitation = True)]
-
-    #     new_invitations = InvitedToEventModelNew.objects.filter(
-    #         event = event, invited_friend = User.objects.get(id = current_user_id), accepted_invitation = False, decline_invitation = False
-    #     )
-
-    #     if key not in events:
-    #         events[key] = {
-    #             'event': [[event, invited, accepted_the_invitation, not_accept_the_invitation]],
-    #             'count': 1,
-    #             'color': 'warning' if new_invitations else 'danger',
-    #         }
-    #     else:
-    #         events[key]['event'].append([event, invited, accepted_the_invitation, not_accept_the_invitation])
-    #         events[key]['count'] += 1
-        
-    #     if (event.event_date - meetings.date_today.date()).days < 0:
-    #         past_future_events['Przeszłe wydarzenia'].append([event, 'danger'])
-    #     else:
-    #         past_future_events['Przyszłe wydarzenia'].append([event, 'success'])
-
-    #     if new_invitations:  
-    #         messages.warning(
-    #             request= request,
-    #             message= f"Masz nowe zaproszenie w dniu: {' '.join(key.split('-')[::-1])}",
-    #             extra_tags= 'warning',
-    #         )
-        
-    #     if (event.event_date - meetings.date_today.date()).days in list(range(0, 7)):
-    #         messages.info(
-    #             request= request,
-    #             message= f"Nadciągające wydarzenie: \"{event.event_title}\" - {' '.join(key.split('-')[::-1])}",
-    #             extra_tags= 'info'
-    #         )
 
 
     return render(
         request= request, 
         template_name= 'my_apps/meetings_calendar.html', 
         context= {
-            # 'calendar':             meetings.generate_calendar(int(year_choosen)),
-            # 'days':                 meetings.days,
-            # 'events':               events,
-            # 'current_user':         current_user,
-            # 'current_user_id':      current_user_id,
-            # 'past_future_events':   past_future_events,
             'year_progress':        str(meetings.year_progress_proc),
             'today_date':           meetings.date_today_formatted,
             'year_range':           [str(y) for y in meetings.year_range],
@@ -487,72 +451,24 @@ def meetings_homepage(request: WSGIRequest):
             'calendar':             meetings.generate_full_calendar(request, int(year_choosen), events),
             'all_events_counter':   all_events_counter,
             'all_events':           events,
+            'upcoming_events':      upcoming_events,
+            'new_invitations':      InvitedToEventModelNew.objects.filter(invited_friend= request.user, accepted_invitation= False, decline_invitation= False)
         }
     )
-
-
 
 
 @login_required(login_url= "my_apps:users_log_in")
 def new_event(request: WSGIRequest, date: str):
+    friends = [User.objects.get(id = f.to_friend.id) for f in Friendship.objects.filter(from_friend = request.user.id)]
     form_new_event = NewEventFormNew(
         initial= {
             'event_date': str(datetime.datetime.strptime(date, "%d.%m.%Y").date()),
+            'event_time': "00:00",
         }
     )
 
     if request.method == "POST" and NewEventFormNew(request.POST).is_valid():
-        form_new_event = NewEventFormNew(request.POST).save(commit= False)
-        form_new_event.owner = request.user
-        form_new_event.save()
-
-        [
-            InvitedToEventModelNew(
-                event= form_new_event,
-                invited_friend = User.objects.get(id= friend_id),
-                accepted_invitation= False,
-                decline_invitation= False,
-                ).save() 
-            for friend_id in request.POST.getlist('invited_friends')
-        ]
-
-        return redirect(to= 'my_apps:meetings_calendar')
-
-    friends = [User.objects.get(id = f.to_friend.id) for f in Friendship.objects.filter(from_friend = request.user.id)]
-    
-    # meetings = MeetingsCalendar()
-    # meetings.generate_calendar(int(year))
-    # if request.method == "POST":
-    #     if 'new_event' in request.POST:
-    #         new_event: NewEventModelNew = form_new_event.save(commit= False)
-    #         new_event.owner =              User.objects.get(id = request.user.id)
-    #         new_event.event_title =        request.POST['event_title'] 
-    #         new_event.event_location =     request.POST['event_location']
-    #         new_event.event_description =  request.POST['event_description'] 
-    #         new_event.event_date =         '-'.join((request.POST['event_date'].split('-')[::-1]))
-    #         new_event.event_time =         ':'.join([request.POST['selected_hour'], request.POST['selected_minute']])
-
-    #         if new_event.event_date == "" or new_event.event_time == "":
-    #             messages.warning(
-    #                 request = request, 
-    #                 message= "Należy podać datę oraz godzinę", 
-    #                 extra_tags= "danger"
-    #             )
-    #             return HttpResponseRedirect(reverse(viewname= 'my_apps:meetings_new_event', args=[year]))
-
-    #         else:
-    #             new_event.save()
-
-    #             for friend in request.POST.getlist('friends'):
-    #                 invited_to_event: InvitedToEventModelNew = InvitedToEventModelNew(
-    #                     event = new_event,
-    #                     invited_friend = User.objects.get(id = friend),
-    #                     accepted_invitation= False,
-    #                     decline_invitation= False,
-    #                 )
-    #                 invited_to_event.save()
-
-    #         return redirect(to= 'my_apps:meetings_calendar')
+        return MeetingsCalendar().add_new_event(request)
 
     return render(
         request= request, 
@@ -562,14 +478,6 @@ def new_event(request: WSGIRequest, date: str):
             'form_event':       form_new_event,
             'edit':             False,
             'friends':          friends,
-            # 'year':                 str(year),
-            # 'calendar':             meetings.generate_calendar(int(year)),
-            # 'hours':                meetings.hours,
-            # 'minutes':              meetings.minutes,
-            # 'friends':              friends,
-            # 'days':                 meetings.days,
-            # 'year_range':           meetings.year_range,
-            # 'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
         }
     )
 
@@ -609,101 +517,14 @@ def edit_event(request: WSGIRequest, event_id: str):
             edited_event.delete()
         
         if 'del_friend' in request.POST:
-            InvitedToEventModelNew.objects.get(event= edited_event, invited_friend= User.objects.get(id= request.POST['del_friend'])).delete()
-            friends_in_event = [f.invited_friend for f in InvitedToEventModelNew.objects.filter(event= edited_event)]
-            friends_not_in_event = [f for f in friends if f not in friends_in_event]
-            return JsonResponse(
-                data= {
-                    'success': True,
-                    'friend_div': render(
-                        request= request, 
-                        template_name='my_apps/meetings_add_del_friend_from_event.html',
-                        context= {
-                            'friends':                  friends, 
-                            'friends_in_event':         friends_in_event,
-                            'friends_not_in_event':     friends_not_in_event,
-                            'event_id':                 event_id,      
-                        }
-                    ).content.decode('utf-8')
-                }
-            )
+            return MeetingsCalendar().del_add_friend_to_event(request, edited_event, friends, False)
         
         if 'add_friend' in request.POST:
-            InvitedToEventModelNew(event= edited_event, invited_friend= User.objects.get(id= request.POST['add_friend'])).save()
-            friends_in_event = [f.invited_friend for f in InvitedToEventModelNew.objects.filter(event= edited_event)]
-            friends_not_in_event = [f for f in friends if f not in friends_in_event]
-            return JsonResponse(
-                data= {
-                    'success': True,
-                    'friend_div': render(
-                        request= request, 
-                        template_name='my_apps/meetings_add_del_friend_from_event.html',
-                        context= {
-                            'friends':                  friends, 
-                            'friends_in_event':         friends_in_event,
-                            'friends_not_in_event':     friends_not_in_event,
-                            'event_id':                 event_id,      
-                        }
-                    ).content.decode('utf-8')
-                }
-            )
+            return MeetingsCalendar().del_add_friend_to_event(request, edited_event, friends, True)
         
         return redirect(to= 'my_apps:meetings_calendar')
     else: 
         form_edit_event = NewEventFormNew(instance= edited_event)
-
-
-    
-    # meetings = Meetings()
-    # invited = [f.invited_friend for f in InvitedToEventModelNew.objects.filter(event = edited_event)]
-    # rest_friends = [f.to_friend for f in Friendship.objects.filter(from_friend = request.user) if f.to_friend not in invited]
-    
-    # if request.method != "POST":
-    #     form_new_event: NewEventFormNew = NewEventFormNew(initial = {
-    #         'event_title':          edited_event.event_title,  
-    #         'event_location':       edited_event.event_location, 
-    #         'event_description':    edited_event.event_description,
-    #         'event_date':           "-".join([str(d).zfill(2) for d in [edited_event.event_date.day, edited_event.event_date.month, edited_event.event_date.year]]),
-    #         'event_time':           [str(t).zfill(2) for t in [edited_event.event_time.hour, edited_event.event_time.minute]],
-    #     })
-
-    # else:
-    #     if 'save_changes' in request.POST and request.user == edited_event.owner:
-    #         edited_event.event_title =          request.POST['event_title']
-    #         edited_event.event_location =       request.POST['event_location']
-    #         edited_event.event_description =    request.POST['event_description']
-    #         edited_event.event_date =           '-'.join(request.POST['event_date'].split('-')[::-1])
-    #         edited_event.event_time =           f"{request.POST['selected_hour']}:{request.POST['selected_minute']}"
-    #         edited_event.save()
-
-    #         for friend in request.POST.getlist('del_friends'): 
-    #             InvitedToEventModelNew.objects.get(
-    #                 event = edited_event, 
-    #                 invited_friend = User.objects.get(id = friend)
-    #             ).delete()
-
-    #         for friend in request.POST.getlist('add_friends'): 
-    #             InvitedToEventModelNew(
-    #                 event = edited_event, 
-    #                 invited_friend = User.objects.get(id = friend)
-    #             ).save()
-
-    #         return HttpResponseRedirect(reverse(viewname= 'my_apps:meetings_edit_event', args= [id]))
-        
-    #     elif 'del_event' in request.POST and request.user == edited_event.owner:
-    #         edited_event.delete()
-    #         messages.error(
-    #             request= request,
-    #             message= f"Usunięto wydarzenie: {edited_event.event_title}",
-    #             extra_tags= "danger"
-    #         )
-    #         return redirect(to= 'my_apps:meetings_calendar')
-        
-    #     else:
-    #         raise Http404
-
-        
-
 
     return render(
         request = request,
@@ -717,17 +538,6 @@ def edit_event(request: WSGIRequest, event_id: str):
             'friends_in_event':         friends_in_event,
             'friends_not_in_event':     friends_not_in_event,
             'friend_div':               friend_div,
-            # 'form_new_event':       form_new_event,
-            # 'year':                 str(edited_event.event_date.year),
-            # 'calendar':             meetings.generate_calendar(int(edited_event.event_date.year)),
-            # 'hours':                meetings.hours,
-            # 'minutes':              meetings.minutes,
-            # 'friends':              '',
-            # 'event_time':           [str(t).zfill(2) for t in [edited_event.event_time.hour, edited_event.event_time.minute]],
-            # 'invited_friends':      invited,
-            # 'rest_friends':         rest_friends,
-            # 'days':                 meetings.days,
-            # 'today_date':           [str(meetings.date_today.year), str(meetings.months[int(meetings.date_today.month) - 1]), str(meetings.date_today.day).zfill(2)],
         },
     )
 

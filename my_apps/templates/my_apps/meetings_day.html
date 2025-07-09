@@ -5,7 +5,7 @@
         <button class="btn btn-sm btn-{{ today_day }} mx-auto w-100 position-relative" type="button" data-bs-toggle="modal" data-bs-target="#{{ id }}">
             {% if event_counter %}
                 {{ day }}
-                <span class="position-absolute badge rounded-pill bg-danger">
+                <span class="position-absolute badge rounded-pill bg-{{ color }}">
                     {{ event_counter }}
                 </span>
             {% else %}
