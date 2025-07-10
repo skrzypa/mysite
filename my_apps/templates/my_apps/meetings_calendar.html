@@ -13,24 +13,26 @@
     {% endif %}
 
     {% if upcoming_events %}
-        <div class="bg-dark mb-2" style="border-radius: 10px; padding: 1rem;">
+        <div class="bg-dark mb-2" style="border-radius: 10px; padding: 0.75rem;">
             <div class="mb-2"><label class="h3">Nadchodzące wydarzenia<label></div>
             {% for event in upcoming_events %}
-                <div class="alert alert-{{ event.1 }} h6 text-dark" style="padding: 0.5rem 0.5rem;">
-                    {{ event.0.event_date }} - {{ event.0.event_time }}<br>
-                    <span class="h4">{{ event.0.event_title }}</span>
+                <div class="alert alert-{{ event.1 }} small text-dark" style="padding: 0.5rem; margin: 0; margin-top: 0.5rem;">
+                    <label>{{ event.0.event_date }} - {{ event.0.event_time }}</label>
+                    <br>
+                    <span class="h6">{{ event.0.event_title }}</span>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
 
     {% if new_invitations %}
-        <div class="bg-dark mb-2" style="border-radius: 10px; padding: 1rem;">
+        <div class="bg-dark mb-2" style="border-radius: 10px; padding: 0.75rem;">
             <div class="mb-2"><label class="h3">Nowe zaproszenia<label></div>
             {% for event in new_invitations %}
-                <div class="alert alert-warning h6 text-dark" style="padding: 0.5rem 0.5rem;">
-                    {{ event.event.event_date }} - {{ event.event.event_time }}<br>
-                    <span class="h4">{{ event.event.event_title }}</span>
+                <div class="alert alert-warning small text-dark" style="padding: 0.5rem; margin: 0; margin-top: 0.5rem;">
+                    <label>{{ event.event.event_date }} - {{ event.event.event_time }}</label>
+                    <br>
+                    <span class="h6">{{ event.event.event_title }}</span>
                 </div>
             {% endfor %}
         </div>
@@ -143,6 +145,11 @@
                 success: function (response) {
                     if (response.accept_decline) {
                         $(`.event-card[data-event-id="${response.event_id}"]`).replaceWith(response.event);
+
+                        if (response.update_counter) {
+                            $('#'+response.day_id_to_update).find('span.badge').removeClass("bg-warning text-dark");
+                            $('#'+response.day_id_to_update).find('span.badge').addClass("bg-danger text-light");
+                        }
                     }
                 },
             });

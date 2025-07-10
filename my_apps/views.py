@@ -227,6 +227,7 @@ class MeetingsCalendar:
     def generate_day(self, request: WSGIRequest, day: str, month: str, year_choosen: str, all_events: dict) -> str:
         events = False
         color = 'danger text-light'#'warning text-dark'
+        date = False
         if not int(day) == 0:
             date = datetime.date(int(year_choosen), self.months.index(month)+1, int(day))
             events = all_events.get(str(date), False)
@@ -251,6 +252,7 @@ class MeetingsCalendar:
                 ) else 'primary',
                 "event_counter": False if not events else len(events) if len(events) > 0 else False,
                 "color": color,
+                "date": str(date) if date else "",
             }
         ).content.decode('utf-8')
 
@@ -363,7 +365,17 @@ class MeetingsCalendar:
             color= 'danger' if time_delta < 0 else 'success' if time_delta == 0 else 'primary'
         )
 
-        return JsonResponse(data= {'accept_decline': True,'event': update_event, 'event_id': int(event_id)})
+        update_counter = not InvitedToEventModelNew.objects.filter(event__event_date = str(event.event_date), accepted_invitation = False, decline_invitation = False)
+
+        return JsonResponse(
+            data= {
+                'accept_decline': True,
+                'event': update_event, 
+                'event_id': int(event_id),
+                "update_counter": update_counter,
+                "day_id_to_update": f"day_{str(event.event_date)}" # yyyy-mm-dd
+            }
+        )
 
 
     def add_new_event(self, request: WSGIRequest) -> HttpResponseRedirect:

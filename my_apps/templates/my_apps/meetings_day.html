@@ -1,7 +1,7 @@
 {% if day == '00' %}
     <th></th>
 {% else %}
-    <th class="text-center flex-fill text-center text-light" style="margin: 0; padding: 0.15rem;">
+    <th class="text-center flex-fill text-center text-light" style="margin: 0; padding: 0.15rem;" id="day_{{ date }}">
         <button class="btn btn-sm btn-{{ today_day }} mx-auto w-100 position-relative" type="button" data-bs-toggle="modal" data-bs-target="#{{ id }}">
             {% if event_counter %}
                 {{ day }}
