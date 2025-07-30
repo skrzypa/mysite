@@ -2,6 +2,12 @@ from django import forms
 from .models import Note
 
 
+
+universal_class = 'form-control text-break word-wrap text-light'
+universal_style = 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid gray; height: 32px; font-size: 15px;'
+
+
+
 class NewNoteForm(forms.Form):
 
     new_note_field = forms.CharField(
@@ -24,9 +30,9 @@ class ChangeTitleForm(forms.Form):
         widget = forms.TextInput(
             attrs= {
                 'rows': 1,
-                'class': 'form-control text-break word-wrap text-light h1 text-center',
+                'class': universal_class + ' h1 text-center',
                 'placeholder': '',
-                'style': 'resize: none; background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid;',
+                'style': universal_style + ' resize: none;',
                 "readonly": "readonly",
             }
         )
@@ -68,10 +74,10 @@ class ChangeTextForm(forms.Form):
     change_text_field = forms.CharField(
         widget= forms.Textarea(
             attrs= {
-                'rows': '5',
-                'class': 'form-control text-break word-wrap text-light',
+                'rows': 5,
+                'class': universal_class,
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; font-size: 15px;',
+                'style': universal_style.replace('height: 32px;', ''),
                 "readonly": "readonly",
             }
         )
@@ -91,9 +97,9 @@ class ChangeElementForm(forms.Form):
     change_element_field = forms.CharField(
         widget= forms.TextInput(
             attrs= {
-                'class': 'form-control text-break word-wrap text-light',
+                'class': universal_class,
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
+                'style': universal_style,
                 "readonly": "readonly",
             }
         )
@@ -113,9 +119,9 @@ class ChangeGroupForm(forms.Form):
     change_group_field = forms.CharField(
         widget= forms.TextInput(
             attrs= {
-                'class': 'form-control text-break word-wrap text-light',
+                'class': universal_class,
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
+                'style': universal_style,
                 "readonly": "readonly",
             }
         )
@@ -134,9 +140,9 @@ class ChangeElementInGroupForm(forms.Form):
     change_element_in_group_field = forms.CharField(
         widget= forms.TextInput(
             attrs= {
-                'class': 'form-control text-break word-wrap text-light',
+                'class': universal_class,
                 'placeholder': '',
-                'style': 'background-color: rgba(0,0,0,0); margin-top: 1rem; border: 2px solid white; height: 40px',
+                'style': universal_style,
                 "readonly": "readonly",
             }
         )
@@ -155,9 +161,9 @@ class AddToGroupForm(forms.Form):
     add_to_group_field = forms.CharField(
         widget= forms.TextInput(
             attrs= {
-                'class': 'form-control text-dark add-form',
+                'class': universal_class.replace("text-light", "text-dark"),
                 'placeholder': 'Dodaj element do grupy',
-                'style': 'margin-top: 1rem; border: 2px solid white; font-size: 13px; height: 40px',
+                'style': universal_style.replace("rgba(0,0,0,0)", "rgba(255,255,255,1)"),
             }
         )
     )

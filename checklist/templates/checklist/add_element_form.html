@@ -2,7 +2,9 @@
     {% csrf_token %}
     <div class="d-flex gap-1">
         {{ form_field }}
-        <button type="submit" id="add_to_group_button-{{ idx_g }}" name="group_id" value="{{ idx_g }}" class="btn btn-success btn-sm mt-3" style="width: 40px; height: 40px;">
+        <button type="submit" id="add_to_group_button-{{ idx_g }}" name="group_id" value="{{ idx_g }}" 
+        class="btn btn-success btn-sm mt-3" 
+        style="margin-top: 1rem; border: 2px solid black; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0;">
             +
         </button>
     </div>

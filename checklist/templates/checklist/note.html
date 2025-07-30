@@ -105,6 +105,11 @@
                                     }
                                     else {
                                         $(input_field).removeClass("is-invalid bg-danger");
+
+                                        $(input_field).addClass("is-valid");
+                                        setTimeout(function() {
+                                            $(input_field).removeClass("is-valid");
+                                        }, 1000); 
                                     }
                                 },
                             });
@@ -375,10 +380,14 @@
                 },
                 success: function(response) {
                     if (response.success_change_element) {
-                        
+                        $(form).addClass("is-valid");
+                        setTimeout(function() {
+                            $(form).removeClass("is-valid");
+                        }, 1000); 
                     }
+                    
                     if (response.blank) {
-                        $(form).addClass("is-invalid bg-danger");
+                        $(form).addClass("is-invalid");
                         $('#error-content').text(response.error);
                         $("#error-div").show();
 
@@ -393,7 +402,7 @@
                         }, 2000); 
                     }
                     else {
-                        $(form).removeClass("is-invalid bg-danger");
+                        $(form).removeClass("is-invalid");
                     }
                 },
             });
@@ -512,12 +521,16 @@
                 },
                 success: function(response) {
                     if (response.change_group_name) {
-                        $("#groups-div").empty();
-                        $("#groups-div").html(response.html);
+                        //$("#groups-div").empty();
+                        //$("#groups-div").html(response.html);
+                        $(input_form).addClass("is-valid");
+                        setTimeout(function() {
+                            $(input_form).removeClass("is-valid");
+                        }, 1000); 
                     }
 
                     if (response.blank) {
-                        $(input_form).addClass("is-invalid bg-danger");
+                        $(input_form).addClass("is-invalid");
                         $('#error-content').text(response.error);
                         $("#error-div").show();
 
@@ -532,7 +545,7 @@
                         }, 2000); 
                     }
                     else {
-                        $(input_form).removeClass("is-invalid bg-danger");
+                        $(input_form).removeClass("is-invalid");
                     }
                 }
             });
@@ -608,12 +621,16 @@
                 },
                 success: function(response) {
                     if (response.change_element_in_group) {
-                        $("#groups-div").empty();
-                        $("#groups-div").html(response.html);
+                        //$("#groups-div").empty();
+                        //$("#groups-div").html(response.html);
+                        $(form).addClass("is-valid");
+                        setTimeout(function() {
+                            $(form).removeClass("is-valid");
+                        }, 1000); 
                     }
 
                     if (response.blank) {
-                        $(form).addClass("is-invalid bg-danger");
+                        $(form).addClass("is-invalid");
                         $('#error-content').text(response.error);
                         $("#error-div").show();
 
@@ -627,7 +644,7 @@
                         }, 2000); 
                     }
                     else {
-                        $(form).removeClass("is-invalid bg-danger");
+                        $(form).removeClass("is-invalid");
                     }
                 }
             })
@@ -746,10 +763,13 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        
+                        $(form).addClass("is-valid");
+                        setTimeout(function() {
+                            $(form).removeClass("is-valid");
+                        }, 1000); 
                     }
                     if (response.blank) {
-                        $(form).addClass("is-invalid bg-danger");
+                        $(form).addClass("is-invalid");
                         $('#error-content').text(response.error);
                         $("#error-div").show();
 
@@ -764,7 +784,7 @@
                         }, 2000); 
                     }
                     else {
-                        $(form).removeClass("is-invalid bg-danger");
+                        $(form).removeClass("is-invalid");
                     }
                 },
             });

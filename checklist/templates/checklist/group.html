@@ -4,27 +4,56 @@
 
         {{ group_form.change_group_field }}
 
-        {% if is_owner %}
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="delete_group" id="delete_group" value="{{ idx_g }}" class="btn btn-dark" style="margin-top: 1rem; border: 2px solid white; width: 40px; height: 40px;">
-                <label>X</label>
+        <div class="btn-group dropstart">
+            <button type="button" 
+                class="btn btn-warning dropdown-toggle" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+                style="margin-top: 1rem; border: 2px solid black; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; padding: 0;">
             </button>
-        </form>
-        {% endif %}
+
+            <ul class="dropdown-menu border-black bg-dark">
+                <div class="d-flex justify-content-center mx-auto">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <li>
+                            <button type="submit" name="check_all_group" id="check_all_group" value="{{ idx_g }}" 
+                                class="btn btn-sm btn-success" 
+                                style="margin-top: 0rem;">
+                                <label>✓ Zaznacz wszystko</label>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button type="submit" name="uncheck_all_group" id="uncheck_all_group" value="{{ idx_g }}" 
+                                class="btn btn-sm btn-danger" 
+                                style="margin-top: 1rem;">
+                                <label>X Odznacz wszystko</label>
+                            </button>
+                        </li>
+                    </form>
+                </div>
+
+                {% if is_owner %}
+                    <div class="d-flex justify-content-center mx-auto">
+                        <li>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <button type="submit" name="delete_group" id="delete_group" value="{{ idx_g }}" 
+                                    class="btn btn-sm btn-light" 
+                                    style="margin-top: 2rem;"> 
+                                    <label>X Usuń grupę</label>
+                                </button>
+                            </form>
+                        </li>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
 
     </div>
 
     <div class="d-flex justify-content-start gap-1">
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="check_all_group" id="check_all_group" value="{{ idx_g }}" class="btn btn-sm btn-success" style="margin-top: 1rem;">
-                <label>✓ Zaznacz wszystko</label>
-            </button>
-            <button type="submit" name="uncheck_all_group" id="uncheck_all_group" value="{{ idx_g }}" class="btn btn-sm btn-danger" style="margin-top: 1rem;">
-                <label>X Odznacz wszystko</label>
-            </button>
-        </form>
     </div>
     
 </div>
