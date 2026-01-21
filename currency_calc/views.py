@@ -173,7 +173,7 @@ def plots(request: WSGIRequest):
         y =             'mid',
         hover_data =    ['hover'],
         title =         f'Średnie kursy walut dla: {selected_currency} [{all_currencies[selected_currency]}]',
-        markers =       True,
+        markers =       False,
         labels =        {
                             'date' : 'data',
                             'mid': 'średni kurs',

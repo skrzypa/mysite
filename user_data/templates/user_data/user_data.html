@@ -121,24 +121,36 @@
                     </label>
                 </button>
             </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionMeetings">
-                <div class="accordion-body text-dark button-group" style="padding: .5rem">
-                    {% if not my_events %}
-                        <label class="h1">Nie utworzyłeś żadnego wydarzenia</label>
-                    {% else %}
-                        {% for event in my_events %}
-                            <a class="btn btn-sm btn-primary" style="margin: .5rem;" href="{% url 'my_apps:meetings_calendar' %}" target="_blank">
-                                <label class="position-absolute">
-                                    {{ event.event_title }}
-                                </label> 
-                                <span class="badge rounded-pill bg-danger">
-                                    {{ event.event_date }} {{ event.event_time }}
-                                </span>
-                            </a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
+
+<div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionMeetings">
+    <div class="accordion-body text-dark p-2">
+
+        {% if not my_events %}
+            <label class="h1">Nie utworzyłeś żadnego wydarzenia</label>
+        {% else %}
+            <div class="row">
+                {% for event in my_events %}
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-4">
+                        <a class="btn btn-sm btn-primary w-100 position-relative text-wrap text-start py-3"
+                           href="{% url 'my_apps:meetings_calendar' %}" target="_blank">
+
+                            <span class="badge bg-danger position-absolute">
+                                {{ event.event_date }}<br>{{ event.event_time }}
+                            </span>
+
+                            <div class="fw-semibold">
+                                {{ event.event_title }}
+                            </div>
+
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
+        {% endif %}
+
+    </div>
+</div>
+
         </div>
     </div>
 
