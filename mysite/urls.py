@@ -36,5 +36,6 @@ urlpatterns = [
     path('', include('checklist.urls')),       
     path('', include('user_data.urls')),       
     path('', include('split_the_bills.urls')),  
-    path('', include('beer_calc.urls')),            
+    path('', include('beer_calc.urls')),        
+    path('', include('books.urls')),              
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

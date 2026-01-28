@@ -1,0 +1,80 @@
+<div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="addBookOffcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">➕ Dodaj nową książkę</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <form method="post" id="addBookForm">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.author.label_tag }}
+                {{ form.author }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.link_to_cover.label_tag }}
+                {{ form.link_to_cover }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.date.label_tag }}
+                {{ form.date }}
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg rounded-pill" name="add_new_book">
+                    Zapisz książkę
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+    $("#addBookForm").on("submit", function(e) {
+        e.preventDefault();
+
+        var form = this;
+        var formData = new FormData(form);
+        formData.append("add_new_book", "");
+
+        $.ajax({
+            url: "{% url 'books:books' %}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data.status === "success") {
+
+                    // Jeśli backend mówi: redirect → przeładuj stronę
+                    if (data.redirect) {
+                        window.location.href = data.redirect_url;
+                        return;
+                    }
+                    
+                    // Usuń stare divy dla tego roku
+                    $("#" + data.year).empty();
+                    $("#loop_" + data.year).empty();
+
+                    // Wstaw nowe divy w tym samym miejscu
+                    $("#" + data.year).html(data.yearhtml);
+                    $("#loop_" + data.year).html(data.bookshtml);
+
+                    // Wyczyść formularz
+                    form.reset();
+                }
+            }
+        });
+    });
+});
+</script>

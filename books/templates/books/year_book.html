@@ -1,0 +1,62 @@
+<div id="{{ year }}">
+    <div class="text-center">
+        <label class="display-1">{{ year }} - {{ books|length }}</label>
+    </div>
+
+    <div class="container my-3">
+        <div class="d-flex flex-wrap gap-3">
+            {% for book in books %}
+
+                <div class="text-center border-2 rounded">
+                    <!-- Pole okładki -->
+                    <div class="position-relative rounded" 
+                        style="width:100px; height:150px; background-color:#000; overflow:hidden; cursor:pointer;"
+                        data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
+                        
+                        <img class="book-img" src="{{ book.link_to_cover }}" alt="{{ book.title }}" 
+                            style="width:100%; height:100%; object-fit:contain; display:block; transition: transform 0.3s ease;">
+                        
+                        <!-- Pasek z datą na dole okładki -->
+                        <div class="position-absolute bottom-0 start-0 w-100 text-center small text-light"
+                            style="background: rgba(0,0,0,0.75); padding: 2px 0;">
+                            {{ book.date|date:"d-m-Y" }}
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="bookModal{{ book.id }}" tabindex="-1" aria-labelledby="bookModalLabel{{ book.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+
+                        <div class="modal-content bg-dark" style="height:80vh;">
+                            
+                            <div class="modal-header border-0" data-bs-theme="dark">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                            </div>
+
+                            <div class="modal-body border-0 d-flex flex-column flex-md-row align-items-center gap-3" style="height:100%;">
+                                <!-- Okładka po lewej -->
+                                <img src="{{ book.link_to_cover }}" alt="{{ book.title }}" 
+                                    style="flex: 0 0 30%; max-width: 30%; height:auto; object-fit:contain; border-radius:0.5rem;">
+                                
+                                <!-- Dane po prawej -->
+                                <div class="flex-grow-1 text-start">
+                                    <h5 class="modal-title mb-2" id="bookModalLabel{{ book.id }}">{{ book.title }}</h5>
+                                    <p>{{ book.author }}</p>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer border-0">
+                                {% comment %} <p><strong>Autor:</strong> {{ book.author }}</p>
+                                <p><strong>Data:</strong> {{ book.date }}</p> {% endcomment %}
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+<div>

@@ -1,0 +1,309 @@
+<style>
+.book-img:hover {
+    transform: scale(1.03); /* lekko powiększa obrazek */
+}
+</style>
+
+<div class="text-center border-2 rounded" id="id_book_{{ book.id }}">
+    <!-- Pole okładki -->
+    <div class="position-relative rounded" 
+        style="width:110px; height:150px; background-color:#000; overflow:hidden; cursor:pointer;"
+        data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
+        
+        <img class="book-img" 
+            src="{{ book.link_to_cover }}" 
+            alt="{{ book.title }}" 
+            style="width:100%; height:100%; object-fit:contain; display:block; transition: transform 0.3s ease;">
+
+        <!-- Pasek z datą na dole okładki -->
+        <div class="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center align-items-center small text-light"
+            style="width:100%; background: rgba(0,0,0,0.75); padding: 5px;">
+            {{ book.date|date:"d-m-Y" }}
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="bookModal{{ book.id }}" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
+        <div class="modal-content bg-dark">
+
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border-0">
+                <div class="row g-4 align-items-center">
+
+                    <!-- Okładka -->
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                        <img src="{{ book.link_to_cover }}" 
+                            alt="{{ book.title }}"
+                            class="img-fluid rounded"
+                            style="max-height:50vh; object-fit:contain;">
+                    </div>
+
+                    <!-- Dane -->
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-light">
+                        <h5>{{ book.title }}</h5>
+                        <p class="mb-1">{{ book.author }}</p>
+                        <br>
+                        <a href="https://www.google.com/search?q={{ book.author }} {{ book.title|slice:":30"|urlencode }}" 
+                        target="_blank" title="Szukaj w Google">
+                            <!-- Ikona lupki Bootstrap Icons -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer border-0">
+                {% if book.owner %}
+                    <div class="d-flex" style="gap: 1.5rem;">
+                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}2" data-bs-toggle="modal">
+                            Edytuj
+                        </button>
+
+                        <form class="deleteBookForm" data-book-id="{{ book.id }}">
+                            {% csrf_token %}
+                            <button class="btn btn-md btn-danger" type="submit" name="del_book" value="{{ book.id }}">
+                                Usuń
+                            </button>
+                        </form>
+
+                        <script>
+                            $(document).ready(function() {
+                                $(".deleteBookForm").on("submit", function(e) {
+                                    e.preventDefault();
+
+                                    var form = this;
+                                    var bookId = $(form).data("book-id");
+
+                                    $.ajax({
+                                        url: "{% url 'books:books' %}".replace("0", bookId),
+                                        type: "POST",
+                                        data: {
+                                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                                            del_book: bookId
+                                        },
+                                        success: function(data) {
+                                            if (data.status === "success") {
+
+                                                // Jeśli backend mówi: redirect → przeładuj stronę
+                                                if (data.redirect) {
+                                                    window.location.href = data.redirect_url;
+                                                    return;
+                                                }
+                                                
+                                                // Zamknij modal tej książki
+                                                var modal = bootstrap.Modal.getInstance(document.getElementById("bookModal" + data.book_id));
+                                                modal.hide();
+
+                                                // Usuń książkę z DOM
+                                                $("#id_book_" + data.book_id).remove();
+
+                                                // Podmień licznik roku
+                                                $("#" + data.edit_year + " .display-6").text("Przeczytanych książek: " + data.counter);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="bookModal{{ book.id }}2" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
+        <div class="modal-content bg-dark">
+            <form method="POST" class="editBookForm">
+                {% csrf_token %}
+
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body border-0">
+
+                    <div class="mb-3">
+                        {{ edit_form.title.label_tag }}
+                        {{ edit_form.title }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ edit_form.author.label_tag }}
+                        {{ edit_form.author }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ edit_form.link_to_cover.label_tag }}
+                        {{ edit_form.link_to_cover }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ edit_form.date.label_tag }}
+                        {{ edit_form.date }}
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0">
+                    <div class="d-flex" style="gap: 1.5rem;">
+                        <button class="btn btn-md btn-danger" type="button" data-bs-target="#bookModal{{ book.id }}" data-bs-toggle="modal">Anuluj</button>
+                        
+                        <button class="editBookForm btn btn-md btn-success" type="submit">Zapisz</button>
+                        <input type="hidden" name="edit_book" value="{{ book.id }}">
+                    </div>
+                </div>
+
+            </form>
+
+            <script>
+                $(document).ready(function() {
+                    $(".editBookForm").on("submit", function(e) {
+                        e.preventDefault();
+
+                        var form = this;
+                        var formData = new FormData(form);
+
+                        $.ajax({
+                            url: "{% url 'books:books' %}",
+                            type: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(data) {
+                                if (data.status === "success") {
+
+                                    // Jeśli backend mówi: redirect → przeładuj stronę
+                                    if (data.redirect) {
+                                        window.location.href = data.redirect_url;
+                                        return;
+                                    }
+
+                                    else {
+                                        // Zamknij modal
+                                        var modal = bootstrap.Modal.getInstance($(form).closest(".modal")[0]);
+                                        modal.hide();
+
+                                        // Odśwież listę książek
+                                        $("#all_books").html(data.all_books);
+                                    }
+                                }
+                            }
+                        });
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+</div>
+{% comment %}
+<div class="modal fade" id="bookModal{{ book.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
+        <div class="modal-content bg-dark">
+
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border-0">
+                <div class="row g-4 align-items-center">
+
+                    <!-- Okładka -->
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                        <img src="{{ book.link_to_cover }}" 
+                            alt="{{ book.title }}"
+                            class="img-fluid rounded"
+                            style="max-height:50vh; object-fit:contain;">
+                    </div>
+
+                    <!-- Dane -->
+                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-light">
+                        <h5>{{ book.title }}</h5>
+                        <p class="mb-1">{{ book.author }}</p>
+                        <br>
+                        <a href="https://www.google.com/search?q={{ book.author }} {{ book.title|slice:":30"|urlencode }}" 
+                        target="_blank" title="Szukaj w Google">
+                            <!-- Ikona lupki Bootstrap Icons -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer border-0">
+                {% if book.owner %}
+                    <div class="d-flex" style="gap: 1.5rem;">
+                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}" data-bs-toggle="modal">
+                            Edytuj
+                        </button>
+
+                        <form class="deleteBookForm" data-book-id="{{ book.id }}">
+                            {% csrf_token %}
+                            <button class="btn btn-md btn-danger" type="submit" name="del_book" value="{{ book.id }}">
+                                Usuń
+                            </button>
+                        </form>
+
+                        <script>
+                            $(document).ready(function() {
+                                $(".deleteBookForm").on("submit", function(e) {
+                                    e.preventDefault();
+
+                                    var form = this;
+                                    var bookId = $(form).data("book-id");
+
+                                    $.ajax({
+                                        url: "{% url 'books:books' %}".replace("0", bookId),
+                                        type: "POST",
+                                        data: {
+                                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                                            del_book: bookId
+                                        },
+                                        success: function(data) {
+                                            if (data.status === "success") {
+
+                                                // Jeśli backend mówi: redirect → przeładuj stronę
+                                                if (data.redirect) {
+                                                    window.location.href = data.redirect_url;
+                                                    return;
+                                                }
+                                                
+                                                // Zamknij modal tej książki
+                                                var modal = bootstrap.Modal.getInstance(document.getElementById("bookModal" + data.book_id));
+                                                modal.hide();
+
+                                                // Usuń książkę z DOM
+                                                $("#id_book_" + data.book_id).remove();
+
+                                                // Podmień licznik roku
+                                                $("#" + data.edit_year + " .display-6").text("Przeczytanych książek: " + data.counter);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endcomment %}

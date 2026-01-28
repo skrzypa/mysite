@@ -562,6 +562,7 @@ def log_in(request: WSGIRequest):
         '/split_the_bills/': 'split_the_bills:split_the_bills',
         '/checklist/': 'checklist:checklist',
         '/users_friends/': 'my_apps:users_friends',
+        '/books/': 'books:books',
     }
 
     if request.user.is_authenticated:
