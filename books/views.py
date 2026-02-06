@@ -23,7 +23,7 @@ def books(request: WSGIRequest) -> render:
         return add_new_book(request, all_books)
     
     if 'del_book' in request.POST:
-       return delete_book(request)
+        return delete_book(request)
     
     if "edit_book" in request.POST:
         return edit_book(request)
@@ -146,6 +146,8 @@ def take_my_books(request: WSGIRequest, user: User= None) -> dict:
         if str(book.date.year) not in all_books:
             all_books[str(book.date.year)] = []
         all_books[str(book.date.year)].append(book)
+
+    all_books = dict(sorted(all_books.items(), key= lambda x: x[0], reverse= True))
 
     return all_books
 
