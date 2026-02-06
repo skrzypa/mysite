@@ -39,7 +39,7 @@ def user_data(request: WSGIRequest):
         for book in my_books:
             books.append([book.author, book.title, str(book.date), book.link_to_cover])
 
-        tmp = NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False)
+        tmp = NamedTemporaryFile(mode='w', newline='', encoding='utf-8-sig', delete=False)
         writer = csv.writer(tmp, quoting=csv.QUOTE_ALL)
         for row in books:
             writer.writerow(row)
