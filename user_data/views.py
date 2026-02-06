@@ -9,6 +9,7 @@ from django.http import FileResponse, HttpResponse
 from my_apps.models import NewEventModelNew, AddExpenseGroup
 from checklist.models import Note
 from split_the_bills.models import SplitTheBills
+from books.models import NewBook
 from mysite.settings import BASE_DIR, FILES_TO_BACKUP, DATE_TIME_FORMAT
 
 from .password_checker import PasswordChecker
@@ -16,7 +17,10 @@ from .password_checker import PasswordChecker
 from pathlib import Path
 import shutil
 import os
+import csv
+import json
 from datetime import datetime
+from tempfile import NamedTemporaryFile
 
 
 
@@ -28,6 +32,40 @@ def user_data(request: WSGIRequest):
     my_notes: QuerySet[Note] = Note.objects.filter(owner = request.user)
     my_events: QuerySet[NewEventModelNew] = NewEventModelNew.objects.filter(owner = request.user).order_by('event_date', 'event_time')
     my_groups: QuerySet[AddExpenseGroup] = SplitTheBills.objects.filter(owner = request.user)
+    my_books: QuerySet[NewBook] = NewBook.objects.filter(owner = request.user).order_by('date')
+
+    if 'download_books_csv' in request.POST:
+        books = [['Autor', 'Tytuł', 'Data', 'Link do okładki']]
+        for book in my_books:
+            books.append([book.author, book.title, str(book.date), book.link_to_cover])
+
+        tmp = NamedTemporaryFile(mode='w', newline='', encoding='utf-8', delete=False)
+        writer = csv.writer(tmp, quoting=csv.QUOTE_ALL)
+        for row in books:
+            writer.writerow(row)
+        tmp.close()  # zamykamy po zapisie
+
+        file = open(tmp.name, 'rb')  # otwieramy do czytania binarnego
+
+        return FileResponse(file, as_attachment=True, filename='books.txt')
+
+
+    if 'download_books_json' in request.POST:
+        books = []
+        for book in my_books:
+            books.append({
+                "Autor": book.author,
+                "Tytuł": book.title,
+                "Data": str(book.date),
+                "Link do okładki": book.link_to_cover,
+            })
+
+        tmp = NamedTemporaryFile(mode='w', encoding='utf-8', delete=False)
+        json.dump(books, tmp, ensure_ascii=False, indent=2)
+        tmp.close()  # zamykamy po zapisie
+
+        file = open(tmp.name, 'rb')  # otwieramy do czytania
+        return FileResponse(file, as_attachment=True, filename='books.json')
 
     if 'change_pass' in request.POST:
 
@@ -88,6 +126,7 @@ def user_data(request: WSGIRequest):
             'my_notes': my_notes,
             'my_events': my_events,
             'my_groups': my_groups,
+            'my_books': my_books,
             'backups': backup.show_backups() if request.user.is_superuser else "403"
         }
     )
