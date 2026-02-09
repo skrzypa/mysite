@@ -33,7 +33,12 @@ def books(request: WSGIRequest) -> render:
         'books/books.html',
         context= {
             'all_books': books_template,
-            'new_book_form': render(request, "books/new_book_form.html", context={'form': NewBookForm()}).content.decode('utf-8'),
+            'new_book_form': render(
+                    request, 
+                    "books/new_book_form.html", 
+                    context= {'form': NewBookForm()}
+                ).content.decode('utf-8'),
+            'site_name': "books | PSkrzynski"
         }
     )
 
