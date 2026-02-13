@@ -90,17 +90,13 @@ def delete_book(request: WSGIRequest) -> JsonResponse:
     all_books = take_my_books(request)
     redirect_needed = year not in all_books
 
-    if redirect_needed:
-        counter = 0
-    else:
-        counter = len(all_books[year])
-
     return JsonResponse(
         data= {
             "status": "success",
             "book_id": str(book_id),
             "edit_year": year,
-            "counter": str(counter),
+            "yearhtml": create_year(request, year, all_books[year]),
+            "bookshtml": create_books_loop(request, all_books[year], year),
             "redirect": redirect_needed,
             "redirect_url": reverse("books:books"),
         }

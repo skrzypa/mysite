@@ -117,10 +117,22 @@
                                                 modal.hide();
 
                                                 // Usuń książkę z DOM
-                                                $("#id_book_" + data.book_id).remove();
+                                                //$("#id_book_" + data.book_id).remove();
 
                                                 // Podmień licznik roku
-                                                $("#" + data.edit_year + " .display-6").text("Przeczytanych książek: " + data.counter);
+                                                $("#" + data.edit_year).empty();
+                                                $("#" + data.edit_year).html(data.yearhtml);
+
+                                                $("#loop_" + data.edit_year).empty();
+                                                $("#loop_" + data.edit_year).html(data.bookshtml);
+
+                                                const boxes = document.querySelectorAll(".book-box");
+                                                boxes.forEach(box => {
+                                                    const title = box.querySelector(".book-title");
+                                                    box.style.width = "110px";
+                                                    title.style.display = "none";
+                                                });
+
                                             }
                                         }
                                     });
@@ -231,102 +243,3 @@
         </div>
     </div>
 </div>
-{% comment %}
-<div class="modal fade" id="bookModal{{ book.id }}" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
-        <div class="modal-content bg-dark">
-
-            <div class="modal-header border-0">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body border-0">
-                <div class="row g-4 align-items-center">
-
-                    <!-- Okładka -->
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-center">
-                        <img src="{{ book.link_to_cover }}" 
-                            alt="{{ book.title }}"
-                            class="img-fluid rounded"
-                            style="max-height:50vh; object-fit:contain;">
-                    </div>
-
-                    <!-- Dane -->
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-light">
-                        <h5>{{ book.title }}</h5>
-                        <p class="mb-1">{{ book.author }}</p>
-                        <br>
-                        <a href="https://www.google.com/search?q={{ book.author }} {{ book.title|slice:":30"|urlencode }}" 
-                        target="_blank" title="Szukaj w Google">
-                            <!-- Ikona lupki Bootstrap Icons -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
-                            </svg>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="modal-footer border-0">
-                {% if book.owner %}
-                    <div class="d-flex" style="gap: 1.5rem;">
-                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}" data-bs-toggle="modal">
-                            Edytuj
-                        </button>
-
-                        <form class="deleteBookForm" data-book-id="{{ book.id }}">
-                            {% csrf_token %}
-                            <button class="btn btn-md btn-danger" type="submit" name="del_book" value="{{ book.id }}">
-                                Usuń
-                            </button>
-                        </form>
-
-                        <script>
-                            $(document).ready(function() {
-                                $(".deleteBookForm").on("submit", function(e) {
-                                    e.preventDefault();
-
-                                    var form = this;
-                                    var bookId = $(form).data("book-id");
-
-                                    $.ajax({
-                                        url: "{% url 'books:books' %}".replace("0", bookId),
-                                        type: "POST",
-                                        data: {
-                                            csrfmiddlewaretoken: "{{ csrf_token }}",
-                                            del_book: bookId
-                                        },
-                                        success: function(data) {
-                                            if (data.status === "success") {
-
-                                                // Jeśli backend mówi: redirect → przeładuj stronę
-                                                if (data.redirect) {
-                                                    window.location.href = data.redirect_url;
-                                                    return;
-                                                }
-                                                
-                                                // Zamknij modal tej książki
-                                                var modal = bootstrap.Modal.getInstance(document.getElementById("bookModal" + data.book_id));
-                                                modal.hide();
-
-                                                // Usuń książkę z DOM
-                                                $("#id_book_" + data.book_id).remove();
-
-                                                // Podmień licznik roku
-                                                $("#" + data.edit_year + " .display-6").text("Przeczytanych książek: " + data.counter);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                        </script>
-
-                    </div>
-                {% endif %}
-            </div>
-
-        </div>
-    </div>
-</div>
-{% endcomment %}
