@@ -6,19 +6,33 @@
 
 <div class="text-center border-2 rounded" id="id_book_{{ book.id }}">
     <!-- Pole okładki -->
-    <div class="position-relative rounded" 
-        style="width:110px; height:150px; background-color:#000; overflow:hidden; cursor:pointer;"
-        data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
-        
-        <img class="book-img" 
-            src="{{ book.link_to_cover }}" 
-            alt="{{ book.title }}" 
-            style="width:100%; height:100%; object-fit:contain; display:block; transition: transform 0.3s ease;">
+    <div class="text-center border-2 rounded" id="id_book_{{ book.id }}">
+        <div class="position-relative rounded d-flex align-items-center book-box"
+            id="bookBox{{ book.id }}"
+            style="width:110px; height:150px; background-color:#000; overflow:hidden; cursor:pointer; transition: width 0.3s ease;"
+            data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
 
-        <!-- Pasek z datą na dole okładki -->
-        <div class="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center align-items-center small text-light"
-            style="width:100%; background: rgba(0,0,0,0.75); padding: 5px;">
-            {{ book.date|date:"d-m-Y" }}
+            <!-- Wrapper tylko na okładkę -->
+            <div class="position-relative" style="width:110px; height:150px;">
+                <img class="book-img" 
+                    src="{{ book.link_to_cover }}" 
+                    alt="{{ book.title }}" 
+                    style="width:110px; height:100%; object-fit:contain; display:block;">
+
+                <!-- Pasek z datą PRZYKLEJONY do okładki -->
+                <div class="position-absolute bottom-0 start-0 d-flex justify-content-center align-items-center small text-light"
+                    style="width:110px; background: rgba(0,0,0,0.75); padding: 5px;">
+                    {{ book.date|date:"d-m-Y" }}
+                </div>
+            </div>
+
+            <!-- Tytuł -->
+            <div class="book-title px-1 text-light small fw-bold"
+                style="display:none; width:190px; max-height:120px; overflow-y:auto; scrollbar-width: thin; scrollbar-color: transparent transparent;">
+                <span style="color: #ffcc00;">{{ book.author }}</span><br>
+                {{ book.title }}
+            </div>
+
         </div>
     </div>
 </div>
@@ -135,6 +149,10 @@
                 <div class="modal-body border-0">
 
                     <div class="mb-3">
+                        {{ edit_form.owner }}
+                    </div>
+
+                    <div class="mb-3">
                         {{ edit_form.title.label_tag }}
                         {{ edit_form.title }}
                     </div>
@@ -149,9 +167,14 @@
                         {{ edit_form.link_to_cover }}
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                         {{ edit_form.date.label_tag }}
                         {{ edit_form.date }}
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ edit_form.hide.label_tag }}
+                        {{ edit_form.hide }}
                     </div>
 
                 </div>

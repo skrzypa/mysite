@@ -44,7 +44,8 @@ def books(request: WSGIRequest) -> render:
 
 
 def edit_book(request: WSGIRequest) -> JsonResponse:
-    get_book = NewBook.objects.get(id= request.POST['edit_book'])
+    book_id = request.POST.get('edit_book')
+    get_book = NewBook.objects.get(id= book_id)
     if request.user != get_book.owner:
         return JsonResponse(
             data= {
@@ -54,11 +55,16 @@ def edit_book(request: WSGIRequest) -> JsonResponse:
             }
         )
     
-    get_book.title = request.POST['title']
-    get_book.author = request.POST['author']
-    get_book.date = request.POST['date']
-    get_book.link_to_cover = request.POST['link_to_cover']
-    get_book.save()
+    form: NewBookForm = NewBookForm(request.POST, instance= get_book)
+    if form.is_valid():
+        form.save()
+    
+    # get_book.title = request.POST['title']
+    # get_book.author = request.POST['author']
+    # get_book.date = request.POST['date']
+    # get_book.link_to_cover = request.POST['link_to_cover']
+    # get_book.hide = request.POST.get('hide') == 'on'
+    # get_book.save()
 
     return JsonResponse(
         data= {

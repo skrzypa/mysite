@@ -10,6 +10,7 @@ class NewBook(models.Model):
     link_to_cover = models.TextField(default= "")
     date = models.DateField(default= "")
     date_added = models.DateTimeField(auto_now_add= True) # przy migracji timezone.now
+    hide = models.BooleanField(default= False)
 
     def __str__(self):
         if len(self.title) <=15:
