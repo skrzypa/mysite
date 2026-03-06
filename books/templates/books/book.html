@@ -77,7 +77,7 @@
             <div class="modal-footer border-0">
                 {% if book.owner %}
                     <div class="d-flex" style="gap: 1.5rem;">
-                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}2" data-bs-toggle="modal">
+                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}_Edit" data-bs-toggle="modal">
                             Edytuj
                         </button>
 
@@ -148,7 +148,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="bookModal{{ book.id }}2" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label2" tabindex="-1">
+<div class="modal fade" id="bookModal{{ book.id }}_Edit" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label2" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
         <div class="modal-content bg-dark">
             <form method="POST" class="editBookForm">
