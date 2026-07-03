@@ -148,44 +148,6 @@
 
             </form>
 
-            <script>
-                $(document).ready(function() {
-                    $(".editBookForm").on("submit", function(e) {
-                        e.preventDefault();
-
-                        var form = this;
-                        var formData = new FormData(form);
-
-                        $.ajax({
-                            url: "{% url 'books:books' %}",
-                            type: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(data) {
-                                if (data.status === "success") {
-
-                                    // Jeśli backend mówi: redirect → przeładuj stronę
-                                    if (data.redirect) {
-                                        window.location.href = data.redirect_url;
-                                        return;
-                                    }
-
-                                    else {
-                                        // Zamknij modal
-                                        var modal = bootstrap.Modal.getInstance($(form).closest(".modal")[0]);
-                                        modal.hide();
-
-                                        // Odśwież listę książek
-                                        $("#all_books").html(data.all_books);
-                                    }
-                                }
-                            }
-                        });
-                    });
-                });
-            </script>
-
         </div>
     </div>
 </div>
