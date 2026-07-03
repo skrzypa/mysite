@@ -63,7 +63,58 @@
                 title.style.display = "none";
             }
         });
-    }
+    };
+
+    
+    $(document).ready(function() {
+        $(".deleteBookForm").on("submit", function(e) {
+            e.preventDefault();
+
+            var form = this;
+            var bookId = $(form).data("book-id");
+
+            $.ajax({
+                url: "{% url 'books:books' %}".replace("0", bookId),
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    del_book: bookId
+                },
+                success: function(data) {
+                    if (data.status === "success") {
+
+                        // Jeśli backend mówi: redirect → przeładuj stronę
+                        if (data.redirect) {
+                            window.location.href = data.redirect_url;
+                            return;
+                        }
+                        
+                        // Zamknij modal tej książki
+                        var modal = bootstrap.Modal.getInstance(document.getElementById("bookModal" + data.book_id));
+                        modal.hide();
+
+                        // Usuń książkę z DOM
+                        //$("#id_book_" + data.book_id).remove();
+
+                        // Podmień licznik roku
+                        $("#" + data.edit_year).empty();
+                        $("#" + data.edit_year).html(data.yearhtml);
+
+                        $("#loop_" + data.edit_year).empty();
+                        $("#loop_" + data.edit_year).html(data.bookshtml);
+
+                        const boxes = document.querySelectorAll(".book-box");
+                        boxes.forEach(box => {
+                            const title = box.querySelector(".book-title");
+                            box.style.width = "110px";
+                            title.style.display = "none";
+                        });
+
+                    }
+                }
+            });
+        });
+    });
 </script>
 
 {% endblock content %}
