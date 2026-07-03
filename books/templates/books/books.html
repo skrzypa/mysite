@@ -56,18 +56,19 @@
             if (box.style.width === "110px" || !box.style.width) {
                 box.style.width = "300px";
                 title.style.display = "block";
-            } 
-            
-            else {
+            } else {
                 box.style.width = "110px";
                 title.style.display = "none";
             }
         });
-    };
+    }
 
-    
-    $(document).ready(function() {
-        $(".deleteBookForm").on("submit", function(e) {
+    $(function () {
+
+        // ==========================
+        // USUWANIE KSIĄŻKI
+        // ==========================
+        $(document).on("submit", ".deleteBookForm", function (e) {
             e.preventDefault();
 
             var form = this;
@@ -80,45 +81,42 @@
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                     del_book: bookId
                 },
-                success: function(data) {
-                    if (data.status === "success") {
+                success: function (data) {
 
-                        // Jeśli backend mówi: redirect → przeładuj stronę
-                        if (data.redirect) {
-                            window.location.href = data.redirect_url;
-                            return;
-                        }
-                        
-                        // Zamknij modal tej książki
-                        var modal = bootstrap.Modal.getInstance(document.getElementById("bookModal" + data.book_id));
+                    if (data.status !== "success")
+                        return;
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect_url;
+                        return;
+                    }
+
+                    var modal = bootstrap.Modal.getInstance(
+                        document.getElementById("bookModal" + data.book_id)
+                    );
+
+                    if (modal)
                         modal.hide();
 
-                        // Usuń książkę z DOM
-                        //$("#id_book_" + data.book_id).remove();
+                    $("#" + data.edit_year).html(data.yearhtml);
+                    $("#loop_" + data.edit_year).html(data.bookshtml);
 
-                        // Podmień licznik roku
-                        $("#" + data.edit_year).empty();
-                        $("#" + data.edit_year).html(data.yearhtml);
-
-                        $("#loop_" + data.edit_year).empty();
-                        $("#loop_" + data.edit_year).html(data.bookshtml);
-
-                        const boxes = document.querySelectorAll(".book-box");
-                        boxes.forEach(box => {
-                            const title = box.querySelector(".book-title");
-                            box.style.width = "110px";
+                    document.querySelectorAll(".book-box").forEach(box => {
+                        const title = box.querySelector(".book-title");
+                        box.style.width = "110px";
+                        if (title)
                             title.style.display = "none";
-                        });
-
-                    }
+                    });
                 }
             });
         });
-    });
 
-    
-    $(document).ready(function() {
-        $(".editBookForm").on("submit", function(e) {
+
+        // ==========================
+        // EDYCJA KSIĄŻKI
+        // ==========================
+        $(document).on("submit", ".editBookForm", function (e) {
+
             e.preventDefault();
 
             var form = this;
@@ -130,27 +128,30 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(data) {
-                    if (data.status === "success") {
 
-                        // Jeśli backend mówi: redirect → przeładuj stronę
-                        if (data.redirect) {
-                            window.location.href = data.redirect_url;
-                            return;
-                        }
+                success: function (data) {
 
-                        else {
-                            // Zamknij modal
-                            var modal = bootstrap.Modal.getInstance($(form).closest(".modal")[0]);
-                            modal.hide();
+                    if (data.status !== "success")
+                        return;
 
-                            // Odśwież listę książek
-                            $("#all_books").html(data.all_books);
-                        }
+                    if (data.redirect) {
+                        window.location.href = data.redirect_url;
+                        return;
                     }
+
+                    var modal = bootstrap.Modal.getInstance(
+                        $(form).closest(".modal")[0]
+                    );
+
+                    if (modal)
+                        modal.hide();
+
+                    $("#all_books").html(data.all_books);
                 }
             });
+
         });
+
     });
 </script>
 
