@@ -1,6 +1,11 @@
 <style>
 .book-img:hover {
-    transform: scale(1.03); /* lekko powiększa obrazek */
+    transform: scale(1.05); /* lekko powiększa obrazek */
+    transition: transform 0.25s ease;
+}
+.book-img2:hover {
+    transform: scale(1.50); /* lekko powiększa obrazek */
+    transition: transform 0.25s ease;
 }
 </style>
 
@@ -8,7 +13,7 @@
     <!-- Pole okładki -->
     <div class="position-relative rounded d-flex align-items-center book-box"
         id="bookBox{{ book.id }}"
-        style="width:90px; height:120px; background-color:#000; overflow:hidden; cursor:pointer; transition: width 0.3s ease;"
+        style="width:90px; height:120px; background-color:#000; overflow:hidden; cursor:pointer;"
         data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
 
         <!-- Wrapper tylko na okładkę -->
@@ -44,19 +49,19 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body border-0 m-0 p-0">
-                <div class="row g-4 align-items-center">
+            <div class="modal-body border-0 m-0 p-1">
+                <div class="row g-0 align-items-center">
 
                     <!-- Okładka -->
-                    <div class="col-12 col-md-4 col-lg-4 col-xl-4 text-center">
+                    <div class="col-12 col-md-5 col-lg-5 col-xl-5 text-center m-0 p-0">
                         <img src="{{ book.link_to_cover }}" 
                             alt="{{ book.title }}"
-                            class="img-fluid rounded"
-                            style="max-height:25vh; object-fit:contain;">
+                            class="img-fluid rounded book-img2"
+                            style="max-height:35vh; object-fit:contain;">
                     </div>
 
                     <!-- Dane -->
-                    <div class="col-12 col-md-8 col-lg-8 col-xl-8 text-light text-center text-md-start">
+                    <div class="col-12 col-md-7 col-lg-7 col-xl-7 text-light text-center text-md-start m-0 p-0">
                         <h5>{{ book.title }}</h5>
                         <p class="mb-1">{{ book.author }}</p>
                         <br>
