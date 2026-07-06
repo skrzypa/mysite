@@ -44,19 +44,19 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body border-0">
+            <div class="modal-body border-0 m-0 p-0">
                 <div class="row g-4 align-items-center">
 
                     <!-- Okładka -->
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                    <div class="col-12 col-md-4 col-lg-4 col-xl-4 text-center">
                         <img src="{{ book.link_to_cover }}" 
                             alt="{{ book.title }}"
                             class="img-fluid rounded"
-                            style="max-height:50vh; object-fit:contain;">
+                            style="max-height:25vh; object-fit:contain;">
                     </div>
 
                     <!-- Dane -->
-                    <div class="col-12 col-md-6 col-lg-6 col-xl-6 text-light">
+                    <div class="col-12 col-md-8 col-lg-8 col-xl-8 text-light text-center text-md-start">
                         <h5>{{ book.title }}</h5>
                         <p class="mb-1">{{ book.author }}</p>
                         <br>
@@ -66,6 +66,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
                             </svg>
+                            <span>Szukaj w Google</span>
                         </a>
                     </div>
 
