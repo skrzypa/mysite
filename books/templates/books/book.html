@@ -5,11 +5,11 @@
 }
 </style>
 
-<div class="text-center border-2 rounded" id="id_book_{{ book.id }}">
+<div class="text-center border border-1 border-black rounded" id="id_book_{{ book.id }}">
     <!-- Pole okładki -->
     <div class="position-relative rounded d-flex align-items-center book-box"
         id="bookBox{{ book.id }}"
-        style="width:90px; height:120px; background-color:#000; overflow:hidden; cursor:pointer; transition: width 0.3s ease;"
+        style="width:90px; height:120px; background-color:#1c1c1c; overflow:hidden; cursor:pointer; transition: width 0.3s ease;"
         data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
 
         <!-- Wrapper tylko na okładkę -->
@@ -21,14 +21,14 @@
 
             <!-- Pasek z datą PRZYKLEJONY do okładki -->
             <div class="position-absolute bottom-0 start-0 d-flex justify-content-center align-items-center small text-light"
-                style="width:90px; background: rgba(0,0,0,0.75); padding: 5px;">
+                style="width:90px; background: #1c1c1c; padding: 5px;">
                 {{ book.date|date:"d-m-Y" }}
             </div>
         </div>
 
         <!-- Tytuł -->
         <div class="book-title px-1 text-light fw-bold"
-            style="display:none; width:190px; max-height:120px; overflow-y:auto; scrollbar-width: thin; scrollbar-color: transparent transparent; font-size: 12px; text-align:center; word-wrap:break-word;">
+            style="display:none; width:190px; max-height:120px; overflow-y:auto; scrollbar-width: none; font-size: 12px; text-align:center; word-wrap:break-word;">
             <span style="color: #ffcc00;">{{ book.title }}</span>
             <hr class="m-2">
             {{ book.author }}
@@ -39,14 +39,14 @@
 
 <!-- Modal -->
 <div class="modal fade" id="bookModal{{ book.id }}" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
-        <div class="modal-content bg-dark">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" style="max-width: 600px;">
+        <div class="modal-content bg-dark border border-1 border-black" style="max-height: 500px;">
 
             <div class="modal-header border-0">
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="modal-body border-0 m-0 p-1">
+            <div class="modal-body border-0 m-0 p-1" style="scrollbar-width: none;">
                 <div class="row g-2 align-items-center">
 
                     <!-- Okładka -->
@@ -60,8 +60,9 @@
                     <!-- Dane -->
                     <div class="col-12 col-md-7 col-lg-7 col-xl-7 text-light text-center text-md-start m-0 p-2">
                         <h6>{{ book.title }}</h6>
+                        <hr style="margin: 0.5rem 0rem;">
                         <p class="mb-1">{{ book.author }}</p>
-                        <br>
+                        <hr style="margin: 0.5rem 0rem;">
                         <a href="https://www.google.com/search?q={{ book.author }} {{ book.title|slice:":30"|urlencode }}" 
                         target="_blank" title="Szukaj w Google">
                             <!-- Ikona lupki Bootstrap Icons -->
@@ -98,7 +99,7 @@
 </div>
 
 <div class="modal fade" id="bookModal{{ book.id }}_Edit" aria-hidden="true" aria-labelledby="bookModal{{ book.id }}Label2" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 650px;">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" style="max-width: 600px;">
         <div class="modal-content bg-dark">
             <form method="POST" class="editBookForm">
                 {% csrf_token %}
