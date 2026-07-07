@@ -3,17 +3,13 @@
     transform: scale(1.05); /* lekko powiększa obrazek */
     transition: transform 0.25s ease;
 }
-.book-img2:hover {
-    transform: scale(1.50); /* lekko powiększa obrazek */
-    transition: transform 0.25s ease;
-}
 </style>
 
 <div class="text-center border-2 rounded" id="id_book_{{ book.id }}">
     <!-- Pole okładki -->
     <div class="position-relative rounded d-flex align-items-center book-box"
         id="bookBox{{ book.id }}"
-        style="width:90px; height:120px; background-color:#000; overflow:hidden; cursor:pointer;"
+        style="width:90px; height:120px; background-color:#000; overflow:hidden; cursor:pointer; transition: width 0.3s ease;"
         data-bs-toggle="modal" data-bs-target="#bookModal{{ book.id }}">
 
         <!-- Wrapper tylko na okładkę -->
@@ -31,10 +27,11 @@
         </div>
 
         <!-- Tytuł -->
-        <div class="book-title px-1 text-light small fw-bold"
-            style="display:none; width:190px; max-height:120px; overflow-y:auto; scrollbar-width: thin; scrollbar-color: transparent transparent;">
-            <span style="color: #ffcc00;">{{ book.author }}</span><br>
-            {{ book.title }}
+        <div class="book-title px-1 text-light fw-bold"
+            style="display:none; width:190px; max-height:120px; overflow-y:auto; scrollbar-width: thin; scrollbar-color: transparent transparent; font-size: 12px; text-align:center; word-wrap:break-word;">
+            <span style="color: #ffcc00;">{{ book.title }}</span>
+            <hr class="m-2">
+            {{ book.author }}
         </div>
 
     </div>
@@ -50,28 +47,28 @@
             </div>
 
             <div class="modal-body border-0 m-0 p-1">
-                <div class="row g-0 align-items-center">
+                <div class="row g-2 align-items-center">
 
                     <!-- Okładka -->
-                    <div class="col-12 col-md-5 col-lg-5 col-xl-5 text-center m-0 p-0">
+                    <div class="col-12 col-md-5 col-lg-5 col-xl-5 text-center m-0 p-2">
                         <img src="{{ book.link_to_cover }}" 
                             alt="{{ book.title }}"
-                            class="img-fluid rounded book-img2"
-                            style="max-height:35vh; object-fit:contain;">
+                            class="img-fluid rounded"
+                            style="max-height:30vh; object-fit:contain;">
                     </div>
 
                     <!-- Dane -->
-                    <div class="col-12 col-md-7 col-lg-7 col-xl-7 text-light text-center text-md-start m-0 p-0">
-                        <h5>{{ book.title }}</h5>
+                    <div class="col-12 col-md-7 col-lg-7 col-xl-7 text-light text-center text-md-start m-0 p-2">
+                        <h6>{{ book.title }}</h6>
                         <p class="mb-1">{{ book.author }}</p>
                         <br>
                         <a href="https://www.google.com/search?q={{ book.author }} {{ book.title|slice:":30"|urlencode }}" 
                         target="_blank" title="Szukaj w Google">
                             <!-- Ikona lupki Bootstrap Icons -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 0a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
                             </svg>
-                            <span>Szukaj w Google</span>
+                            <span><label style="font-size: 14px;">Szukaj w Google</label></span>
                         </a>
                     </div>
 
@@ -81,13 +78,13 @@
             <div class="modal-footer border-0">
                 {% if book.owner %}
                     <div class="d-flex" style="gap: 1.5rem;">
-                        <button class="btn btn-md btn-primary" data-bs-target="#bookModal{{ book.id }}_Edit" data-bs-toggle="modal">
+                        <button class="btn btn-sm btn-primary" data-bs-target="#bookModal{{ book.id }}_Edit" data-bs-toggle="modal">
                             Edytuj
                         </button>
 
                         <form class="deleteBookForm" data-book-id="{{ book.id }}">
                             {% csrf_token %}
-                            <button class="btn btn-md btn-danger" type="submit" name="del_book" value="{{ book.id }}">
+                            <button class="btn btn-sm btn-danger" type="submit" name="del_book" value="{{ book.id }}">
                                 Usuń
                             </button>
                         </form>

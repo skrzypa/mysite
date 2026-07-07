@@ -54,7 +54,7 @@
             const title = box.querySelector(".book-title");
 
             if (box.style.width === "90px" || !box.style.width) {
-                box.style.width = "300px";
+                box.style.width = "280px";
                 title.style.display = "block";
             } else {
                 box.style.width = "90px";
@@ -100,13 +100,6 @@
 
                     $("#" + data.edit_year).html(data.yearhtml);
                     $("#loop_" + data.edit_year).html(data.bookshtml);
-
-                    document.querySelectorAll(".book-box").forEach(box => {
-                        const title = box.querySelector(".book-title");
-                        box.style.width = "110px";
-                        if (title)
-                            title.style.display = "none";
-                    });
                 }
             });
         });
