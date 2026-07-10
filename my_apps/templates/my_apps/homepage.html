@@ -11,7 +11,12 @@
 {% endif %}
 
 <div class="text-center">
-    <button type="button" data-bs-toggle="modal" class="btn btn-success btn-lg" data-bs-target="#exampleModal1" id="random-dog-button" name='dog'>
+    <button
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal1"
+        class="btn btn-success btn-lg"
+        id="random-dog-button">
         
         <svg style="vertical-align: sub;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-suit-heart-fill" viewBox="0 0 16 16">
             <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
@@ -25,36 +30,48 @@
 
     </button>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#random-dog-button').click(function() {
-                $.ajax({
-                    url: 'https://dog.ceo/api/breeds/image/random',
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        var imgSrc = data.message;
-                        $('#random-dog-image').attr('src', imgSrc);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Error:', error);
-                    }
-                });
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const button = document.getElementById("random-dog-button");
+            const image = document.getElementById("random-dog-image");
+
+            button.addEventListener("click", async () => {
+
+                try {
+                    const response = await fetch(window.location.pathname, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                        body: new URLSearchParams({
+                            action: "random_dog"
+                        })
+                    });
+
+                    if (!response.ok) {throw new Error("Nie udało się pobrać pieska.");}
+
+                    const data = await response.json();
+                    image.src = data.image;
+
+                } catch (err) {console.error(err);}
+
             });
+
         });
     </script>
 
     <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered text-dark" >
-            <div class="modal-content">
-                <div class="modal-header" style="border: none; padding: .5rem .5rem">
+        <div class="modal-dialog modal-dialog-centered" >
+            <div class="modal-content bg-dark text-light border-black border-1">
+                <div class="modal-header border-0" style="padding: .5rem .5rem">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Wylosowany piesek</h1>
                 </div>
     
                 <div class="modal-body text-center">
                     <div style="margin-bottom: 1rem;">
-                        <img id="random-dog-image" class="img-fluid border shadow-lg" style="border-color: none; border-radius: 5px; max-height: 50vh;">
+                        <img id="random-dog-image" class="img-fluid border border-black border-1 shadow-lg" style="border-radius: 5px; max-height: 50vh;">
                     </div>
     
                     <div>
@@ -63,7 +80,7 @@
                 </div>
                 
                 <div class="modal-footer" style="border: none; padding: .5rem .5rem">
-                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fajny!</button>
+                    <button type="button" class="btn btn-sm btn-success" data-bs-dismiss="modal">Fajny! ❤️</button>
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@ import datetime
 import os
 import calendar
 import json
+import requests
 from pprint import pprint
 # Create your views here.
 
@@ -32,6 +33,12 @@ def index(request: WSGIRequest):
 
     if not os.path.exists(mysite.settings.MEDIA_ROOT):
         os.mkdir(mysite.settings.MEDIA_ROOT)
+
+    if request.method == "POST" and request.POST.get("action") == "random_dog":
+        response = requests.get("https://dog.ceo/api/breeds/image/random")
+        return JsonResponse({
+            "image": response.json()["message"]
+        })
 
 
     if request.user.is_authenticated:
