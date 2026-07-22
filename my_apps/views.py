@@ -102,95 +102,6 @@ def admin(request: WSGIRequest):
     return render(request, 'admin')
 
 
-
-# BEER CALC
-"""
-def calc(request: WSGIRequest):
-    context = {
-        'style_piwne': [[i.style_name, i.min_carbonation, i.max_carbonation] for i in BeerStyles.objects.all()],
-    }
-    error = 'Podaj prawidłową liczbę',
-    
-    
-    if request.method == 'POST':
-        if 'brix' in request.POST:
-            brix = request.POST["brix"]
-            baling_result = BeerCalc().brix_to_baling(brix)
-
-            if baling_result is None:
-                context['error'] = error
-            else:
-                context["baling_wynik"] = f"{brix} Bx = {baling_result} Blg"
-                context['url']= "bx-blg"
-
-
-        elif 'baling' in request.POST:
-            baling = request.POST["baling"]
-            brix_result = BeerCalc().baling_to_brix(baling)
-
-            if brix_result is None:
-                context['error'] = error
-            else:
-                context["brix_wynik"] = f"{baling} Blg = {brix_result} Bx"
-                context['url']= "bx-blg"
-
-
-        elif 'brix_start' in request.POST and 'brix_end' in request.POST:
-            brix_s: str = request.POST["brix_start"]
-            brix_e: str = request.POST["brix_end"]
-
-            brix_to_percent = BeerCalc().brix_to_percent(brix_s, brix_e)
-            if brix_to_percent is None:
-                context['error'] = error
-            else:
-                context["proc_bx_wynik"] = f"Zawartość alkoholu: {brix_s} Bx → {brix_e} Bx ≈ {brix_to_percent} % ± 0.5%"
-                context['url']= "bx-proc"
-
-
-        elif 'blg_start' in request.POST and 'blg_end' in request.POST:
-            blg_s: str = request.POST["blg_start"]
-            blg_e: str = request.POST["blg_end"]
-
-            baling_to_percent = BeerCalc().baling_to_percent(blg_s, blg_e)
-            if baling_to_percent is None:
-                context['error'] = error
-            else:
-                context["proc_blg_wynik"] =  f"Zawartość alkoholu: {blg_s} Blg → {blg_e} Blg ≈ {baling_to_percent} % ± 0.5%"
-                context['url']= "blg-proc"
-
-
-        elif 'co2' in request.POST and 'piwo' in request.POST and  'temp' in request.POST:
-            co2: str = request.POST['co2']
-            piwo: str = request.POST['piwo']
-            temp: str = request.POST['temp']
-
-            glucose_for_refermentation = BeerCalc().how_much_sugar(co2, piwo, temp)
-            if glucose_for_refermentation is None:
-                context['error'] = error
-            else:
-                context["glukoza_wynik"] =  f"Aby uzyskać nagazowanie na poziomie {co2} VOL w {piwo} litrach piwa o temperaturze {temp}℃ należy dodać {glucose_for_refermentation} gram glukozy"
-                context['url']= "glucose"
-
-
-        elif 'blg_pocz' in request.POST and 'glukoza' in request.POST:
-            roztwor: str = request.POST['blg_pocz']
-            glukoza: str = request.POST['glukoza']
-
-            sugar_solution = BeerCalc().sugar_solution(roztwor, glukoza)
-            if sugar_solution is None:
-                context['error'] = error
-            else:
-                context["roztwor_wynik"] =  f"Aby uzyskać roztwór o gęstości {roztwor} Blg należ rozpuścić {glukoza} gram glukozy w {sugar_solution} ml wody"
-                context['url']= "co2-glucose"
-
-        
-    return render(request= request, 
-                template_name= f'my_apps/beer_calc.html', 
-                context= context,
-            )
-"""
-
-
 # MEETINGS
 class MeetingsCalendar:
     def __init__(self):
@@ -471,7 +382,8 @@ def meetings_homepage(request: WSGIRequest):
             'all_events_counter':   all_events_counter,
             'all_events':           events,
             'upcoming_events':      upcoming_events,
-            'new_invitations':      InvitedToEventModelNew.objects.filter(invited_friend= request.user, accepted_invitation= False, decline_invitation= False)
+            'new_invitations':      InvitedToEventModelNew.objects.filter(invited_friend= request.user, accepted_invitation= False, decline_invitation= False),
+            'scroll_to':            'day_' + meetings.formatted_date_today.split(' ')[0],
         }
     )
 
